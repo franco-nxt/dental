@@ -1,0 +1,87 @@
+%SESS_FILE_CENTER{
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+	clear: both;
+}
+
+%SESS_FILE_W-50{
+	width: (100% / 2);
+}
+
+%SESS_FILE_VERTICAL{
+	> label, > div{
+		padding-top: 124.11%;
+		@media print {
+			padding-top: 0;
+		}
+	}
+}
+
+%SESS_FILE_VERTICAL_R{
+	@extend %SESS_FILE_W-50;
+	> label, > div{
+		padding-top: 150.17%;
+		@media print {
+			padding-top: 0;
+		}
+	}
+}
+
+%SESS_FILE_VERTICAL_4{
+	width: (100% / 4);
+	@extend %SESS_FILE_VERTICAL;
+}
+
+%SESS_FILE_VERTICAL_2{
+	@extend %SESS_FILE_W-50;
+	@extend %SESS_FILE_VERTICAL;
+}
+
+%SESS_FILE_HORIZONTAL{
+	@extend %SESS_FILE_W-50;
+	> label, > div{
+		padding-top: 60%;
+		@media print {
+			padding-top: 0;
+		}
+	}
+}
+
+%SESS_FILE-1-1{
+	@extend %SESS_FILE_W-50;
+	> label, > div{
+		padding-top: 100%;
+		@media print {
+			padding-top: 0;
+		}
+	}
+}
+
+%SESS_FILE_HORIZONTAL_R{
+	width: 100%;
+	> label, > div{
+		padding-top: 49.55%;
+		@media print {
+			padding-top: 0;
+		}
+	}
+}
+
+%SESS_FILE_HORIZONTAL_F{
+	@extend %SESS_FILE_W-50;
+	> label, > div{
+		padding-top: 61%;
+		@media print {
+			padding-top: 0;
+		}
+	}
+}
+
+%SESS_FILE_ML_1{
+	margin-left: (100% / 8);
+}
+
+%SESS_FILE_ML_2{
+	margin-left: (100% / 4);
+}

@@ -1,0 +1,41 @@
+$border-radius-base: 4px;
+
+$login-btn-bg: #03a9f4;
+
+$bg-body: #0079ae;
+
+/*====================================
+=            MEDIA WIDTHS            =
+====================================*/
+
+$max-xs-screen : 325px;
+
+$max-sm-screen : 546px;
+
+$max-md-screen : 768px;
+
+$max-lg-screen : 992px;
+
+$max-xl-screen : 1024px;
+
+$min-sm-screen : $max-xs-screen + 1px;
+
+$min-md-screen : $max-sm-screen + 1px;
+
+$min-lg-screen : $max-md-screen + 1px;
+
+$min-big-screen : $max-xl-screen + 1px;
+
+$screen-min : (xs: $max-xs-screen, sm: $max-sm-screen, md: $max-md-screen, lg: $max-lg-screen, xl: $max-xl-screen);
+$screen-max : (sm: $min-sm-screen, md: $min-md-screen, lg: $min-lg-screen, big: $min-big-screen);
+
+/*=====  End of MEDIA WIDTHS  ======*/
+
+/*===============================
+=            NAVBAR             =
+===============================*/
+
+$navbar-btn-h: 32px; 
+$navbar-drop-menu-bg: #333;
+$navbar-drop-menu-color: #FFF;
+/*=====  End of NAVBAR   ======*/

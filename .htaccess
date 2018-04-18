@@ -1,0 +1,45 @@
+AddType application/x-font-woff woff
+
+AddDefaultCharset UTF-8
+
+DefaultLanguage es-ES
+
+
+
+
+
+AddType image/x-icon .ico
+
+
+
+SetOutputFilter DEFLATE
+
+Options +FollowSymLinks
+
+
+
+
+
+RewriteEngine On  
+
+RewriteRule ((img|images|flash|js|css|xml|tiny_mce|data)/.*)$	$1 [NC,L]
+
+
+
+RewriteCond %{REQUEST_METHOD}  !=POST
+
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^ index.php [QSA,L]
+
+
+
+RewriteCond %{REQUEST_METHOD}  POST
+
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^ actions.php [QSA,L]
+
+
+
+ServerSignature Off

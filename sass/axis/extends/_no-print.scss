@@ -1,0 +1,10 @@
+%NO_PRINT{
+	@media print {
+		display: none;
+	}
+}
+%BG_PRINT{
+	@media print {
+        background: transparent !important;
+	}
+}

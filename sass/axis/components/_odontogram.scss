@@ -1,0 +1,68 @@
+.odntgrm{
+	$piece-w : 100% / 8;
+	$btn-w : 100% / 9;
+	
+	@include max(md){
+		transform: rotate(90deg);
+		transform-origin: left bottom;
+		width: 100vh;
+		height: 100vw;
+		position: relative;
+		top: -100vw;
+		padding-top: 10px;
+		&-wrap {
+			min-height: 100vh;
+			overflow: hidden;
+		}
+	}
+	&-piece{
+		padding: 1px;
+		text-align: center;
+		float: left;
+		width: $piece-w;
+	}
+	&-controls{
+		float: left;
+		min-height: 1px;
+		width: $piece-w * 3;
+	}
+	&-btn{
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		&-wrap{
+			padding: 2px;
+			float: left;
+			width: $btn-w;
+			button{
+				padding: 2px;
+			}
+			@include min(xl){
+				width: $btn-w / 2;
+			}
+		}
+	}
+	.nice-select{
+		padding: 0;
+		.current{
+			text-align: center;
+		}
+		&:after{
+			right: 4px;
+			@include max(lg){
+				display: none;
+			}
+		}
+		&, .list{
+			background-color: #FFF;
+			span{
+				 color: #555;
+			}
+		}
+		.option {
+			&:hover, &.focus, &.selected.focus { 
+				background-color: darken(#FFF, 20%);
+			}
+		}
+	}
+}

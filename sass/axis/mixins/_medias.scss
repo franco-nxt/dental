@@ -1,0 +1,25 @@
+@mixin min($min){
+	@if($min){
+
+		@if map-has-key($screen-min, $min) {
+			$min: map-get($screen-min, $min);
+		} 	
+
+		@media (min-width: $min){
+			@content;
+		}
+	}
+}
+
+@mixin max($max){
+	@if($max){
+
+		@if map-has-key($screen-max, $max) {
+			$max: map-get($screen-max, $max);
+		} 	
+
+		@media (max-width: $max){
+			@content;
+		}
+	}
+}

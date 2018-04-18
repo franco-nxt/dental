@@ -1,0 +1,41 @@
+@import "vars";
+
+
+@import "mixins/medias";
+@import "mixins/pseudo";
+@import "mixins/square";
+@import "mixins/border-radius";
+
+@import "extends/sessions";
+@import "extends/no-print";
+
+@import "main";
+
+@import "utils/utils";
+@import "utils/bg";
+@import "utils/margins";
+@import "utils/margins";
+@import "utils/paddings";
+@import "utils/colors";
+
+@import "components/table-pacientes";
+@import "components/table-rounded";
+@import "components/btn-ico";
+@import "components/bar";
+@import "components/alert";
+@import "components/sess";
+@import "components/models";
+@import "components/more-data";
+@import "components/nice-select";
+@import "components/label";
+@import "components/field";
+@import "components/navbar";
+@import "components/footer";
+@import "components/tabs";
+@import "components/notification";
+@import "components/lightbox";
+@import "components/odontogram";
+
+@import "pages/login";
+@import "pages/pacientes";
+@import "pages/paciente";

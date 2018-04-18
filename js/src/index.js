@@ -1,0 +1,11 @@
+import './components/tabs.js';
+import './components/selects.js';
+import './components/collapse.js';
+import './components/upload-img-btn.js';
+import './components/datepicker.js';
+import './components/alert.js';
+import './components/drop-down.js';
+import './components/drop-img.js';
+import './components/forms.js';
+import './components/modal.js';
+import './components/odontograma.js';

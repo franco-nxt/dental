@@ -1,0 +1,13 @@
+.clear{
+	@include clearfix();
+	&.both{
+		clear: both;
+	}
+}
+.light{
+	font-weight: 300 !important;
+}
+.span{
+	color: #FFF !important;
+	font-weight: 300 !important;
+}

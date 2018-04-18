@@ -1,0 +1,374 @@
+.sess{
+	@include make-row; // ESTE MIXIN VIENE DE BS
+	&-c,
+	&-r,
+	&-f{
+		position: relative;
+		padding: 5px;
+		float: left;
+		min-height: 1px;
+		> div,> label{
+			background-color: #0092D4;
+			display: block;
+			content: "";
+			width: 100%;
+			position: relative;
+			overflow: hidden;
+			background-size: cover;
+			background-position: center;
+			@include border-radius-base();
+			@extend %BG_PRINT;
+			input[type=file]{
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				opacity: 0;
+			}
+			a{
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				display: block;
+				background-size: cover;
+				background-position: center;
+			}
+		}
+	}
+	&-trash{
+		cursor: pointer;
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		display: block;
+		background-color: #F44336;
+		z-index: 1;
+		border: none;
+		@include square(30px);
+		@include border-radius-base();
+		input{
+			opacity: 0;
+			position: absolute;
+		}
+	}
+}
+
+.s{
+	max-width: $max-lg-screen;
+	@include center-block; // BS
+	&-f{
+		&-1{
+			.eofrentesinsonrisa,
+			.eofrenteconsonrisa,
+			.eoperfilderechosinsonrisa,
+			.eo34perfilderechoconsonrisa{
+				@extend %SESS_FILE_VERTICAL_4;
+			}
+			.iofrontal,
+			.iooverjet,
+			.iolateralderecho,
+			.iolateralizquierdo,
+			.iooclusalsuperior,
+			.iooclusalinferior{
+				@extend %SESS_FILE_HORIZONTAL_F;
+			}
+		}
+		&-2{
+			.eofrentesinsonrisa,
+			.eofrenteconsonrisa,
+			.eoperfilderechosinsonrisa{
+				@extend %SESS_FILE_VERTICAL_4;
+			}
+			.iofrontal,
+			.iolateralderecho,
+			.iolateralizquierdo,
+			.iooclusalsuperior,
+			.iooclusalinferior{
+				@extend %SESS_FILE_HORIZONTAL_F;
+			}
+			.eofrentesinsonrisa{
+				@extend %SESS_FILE_ML_1;
+			}
+			.iofrontal{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-3{
+			.eo01,
+			.eo02{
+				@extend %SESS_FILE_VERTICAL_4;
+			}
+			.iofrontal,
+			.iolateralderecho,
+			.iolateralizquierdo,
+			.iooclusalsuperior,
+			.iooclusalinferior{
+				@extend %SESS_FILE_HORIZONTAL_F;
+			}
+			.eo01{
+				@extend %SESS_FILE_ML_2;
+			}
+			.iofrontal{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-4{
+			.eofrentesinsonrisa{
+				@extend %SESS_FILE_CENTER;
+				@extend %SESS_FILE_VERTICAL_4;
+			}
+			.iofrontal,
+			.iolateralderecho,
+			.iolateralizquierdo,
+			.iooclusalsuperior,
+			.iooclusalinferior{
+				@extend %SESS_FILE_HORIZONTAL_F;
+			}
+			.iofrontal{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-5{
+			.iofrontal,
+			.iooverjet,
+			.iolateralderecho,
+			.iolateralizquierdo,
+			.iooclusalsuperior,
+			.iooclusalinferior{
+				@extend %SESS_FILE_HORIZONTAL_F;
+			}
+		}
+		&-6{
+			.iofrontal,
+			.iolateralderecho,
+			.iolateralizquierdo,
+			.iooclusalsuperior,
+			.iooclusalinferior{
+				@extend %SESS_FILE_HORIZONTAL_F;
+			}
+			.iofrontal{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-7{
+			.iofrontal,
+			.iolateralderecho,
+			.iolateralizquierdo{
+				@extend %SESS_FILE_HORIZONTAL_F;
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-8{
+			.iouno,
+			.iodos{
+				@extend %SESS_FILE_HORIZONTAL_F;
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-9{
+			.eofrentesinsonrisa,
+			.eofrenteconsonrisa,
+			.eoperfilderechosinsonrisa,
+			.eo34perfilderechoconsonrisa{
+				@extend %SESS_FILE_VERTICAL_2;
+			}
+		}
+		&-10{
+			.eoperfilderechosinsonrisa,
+			.eofrentesinsonrisa,
+			.eofrenteconsonrisa{
+				@extend %SESS_FILE_VERTICAL_2;
+			}
+			.eoperfilderechosinsonrisa{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-11{
+			.eo01,
+			.eo02{
+				@extend %SESS_FILE_VERTICAL_2;
+			}
+		}
+		&-12{
+			.eofrenteconsonrisa{
+				@extend %SESS_FILE_VERTICAL_2;
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+	}
+	&-r{
+		&-1{
+			.trx1{
+				@extend %SESS_FILE_CENTER;
+				@extend %SESS_FILE_VERTICAL_R;
+			}
+			.panoramica{
+				@extend %SESS_FILE_HORIZONTAL_R;
+			}
+		}
+
+		&-2{
+			.trx1,
+			.trx2{
+				@extend %SESS_FILE_VERTICAL_R;
+			}
+			.panoramica{
+				@extend %SESS_FILE_HORIZONTAL_R;
+			}
+		}
+
+		&-3{
+			.panoramica{
+				@extend %SESS_FILE_HORIZONTAL_R;
+			}
+		}
+
+		&-4{
+			.trx1{
+				@extend %SESS_FILE_CENTER;
+				@extend %SESS_FILE_VERTICAL_R;
+			}
+		}
+
+		&-5{
+			.trx1,
+			.trx2{
+				@extend %SESS_FILE_VERTICAL_R;
+			}
+		}
+
+		&-6{
+			.trx1,
+			.trx2,
+			.trx3{
+				@extend %SESS_FILE_VERTICAL_R;
+			}
+			.trx1{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+
+		&-7{
+			.panoramica1,
+			.panoramica2{
+				@extend %SESS_FILE_HORIZONTAL_R;
+			}
+		}
+
+		&-8{
+			.panoramica1,
+			.panoramica2,
+			.panoramica3{
+				@extend %SESS_FILE_HORIZONTAL_R;
+			}
+		}
+
+		&-9{
+			.trx1_,
+			.trx2_{
+				@extend %SESS_FILE-1-1;
+			}
+		}
+
+		&-10{
+			.trx1_,
+			.trx2_,
+			.trx3_{
+				@extend %SESS_FILE-1-1;
+			}
+			.trx1_{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+
+		&-11{
+			.trx1_,
+			.trx2_,
+			.trx3_,
+			.trx4_{
+				@extend %SESS_FILE-1-1;
+			}
+		}
+
+		&-12{
+			.trx1_,
+			.trx2_,
+			.trx3_,
+			.trx4_,
+			.trx5_,
+			.trx6_{
+				@extend %SESS_FILE-1-1;
+			}
+		}
+	}
+	&-c{
+		&-1{
+			.p1{
+				@extend %SESS_FILE_VERTICAL_2;
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-2{
+			.p1,
+			.p2{
+				@extend %SESS_FILE_VERTICAL_2;
+			}
+		}
+		&-3{
+			.p1,
+			.p2,
+			.p3{
+				@extend %SESS_FILE_VERTICAL_2;
+			}
+			.p1{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-4{
+			.p1,
+			.p2,
+			.p3,
+			.p4{
+				@extend %SESS_FILE_VERTICAL_2;
+			}
+		}
+		&-5{
+			.pag1,
+			.pag2{
+				@extend %SESS_FILE_CENTER;
+				@extend %SESS_FILE-1-1;
+			}
+		}
+		&-6{
+			.pag1,
+			.pag2,
+			.pag3{
+				@extend %SESS_FILE-1-1;
+			}
+			.pag1{
+				@extend %SESS_FILE_CENTER;
+			}
+		}
+		&-7{
+			.pag1,
+			.pag2,
+			.pag3,
+			.pag4{
+				@extend %SESS_FILE-1-1;
+			}
+		}
+		&-8{
+			.pag1,
+			.pag2,
+			.pag3,
+			.pag4,
+			.pag5,
+			.pag6{
+				@extend %SESS_FILE-1-1;
+			}
+		}
+	}
+}

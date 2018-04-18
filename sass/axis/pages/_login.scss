@@ -1,0 +1,18 @@
+.login{
+	padding-top: 39px;
+	padding-left: 31px;
+	padding-right: 31px;
+	&-figure{
+		max-width: 195px;
+		margin-bottom: 60px;
+		@include center-block();
+	}
+	&-form{
+		max-width: 315px;
+		@include center-block();
+	}
+	.btn{
+		background-color: $login-btn-bg;
+		color: #FFF;
+	}
+}

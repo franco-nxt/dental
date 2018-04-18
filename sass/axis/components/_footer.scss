@@ -1,0 +1,19 @@
+footer{
+	text-align: center;
+	background-color: #1E1E1E;
+	padding-top: 25px;
+	padding-bottom: 20px;
+	font-size: 14px;
+	font-weight: 300;
+	position: absolute;
+	width: 100%;
+	bottom: 0px;
+	*{
+		color: #FFF;
+	}
+	a{
+		font-weight: 100;
+		font-size: 12px;
+	}
+	@extend %BG_PRINT;
+}

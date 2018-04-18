@@ -1,0 +1,158 @@
+%FIELD_CHECK{
+	label,
+	span{
+		padding-right: 10px;
+		padding-left: 15px;
+		display: inline-block;
+		position: relative;
+		@include pseudo(){
+			left: 0px;
+			top: 3px;
+			border: solid 3px #FFF;
+			background-color: #fff;
+			@include square(13px);
+		};
+		&.checked{
+			@include pseudo(){
+				background-color: #03a9f5;	
+			}
+		}
+	}
+	input:checked + label{
+		@include pseudo(){
+			background-color: #03a9f5;	
+		}
+	}
+}
+.field{
+	color: #FFF;
+	min-height: 22px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	margin-bottom: 5px;
+	margin-top: 3px;
+	font-size: 14px;
+	@include border-radius-base;
+	@include clearfix;
+	&:not(&-blue) {
+		background-color: #333333;
+	}
+	&-blue{
+		background-color: #0291d1;
+	}
+	span{
+		font-weight: 300;
+	}
+
+	&-radio-check{
+		@extend %FIELD_CHECK;
+		label,
+		span{
+			@include pseudo(){
+				border-radius: 6px;
+			};
+		}
+
+	}
+	&-checkbox-check{
+		@extend %FIELD_CHECK;
+		label,
+		span{
+			padding-left: 17px;
+			cursor: pointer;
+		}
+	}
+	&-radio{
+		label{
+			cursor: pointer;
+		}
+		label,
+		span{
+			font-size: 12px;
+			line-height: 14px;
+			padding-right: 1px;
+			display: inline-block;
+			font-weight: 600;
+    		overflow: initial;
+    		&:not(.checked){
+    		    color: #ffffff80;
+    		    @media print {
+    		    	display: none;
+    		    }
+    		}
+			&.checked{
+				color: #FFF;
+				font-weight: bold;
+				padding-left: 10px;
+				position: relative;
+				@include pseudo(){
+					border-radius: 6px;
+					left: 0px;
+					top: 3px;
+					background-color: #fe0000;
+					@include square(8px);
+				};
+			}
+			@include min($min-md-screen){
+				padding-right: 5px;
+				font-size: 14px;
+			}
+			
+		}
+		label.disabled{
+			cursor: not-allowed;
+		}
+		label.disabled,
+		input[type=radio] + label{
+			color: rgba(#FFF, .5);
+		}
+		input[type=radio]:checked + label{
+			color: #FFF;
+			font-weight: bold;
+			padding-left: 10px;
+			position: relative;
+			@include pseudo(){
+				border-radius: 6px;
+				left: 0px;
+				top: 3px;
+				background-color: #fe0000;
+				@include square(8px);
+			};
+		}
+		input[type=text]{
+			display: inline-block !important;
+			width: auto!important;
+		}
+		&.field-read{
+		}
+	}
+}
+
+.field{
+	%base{
+		font-weight: 300;
+		display: block;
+		width: 100%;
+		border: none;
+		outline: none;
+		background-color: rgba(#000,0);
+	}
+	input[type=password],
+	input[type=email],
+	input[type=text]{
+		@extend %base;
+		height: 20px;
+	}
+	textarea{
+		padding: 0;
+		@extend %base;
+		resize: none;
+		height: 100px;
+	}
+}
+
+input[type=checkbox],
+input[type=radio]{
+	position: absolute;
+	opacity:0;
+}

@@ -1,0 +1,10 @@
+.notification{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 30px;
+	border: solid 2px #FFF;
+	@include border-radius-base(10px);
+	strong{
+		color: #03A9F4;
+	}
+}

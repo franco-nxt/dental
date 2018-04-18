@@ -1,0 +1,22 @@
+*{
+	font-family: 'Montserrat', sans-serif;
+}
+
+body{
+	min-height: 100vh;
+	padding-bottom: 121px;
+	position: relative;
+	background-color: $bg-body;
+	@extend %BG_PRINT;
+}
+
+img{
+	max-width: 100%;
+}
+
+ul{
+	list-style-type: none;
+}
+span{
+	color: #FFF;
+}

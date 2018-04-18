@@ -1,0 +1,33 @@
+$spaceamounts: (0, 5, 10);
+$sides: (top, bottom, left, right);
+
+@each $space in $spaceamounts {
+  @each $side in $sides {
+  	.p#{$space},
+    .p#{str-slice($side, 0, 1)}#{$space} {
+      padding-#{$side}: #{$space}px !important;
+    }
+  }
+}
+
+@include min(sm){
+	@each $space in $spaceamounts {
+	  @each $side in $sides {
+	  	.sm-p#{$space},
+	    .sm-p#{str-slice($side, 0, 1)}#{$space} {
+	      padding-#{$side}: #{$space}px !important;
+	    }
+	  }
+	}	
+}
+
+@include min(md){
+	@each $space in $spaceamounts {
+	  @each $side in $sides {
+	  	.md-p#{$space},
+	    .md-p#{str-slice($side, 0, 1)}#{$space} {
+	      padding-#{$side}: #{$space}px !important;
+	    }
+	  }
+	}	
+}

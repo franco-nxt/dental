@@ -1,0 +1,23 @@
+.models{
+	max-width: $max-lg-screen;
+}
+.model{
+	&-r,
+	&-c,
+	&-f{
+		padding-top: 5px;
+		padding-bottom: 5px;
+		@include border-radius-base();
+		a{
+			@include border-radius-base();
+			background-color: #0092D4;
+			display: block;
+			content: "";
+			width: 100%;
+			padding-top: 121%;    
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-position: center;
+		}
+	}
+}

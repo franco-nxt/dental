@@ -44,25 +44,25 @@ class Treatment
 		}
 	}
 
-	public function __construct($id = null)
+	public function __construct($id)
 	{
-		if (!$id) {
-			return false;
+		if (empty($id)) {
+			throw new TreatmentException("ES NECESARIO UN ID PARA ENCONTRAR EL TRATAMIENTO");
 		}
 
 		if (is_array($id)) {
-			if (!$this->create($id)) {
-				return false;
-			}
+			$this->create($id);
 		}
 		elseif (is_numeric($id)) {
+			$q = "SELECT {$id} IN (SELECT id_tratamiento FROM tratamientos WHERE id_tratamiento = {$id})";
+
+			$treatment_exist = $this->db->oneFieldQuery($q);
+
+			if (!$treatment_exist) {
+				throw new TreatmentException('EL TRATAMIENTO INDICADO NO EXISTE');
+			}
 
 			$this->id = $id;
-
-			// TRAIGO ALGUN CAMPO PARA VALIDAR
-			if (!$this->select('estado')) {
-				return false;
-			}
 
 			$this->url = crypt_params(array(TRATAMIENTO => $this->id, PACIENTE => $this->id_paciente));
 
@@ -92,6 +92,9 @@ class Treatment
 		else {
 			$values[] = date('Y-m-d H:i:s');
 		}
+
+		// SI LA TECNICA NO VIENE, ENTONCES USO UNA DEFAULT
+		$data['tecnica'] = isset($data['tecnica']) && is_numeric($data['tecnica']) ? $data['tecnica'] : BD_TECNICA_DEFAULT;
 
 		// FILTRO LOS CAMPOS VALIDOS
 		foreach ($data as $k => $v) {
@@ -653,23 +656,26 @@ class Treatment
 		return new Resume($this->id_resumen);
 	}
 
-	public function url($page, $action = 'ver')
+	/**
+	 * Devuelve la url para ver o editar el tratamiento.
+	 * Usada en html/pacientes/main.php
+	 * Usada en modules/paciente.php
+	 *
+	 * @param String $action Si es igual a 'editar' envia la url para editar el tratamiento, si no siempre va a dar para ver
+	 * @return String Url pedida
+	 */
+	public function url($action = 'ver')
 	{
 		$action = trim($action);
-		$page = trim($page);
+		$url = trim(URL_ROOT, '/') . "/paciente/";
 
-		if (preg_match('/(ve|edita)r/i', $action) && preg_match('/(completo|resumen|examen|historia)/i', $page)) {
-			$action = $action == 'ver' ? null : "/{$action}";
-			$page = "/{$page}";
-			$Patient = $this->get_patient();
-			$url = crypt_params(array(TRATAMIENTO => $this->id, PACIENTE => $Patient->id));
+		if ('editar' === $action ) {
+			$url .= "editar/";
+		}
 
-			return trim(URL_ROOT, '/') . "/diagnostico{$page}{$action}/{$url}";
-		}
-		elseif($page == 'editar'){
-			$url = crypt_params(array(TRATAMIENTO => $this->id, PACIENTE => $Patient->id));
-			return trim(URL_ROOT, '/') . "/tratamiento/editar/{$url}";
-		}
+		$url .= crypt_params(array(TRATAMIENTO => $this->id, PACIENTE => $this->id_paciente));
+
+		return $url;
 	}
 
 	/**

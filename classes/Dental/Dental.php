@@ -25,30 +25,26 @@ class Dental
 	 */
 	private function __construct($user, $pass)
 	{
-		if (!$user || !$pass) {
-			return false;
+		if (empty($user) || empty($pass)) {
+			throw new DentalException("ES NECESARIO COMPLETAR LOS CAMPOS USUARIO Y CONTRASEÑA");
 		}
 		
 		$user = $this->db->escape($user);
 		$pass_bd = $this->db->oneFieldQuery("SELECT clave_seguridad FROM usuarios WHERE correo_electronico = '{$user}'");
 		$pass_md5 = md5($pass);
 
-		if ($pass_bd == $pass_md5) {
-			$q = "SELECT id_usuario, correo_electronico, nombre, apellido FROM usuarios WHERE correo_electronico = '{$user}'";
-			$r = $this->db->oneRowQuery($q);
-
-			$this->id = $r['id_usuario'];
-			$this->fullname = $r['apellido'] . ',' . $r['nombre'];
-			$this->apellido = $r['apellido'];
-			$this->nombre = $r['nombre'];
-			$this->email = $user;
-			$this->pass = $pass;
-
-			return true;
+		if ($pass_bd !== $pass_md5) {
+			throw new DentalException("USUARIO O CONTRASEÑA INCORRECTOS");
 		}
-		else {
-			return false;
-		}
+
+		$row = $this->db->oneRowQuery("SELECT id_usuario, correo_electronico, nombre, apellido FROM usuarios WHERE correo_electronico = '{$user}'");
+
+		$this->id = $row['id_usuario'];
+		$this->fullname = "{$row['apellido']}, {$row['nombre']}";
+		$this->apellido = $row['apellido'];
+		$this->nombre = $row['nombre'];
+		$this->email = $user;
+		$this->pass = $pass;
 	}
 
 	public function update($data = null) {
@@ -145,8 +141,8 @@ class Dental
 	public function buscar($fields)
 	{
 
-        $patients = array();
-        $q = array();
+		$patients = array();
+		$q = array();
 
 		foreach (array('apellido','nombre','ciudad','provincia') as $k) {
 			!empty($fields[$k]) && $q[] = "{$k} LIKE '%{$fields[$k]}%'";
@@ -411,8 +407,87 @@ class Dental
 	 * */
 	public function stop_share_patient($share_id) 
 	{
+		if (empty($id) || !is_numeric($id)) {
+			return false;
+		}
+
 		$q = "DELETE FROM compartidos WHERE id_compartir = {$share_id}";
 
 		return $this->db->query($q);
+	}
+
+	public function get_patient($id)
+	{
+		if (!empty($this->patients[$id])) {
+			return $this->patients[$id];
+		}
+
+		$Patient = new Patient($id);
+
+		if ($Patient->id) {
+			// SI TODO ESTA BIEN AGREGO EL PACIENTE
+			$this->patients[$Patient->id] = $Patient;
+
+			return $Patient;
+		}
+	}
+
+	public function get_patients_and_treatments_by_state($state)
+	{
+		$return = array();
+
+		try{
+
+			$q = "SELECT P.id_paciente AS patient, T.id_tratamiento as treatment FROM pacientes AS P INNER JOIN tratamientos AS T ON T.id_paciente = P.id_paciente AND T.estado = {$state} WHERE id_usuario = {$this->id} AND (P.borrado <> 1 OR P.borrado IS NULL) AND (P.eliminado <> 1 OR P.eliminado IS NULL)";
+
+			$this->db->query($q);
+
+			while ($_ = $this->db->fetchAssoc()) {
+				$Patient = $this->get_patient($_['patient']);
+
+				if ($Patient) {
+					$Treatment = $Patient->get_treatment($_['treatment']);
+
+					if ($Treatment) {
+						$return[] = array('Patient' => $Patient, 'Treatment' => $Treatment);
+					}
+				}	
+			}
+
+			$this->db->free();
+			
+		}
+		finally{
+			return $return;
+		}
+	}
+
+	public function get_treatments_and_patients_deleted()
+	{
+		$return = array();
+
+		try{
+
+			$q = "SELECT P.id_paciente AS patient, T.id_tratamiento as treatment FROM pacientes AS P INNER JOIN tratamientos AS T ON T.id_paciente = P.id_paciente WHERE id_usuario = {$this->id} AND P.eliminado = 1 AND (P.borrado <> 1 OR P.borrado IS NULL)";
+
+			$this->db->query($q);
+
+			while ($_ = $this->db->fetchAssoc()) {
+				$Patient = $this->get_patient($_['patient']);
+
+				if ($Patient) {
+					$Treatment = $Patient->get_treatment($_['treatment']);
+
+					if ($Treatment) {
+						$return[] = array('Patient' => $Patient, 'Treatment' => $Treatment);
+					}
+				}	
+			}
+
+			$this->db->free();
+		}
+		finally{
+			return $return;
+		}
 	}
 }

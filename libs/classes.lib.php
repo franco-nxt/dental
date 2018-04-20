@@ -19,3 +19,18 @@ require_once "classes/Dental/Exam.php";
 require_once "classes/Dental/Resume.php";
 require_once "classes/Dental/Diagnostic.php";
 require_once "classes/Dental/Odontogram.php";
+
+require_once "classes/Exceptions/DentalException.php";
+require_once "classes/Exceptions/PatientException.php";
+require_once "classes/Exceptions/TreatmentException.php";
+// require_once "classes/Exceptions/PhotoException.php";
+// require_once "classes/Exceptions/RadiographieException.php";
+// require_once "classes/Exceptions/CephalometryException.php";
+// require_once "classes/Exceptions/RegisterException.php";
+// require_once "classes/Exceptions/PaymentException.php";
+// require_once "classes/Exceptions/HistoryException.php";
+// require_once "classes/Exceptions/ExamException.php";
+// require_once "classes/Exceptions/ResumeException.php";
+// require_once "classes/Exceptions/DiagnosticException.php";
+// require_once "classes/Exceptions/OdontogramException.php";
+

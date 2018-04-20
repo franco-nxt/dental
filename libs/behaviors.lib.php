@@ -56,6 +56,34 @@ function decrypt_params($param, $k = false) {
 }
 
 /**
+ * summary
+ *
+ */
+function get_from_encode($encode, $item)
+{
+	static $decrypt_params = array();
+
+	if (empty($decrypt_params[$encode])) {
+		$decrypt_params[$encode] = decrypt_params($encode);
+		return get_from_encode($encode, $item);
+	}
+
+	if (empty($decrypt_params[$encode][$item])) {
+		switch ($item) {
+			case PACIENTE: add_error_flash('NO SE ENCUENTRA EL PACIENTE SOLICITADO'); break;
+			case TRATAMIENTO: add_error_flash('NO SE ENCUENTRA EL TRATAMIENTO SOLICITADO'); break;
+			case FOTOGRAFIA: add_error_flash('NO SE ENCUENTRA EL FOTOGRAF&Iacute;A SOLICITADO'); break;
+			case RADIOGRAFIA: add_error_flash('NO SE ENCUENTRA EL RADIOGRAF&Iacute;A SOLICITADO'); break;
+			case CEFALOMETRIA: add_error_flash('NO SE ENCUENTRA EL CEFALOMETRIA SOLICITADO'); break;
+		}
+		redirect_exit();
+	}
+	else{
+		return $decrypt_params[$encode][$item];
+	}
+}
+
+/**
  * pasa de un array a una query_url y la paso por base64url_encode para ocultar los parametros
  *
  * @param array $url params
@@ -133,39 +161,10 @@ function json_decode_file($json) {
 }
 
 /**
-* rellena un template, si un parametro no es enviado se borra la informacion
+* Parsea una url y devuelve el elemento pedido
 *
-* @param string $json template para rellenar
-* @param stdClass|array argumentos clave valor para rellenar
-* @return array vector obtenido
-* */
-
-function include_tpl($tpl, $args = false, $eval = false, $finaleval = false) {
-	if (!$tpl || !is_string($tpl)) {
-		return false;
-
-	}
-	if (is_string($args) && !is_bool($eval)) {
-		$args = array($args => $eval);
-		$eval = $finaleval;
-
-	}
-	$arg = is_array($args) ? $args : array();
-
-	$tpl = file_get_contents($tpl);
-	$k = array_map(create_function('$e', 'return "{{" . $e . "}}";'), array_keys($arg));
-
-	$v = array_map(create_function('$e', 'return preg_match("/^(?:string|integer|float)$/", gettype($e)) != 0 ? $e . "" : null;'), array_values($arg));
-	$res = preg_replace('#\{\{[A-Z0-9\_\-\.\:]+\}\}#', '', str_replace($k, $v, $tpl));
-	return (is_bool($args) && $args) || $eval ? eval('?>' . $res) : $res;
-
-}
-
-/**
-* parsea una url y devuelve el elemento pedido
-*
+* 
 * @return array;
-* @author 
 * */
 function url_paths() {
 	$url   = $_SERVER['SERVER_NAME'] . str_replace('?' . $_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
@@ -249,59 +248,64 @@ function &get_user($email = null, $pass = null) {
 
 	$Session = load_class('Session');
 
-	if (!$email || !$pass) {
-		$user = json_decode($Session->__dental__);
-		$email = $user->email;
-		$pass = $user->pass;
-	}
+	try {
+		if (!$email || !$pass) {
+			$user = json_decode($Session->__dental__);
 
-	if (isset($email, $pass) && class_exists('Dental')) {
+			if (empty($user->email) || empty($user->pass)) {
+				throw new DentalException('ES NECESARIO LOGUEARSE OTRA VEZ');	
+			}
+
+			!empty($user->email) && $email = $user->email;
+			!empty($user->pass) && $pass = $user->pass;
+		}
 
 		$User = Dental::login($email, $pass);
 		
 		if ($User->id) {
 			$Session->__dental__ = json_encode($User);
 		}
+
 		return $User;
-	}
-	else{
-		throw new Exception("No se encuentra la clase Dental");
+		
+	} 
+	catch (DentalException $e) {
+		add_error_flash($e->getMessage(), true);
+		redirect_exit("/login");
 	}
 }
 
-function &get_patient($id = null) {
-	if(!$id){
-		$url_paths = url_paths();
-		$id = array_pop($url_paths);
+/**
+ * Esta funcion dado un id 
+ * intenta crear un paciente y retornarlo
+ *
+ * @return void
+ * @author 
+ */
+function get_patient($id) {
+	try {
+		return new Patient($id);
 	}
-	
-	$decrypt_params = array();
-
-	if (is_array($id)) {
-		$decrypt_params = $id;
-	}
-	elseif (!preg_match('#^[0-9]+$#', $id)) {
-		$decrypt_params = decrypt_params($id);
-	}
-
-	if (array_key_exists(PACIENTE, $decrypt_params) ) {
-		$id = $decrypt_params[PACIENTE];
-	}
-	
-	if (!is_numeric($id)) {
+	catch (PatientException $e) {
+		add_error_flash($e->getMessage(), true);
+		redirect_exit();
+	} 
+	catch (Exception $e) {
 		add_error_flash('NO SE ENCUENTRA EL PACIENTE.');
 		redirect_exit();
 	}
-
-	$paciente = new Patient($id);
-
-	if ($paciente->id){
-		return $paciente;
-	}
-	else{
-		add_error_flash('NO SE ENCUENTRA EL PACIENTE.');
-		redirect_exit();
-	}
+}
+/**
+ * funcion para obtener un Patient desde el encode.
+ *
+ * Usada en modules/*.php y actions/*.php
+ * @param String $encode String encodeado
+ * @return Patient
+ */
+function decode_patient($encode) {
+	$patient_id = get_from_encode($encode, PACIENTE);
+	
+	return get_patient($patient_id);
 }
 
 /**
@@ -311,11 +315,11 @@ function &get_patient($id = null) {
  * @param String $str El mensaje a guardar
  * @return void
  **/
-function add_msg_flash($str) {
+function add_msg_flash($str, $overrite = false) {
 	$Session = load_class('Session', CLASS_PATH . '/core');
 	$msg = $Session->__msg__;
 
-	if (!$msg || empty($msg)){
+	if (!$msg || empty($msg) || $overrite){
 		$Session->__msg__ = array($str);
 	}
 	else{

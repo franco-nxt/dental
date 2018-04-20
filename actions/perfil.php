@@ -7,7 +7,7 @@ class Page extends Controller {
 
 		parent::__construct(
 			array('perfil/editar', 'editar'),
-			array('perfil/eliminar/[:id]', 'eliminar'),
+			array('perfil/eliminar/[:encode]', 'eliminar'),
 			array('perfil/compartir', 'compartir'));
 	}
 

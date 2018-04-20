@@ -4,8 +4,8 @@ class Page extends Controller{
 
 	public function __construct() {
 		parent::__construct(
-			array('economia/nuevo/[:id]', 'nuevo'),
-			array('economia/ver/[:id]', 'ver'));
+			array('economia/nuevo/[:encode]', 'nuevo'),
+			array('economia/ver/[:encode]', 'ver'));
 	}
 
 	public function nuevo($id)

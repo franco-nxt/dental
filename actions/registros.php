@@ -4,8 +4,8 @@ class Page extends Controller{
 
 	public function __construct() {
 		parent::__construct(
-			array('registros/nuevo/[:id]', 'nuevo'),
-			array('registros/editar/[:id]', 'editar'));
+			array('registros/nuevo/[:encode]', 'nuevo'),
+			array('registros/editar/[:encode]', 'editar'));
 	}
 
 	public function nuevo($id)

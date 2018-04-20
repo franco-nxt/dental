@@ -4,8 +4,8 @@ class Page extends Controller{
 
 	public function __construct() {
 		parent::__construct(
-			array('fotografias/nueva/[:id]', 'nueva'), // CREO UNA SESSION DE FOTOS NUEVAS
-			array('fotografias/editar/[:id]', 'editar')); // EDITO UNA SESSION DE FOTOS
+			array('fotografias/nueva/[:encode]', 'nueva'), // CREO UNA SESSION DE FOTOS NUEVAS
+			array('fotografias/editar/[:encode]', 'editar')); // EDITO UNA SESSION DE FOTOS
 	}
 
 	public function editar($id)
@@ -59,7 +59,7 @@ class Page extends Controller{
 		$Form = $this->load_form();
 
 		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->treatment();
+		$Treatment = $Patient->get_treatment();
 
 		$files = $this->upload_files();
 		

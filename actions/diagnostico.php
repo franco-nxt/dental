@@ -7,10 +7,10 @@ class Page extends Controller{
 		_global('navbar-back', URL_ROOT);
 
 		parent::__construct(
-			array('diagnostico/historia/editar/[:id]', 'history'),
-			array('diagnostico/resumen/editar/[:id]', 'resume'),
-			array('diagnostico/completo/editar/[:id]', 'complete'),
-			array('diagnostico/examen/editar/[:id]', 'exam')
+			array('diagnostico/historia/editar/[:encode]', 'history'),
+			array('diagnostico/resumen/editar/[:encode]', 'resume'),
+			array('diagnostico/completo/editar/[:encode]', 'complete'),
+			array('diagnostico/examen/editar/[:encode]', 'exam')
 		);
 	}
 	

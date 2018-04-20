@@ -3,8 +3,8 @@ class Page extends Controller {
 
 	function __construct() {
 		parent::__construct(
-			array('compartir/editar/[:id]', 'editar'),
-			array('compartir/[:id]', 'eliminar'));
+			array('compartir/editar/[:encode]', 'editar'),
+			array('compartir/[:encode]', 'eliminar'));
 	}
 
 	public function eliminar($id) 

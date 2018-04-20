@@ -4,7 +4,7 @@ class Page extends Controller{
 
 	public function __construct() {
 		parent::__construct(
-			array('odontograma/editar/[:id]', 'editar'));
+			array('odontograma/editar/[:encode]', 'editar'));
 	}
 
 	public function editar($id)

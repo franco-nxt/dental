@@ -1,5 +1,9 @@
 <?php 
-!isset($activo, $inactivo, $finalizado, $eliminado) && redirect_exit();
+// !isset($activos, $inactivos, $finalizados, $eliminados) && redirect_exit();
+$actives = $User->get_patients_and_treatments_by_state(BD_TRATAMIENTO_ACTIVO);
+$inactives = $User->get_patients_and_treatments_by_state(BD_TRATAMIENTO_INACTIVO);
+$finisheds = $User->get_patients_and_treatments_by_state(BD_TRATAMIENTO_FINALIZADO);
+$deleteds = $User->get_treatments_and_patients_deleted();
 ?>
 <div class="container pacientes">
     <div class="tab-wrap">
@@ -21,14 +25,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(!empty($activo)):foreach ($activo as $tratamiento) : ?>
+                            <?php if(!empty($actives)):foreach ($actives as $row) : $progress = $row['Treatment']->progress(); ?>
                                 <tr>
-                                    <td class="txt-left"><a href="<?= $tratamiento->paciente->url() ?>" class="show"><?= $tratamiento->paciente->fullname() ?></a></td>
-                                    <td class="txt-center"><a href="<?= $tratamiento->paciente->url() ?>" class="show text-center"><?= $tratamiento->tecnica ?></a></td>
-                                    <td class="txt-center"><a href="<?= $tratamiento->paciente->url() ?>" class="show">
+                                    <td class="txt-left"><a href="<?= $row['Treatment']->url() ?>" class="show"><?= $row['Patient']->fullname() ?></a></td>
+                                    <td class="txt-center"><a href="<?= $row['Treatment']->url() ?>" class="show text-center"><?= $row['Treatment']->tecnica ?></a></td>
+                                    <td class="txt-center"><a href="<?= $row['Treatment']->url() ?>" class="show">
                                             <div class="progress" style="margin:0">
-                                                <div class="progress-bar" role="progressbar" aria-valuenow="<?= $tratamiento->progress() ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $tratamiento->progress() ?>%;">
-                                                    <span class="sr-only"><?= $tratamiento->progress() ?>% Complete</span>
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="<?= $progress ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
+                                                    <span class="sr-only"><?= $progress ?>% Complete</span>
                                                 </div>
                                             </div>
                                         </a>
@@ -54,14 +58,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(!empty($inactivo)):foreach ($inactivo as $tratamiento) : ?>
+                            <?php if(!empty($inactives)):foreach ($inactives as $row) : $progress = $row['Treatment']->progress(); ?>
                                 <tr>
-                                    <td class="txt-left"><a href="<?= $tratamiento->paciente->url() ?>" class="show"><?= $tratamiento->paciente->fullname() ?></a></td>
-                                    <td class="txt-center"><a href="<?= $tratamiento->paciente->url() ?>" class="show text-center"><?= $tratamiento->tecnica ?></a></td>
-                                    <td class="txt-center"><a href="<?= $tratamiento->paciente->url() ?>" class="show">
+                                    <td class="txt-left"><a href="<?= $row['Treatment']->url() ?>" class="show"><?= $row['Patient']->fullname() ?></a></td>
+                                    <td class="txt-center"><a href="<?= $row['Treatment']->url() ?>" class="show text-center"><?= $row['Treatment']->tecnica ?></a></td>
+                                    <td class="txt-center"><a href="<?= $row['Treatment']->url() ?>" class="show">
                                             <div class="progress" style="margin:0">
-                                                <div class="progress-bar" role="progressbar" aria-valuenow="<?= $tratamiento->progress() ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $tratamiento->progress() ?>%;">
-                                                    <span class="sr-only"><?= $tratamiento->progress() ?>% Complete</span>
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="<?= $progress ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
+                                                    <span class="sr-only"><?= $progress ?>% Complete</span>
                                                 </div>
                                             </div>
                                         </a>
@@ -87,14 +91,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(!empty($finalizado)):foreach ($finalizado as $tratamiento) : ?>
+                            <?php if(!empty($finisheds)):foreach ($finisheds as $row) : $progress = $row['Treatment']->progress(); ?>
                                 <tr>
-                                    <td class="txt-left"><a href="<?= $tratamiento->paciente->url() ?>" class="show"><?= $tratamiento->paciente->fullname() ?></a></td>
-                                    <td class="txt-center"><a href="<?= $tratamiento->paciente->url() ?>" class="show text-center"><?= $tratamiento->tecnica ?></a></td>
-                                    <td class="txt-center"><a href="<?= $tratamiento->paciente->url() ?>" class="show">
+                                    <td class="txt-left"><a href="<?= $row['Treatment']->url() ?>" class="show"><?= $row['Patient']->fullname() ?></a></td>
+                                    <td class="txt-center"><a href="<?= $row['Treatment']->url() ?>" class="show text-center"><?= $row['Treatment']->tecnica ?></a></td>
+                                    <td class="txt-center"><a href="<?= $row['Treatment']->url() ?>" class="show">
                                             <div class="progress" style="margin:0">
-                                                <div class="progress-bar" role="progressbar" aria-valuenow="<?= $tratamiento->progress() ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $tratamiento->progress() ?>%;">
-                                                    <span class="sr-only"><?= $tratamiento->progress() ?>% Complete</span>
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="<?= $progress ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
+                                                    <span class="sr-only"><?= $progress ?>% Complete</span>
                                                 </div>
                                             </div>
                                         </a>
@@ -120,14 +124,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(!empty($eliminado)):foreach ($eliminado as $tratamiento) : if(!$tratamiento) continue; $patient = $tratamiento->get_patient() ?>
+                            <?php if(!empty($deleteds)):foreach ($deleteds as $row) : $progress = $row['Treatment']->progress(); ?>
                                 <tr>
-                                    <td class="txt-left"><a href="<?= $patient->url() ?>" class="show"><?= $patient->fullname() ?></a></td>
-                                    <td class="txt-center"><a href="<?= $patient->url() ?>" class="show text-center"><?= $tratamiento->tecnica ?></a></td>
-                                    <td class="txt-center"><a href="<?= $patient->url() ?>" class="show">
+                                    <td class="txt-left"><a href="<?= $row['Treatment']->url() ?>" class="show"><?= $row['Patient']->fullname() ?></a></td>
+                                    <td class="txt-center"><a href="<?= $row['Treatment']->url() ?>" class="show text-center"><?= $row['Treatment']->tecnica ?></a></td>
+                                    <td class="txt-center"><a href="<?= $row['Treatment']->url() ?>" class="show">
                                             <div class="progress" style="margin:0">
-                                                <div class="progress-bar" role="progressbar" aria-valuenow="<?= $tratamiento->progress() ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $tratamiento->progress() ?>%;">
-                                                    <span class="sr-only"><?= $tratamiento->progress() ?>% Complete</span>
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="<?= $progress ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $progress ?>%;">
+                                                    <span class="sr-only"><?= $progress ?>% Complete</span>
                                                 </div>
                                             </div>
                                         </a>

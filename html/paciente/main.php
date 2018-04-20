@@ -1,7 +1,5 @@
 <?php
-!isset($Patient) && redirect_exit();
-!isset($User) && $User = get_user();
-!isset($Treatment) && $Treatment = $Patient->treatment();
+!isset($Patient, $Treatment) && redirect_exit();
 ?>
 <div class="paciente">
 	<div class="container">

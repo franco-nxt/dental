@@ -1,7 +1,7 @@
 <?php
 !isset($Patient) && redirect_exit();
 !isset($User) && $User = get_user();
-!isset($Treatment) && $Treatment = $Patient->treatment();
+!isset($Treatment) && $Treatment = $Patient->get_treatment();
 ?>
 <form action="" method="POST" enctype="multipart/form-data">
 	<div class="bar-btn">

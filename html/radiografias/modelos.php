@@ -1,6 +1,6 @@
 <?php
 !isset($Patient) && redirect_exit();
-!isset($Tratamiento) && $Tratamiento = $Patient->treatment();
+!isset($Tratamiento) && $Tratamiento = $Patient->get_treatment();
 ?>
 <div class="bar-subtitle">
 	<div class="container">

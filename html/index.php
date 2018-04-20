@@ -28,19 +28,18 @@
             </li>
         </ul>
     </nav>
-    <?php if ($Messages): !is_string($Messages) && $Messages = implode('<br>', $Messages); ?>
-        <div class="alert bg-green">
-            <div class="container p10">
-                <a class="dismiss-alert"></a>
-                <span><?= $Messages ?></span>
-            </div>
-        </div>
-    <?php endif ?>
     <?php if ($Errors): !is_string($Errors) && $Errors = implode('<br>', $Errors); ?>
         <div class="alert bg-red">
             <div class="container p10">
                 <a class="dismiss-alert"></a>
                 <span><?= $Errors ?></span>
+            </div>
+        </div>
+    <?php elseif ($Messages): !is_string($Messages) && $Messages = implode('<br>', $Messages); ?>
+        <div class="alert bg-green">
+            <div class="container p10">
+                <a class="dismiss-alert"></a>
+                <span><?= $Messages ?></span>
             </div>
         </div>
     <?php endif ?>

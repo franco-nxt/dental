@@ -1,7 +1,7 @@
 <?php
 !isset($Patient) && redirect_exit();
 !isset($User) && $User = get_user();
-!isset($Treatment) && $Treatment = $Patient->treatment();
+!isset($Treatment) && $Treatment = $Patient->get_treatment();
 ?>
 <div class="bar-subtitle">
 	<div class="container">
@@ -15,7 +15,7 @@
 	<div class="bar-bordered">
 		<span><?= $Treatment->inicio ?>	- <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
 	</div>
-	<?php $treatments = $Patient->treatments(); ?>
+	<?php $treatments = $Patient->get_treatments(); ?>
 	<?php $c = 0; foreach ($treatments as $treatment): if ($treatment->id == $Treatment->id) continue ?>
 	<div class="table-rounded">
 		<table class="table">

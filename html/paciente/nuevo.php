@@ -1,7 +1,9 @@
 <form action="" method="POST" enctype="multipart/form-data">
-	<div class="container bar-btn">
-		<button class="btn btn-success btn-ico-check" name="action" value="save">GUARDAR</button>
-		<a class="btn btn-default btn-ico-x" href="<?= URL_ROOT ?>">CANCELAR</a>
+	<div class="bar-btn">
+		<div class="container">
+			<button class="btn btn-success btn-ico-check" name="action" value="save">GUARDAR</button>
+			<a class="btn btn-default btn-ico-x" href="<?= URL_ROOT ?>">CANCELAR</a>
+		</div>
 	</div>
 	<div class="container paciente">
 		<figure class="paciente-img-wrap">
@@ -10,10 +12,7 @@
 			</div>
 			<div>
 				<figcaption>
-					<label for="patient_img" class="btn btn-primary">
-						<input type="file" id="patient_img" class="upload-img-btn" data-target="paciente-img" style="display: none" name="img" />
-						CARGAR FOTO
-					</label>
+					<label for="patient_img" class="btn btn-primary"><input type="file" id="patient_img" class="upload-img-btn" data-target="paciente-img" style="display: none" name="img" />CARGAR FOTO</label>
 					<h5>150 x 150</h5>
 				</figcaption>
 			</div>

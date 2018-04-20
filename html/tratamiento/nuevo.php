@@ -10,7 +10,7 @@
 	<div class="bar-btn">
 		<div class="container">
 			<button class="btn btn-success btn-ico-check" name="action" value="save">GUARDAR</button>
-			<a class="btn btn-default btn-ico-x" href="<?= URL_ROOT ?>/fotografias/modelos/<?=  $Paciente->url ?>">CANCELAR</a>
+			<a class="btn btn-default btn-ico-x" href="<?= URL_ROOT ?>/fotografias/modelos/<?=  $Patient->url ?>">CANCELAR</a>
 		</div>
 	</div>
 	<div class="container">

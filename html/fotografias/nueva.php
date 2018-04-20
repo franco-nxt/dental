@@ -1,19 +1,19 @@
 <?php
-!isset($Paciente) && redirect_exit();
+!isset($Patient) && redirect_exit();
 !isset($model) && redirect_exit();
 !isset($User) && $User = get_user();
-!isset($Tratamiento) && $Tratamiento = $Paciente->treatment();
+!isset($Tratamiento) && $Tratamiento = $Patient->get_treatment();
 ?>
 <div class="bar-subtitle">
 	<div class="container">
-		<a href="<?= $Paciente->url() ?>"><?= $Paciente->fullname() ?></a>
+		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
 	</div>
 </div>
 <form method="POST" enctype="multipart/form-data">
 	<div class="bar-btn">
 		<div class="container">
 			<button class="btn btn-success btn-ico-check" name="action" value="save">GUARDAR</button>
-			<a class="btn btn-default btn-ico-x" href="<?= URL_ROOT ?>/fotografias/modelos/<?=  $Paciente->url ?>">CANCELAR</a>
+			<a class="btn btn-default btn-ico-x" href="<?= URL_ROOT ?>/fotografias/modelos/<?=  $Patient->url ?>">CANCELAR</a>
 		</div>
 	</div>
 	<div class="container">

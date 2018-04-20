@@ -53,7 +53,7 @@
 			</tbody>
 		</table>
 	</div>
-	<?php $tratments = $Patient->treatments(); ?>
+	<?php $tratments = $Patient->get_treatments(); ?>
 	<?php if ($tratments): ?>
 		<div class="p5 txt-center">
 			<button class="btn show-old-treatments">VER TRATAMIENTOS ANTERIORES</button>

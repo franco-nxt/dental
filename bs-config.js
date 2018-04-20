@@ -27,7 +27,7 @@ module.exports = {
         "ignoreInitial": true
     },
     "server": false,
-    "proxy": "http://ad.local",
+    "proxy": "http://dental.local",
     "port": 3000,
     "middleware": false,
     "serveStatic": [],

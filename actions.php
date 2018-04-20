@@ -12,18 +12,6 @@ if (check_user()) {
 }
 else {
     $__module__ = 'login';
-
-    // if (isset($_POST['login'])) {
-    //     $user = Dental::getInstance($_POST['email'], $_POST['password']);
-
-    //     if ($user->id) {
-    //         $session->DENTAL     = array($_POST['email'], $_POST['password']);
-    //         $session->DESTROY_AT = time() + USER_TIMEOUT;
-    //     }
-    //     else {
-    //         $session->error = array('USUARIO O CONTRASE&Ntilde;A INCORRECTOS');
-    //     }
-    // }
 }
 
 isset($__module__) || $__module__ = 'login';

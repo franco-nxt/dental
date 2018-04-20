@@ -6,9 +6,9 @@ class Page extends Controller{
 		_global('navbar-title', 'PACIENTE');
 
 		parent::__construct(
-			array('economia/[:id]', 'main'),
-			array('economia/nuevo/[:id]', 'nuevo'),
-			array('economia/ver/[:id]', 'ver'));
+			array('economia/[:encode]', 'main'),
+			array('economia/nuevo/[:encode]', 'nuevo'),
+			array('economia/ver/[:encode]', 'ver'));
 	}
 
 	public function main($id) 

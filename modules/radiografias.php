@@ -3,72 +3,99 @@
 class Page extends Controller{
 
 	public function __construct() {
+		// TITULO DE LA PAGINA
 		_global('navbar-title', 'RADIOGRAF&Iacute;AS');
-		_global('navbar-back', URL_ROOT);
 
-		parent::__construct(
-			array('radiografias/[:id]', 'main'),
-			array('radiografias/nueva/[:id]', 'nueva'),
-			array('radiografias/editar/[:id]', 'editar'),
-			array('radiografias/ver/[:id]', 'ver'),
-			array('radiografias/modelos/[:id]', 'modelos'));
+		try{
+			parent::__construct(
+				array('radiografias/[:encode]', 'main'),
+				array('radiografias/nueva/[:encode]', 'nueva'),
+				array('radiografias/editar/[:encode]', 'editar'),
+				array('radiografias/ver/[:encode]', 'ver'),
+				array('radiografias/modelos/[:encode]', 'modelos')
+			);
+		} 
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (RadiographieException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+			redirect_exit();
+		}
 	}
 	
-	public function main($id) 
-	{
-		$Patient = get_patient($id);
-		
+	public function main($encode) {
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// LA VISTA
 		include 'html/radiografias/main.php';
 	}
 
-	public function nueva($id) 
-	{
-		$decrypt_params = decrypt_params($id);
-		$Paciente = get_patient($decrypt_params);
-		
-		$this->check_user($Paciente);
-
-		$model = $decrypt_params[MODELO];
-		
+	public function nueva($encode) {
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
+		$this->check_user($Patient);
+		// SACO EL NUMERO DE MODELO EN EL ENCODE
+		$model = get_from_encode($encode, MODELO);
+		// LA VISTA
 		include 'html/radiografias/nueva.php';
 	}
 
-	public function modelos($id) 
+	public function modelos($encode) 
 	{
-		$Patient = get_patient($id);
-		
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
-		
+		// INCLUDE VISTA
 		include 'html/radiografias/modelos.php';
 	}
 
-	public function ver($id) 
+	public function ver($encode) 
 	{
-		$decrypt_params = decrypt_params($id);
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
-		$Radiographie = $Treatment->get_radiographie($decrypt_params[RADIOGRAFIA]);
-		
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
+		$this->check_user($Patient);
+		// OBTENGO EL TRATAMIENTO
+		$Treatment = $Patient->treatment(get_from_encode($encode, TRATAMIENTO));
+		// OBTENGO LA SESSION DE RADIOGRAFIAS
+		$Radiographie = $Treatment->get_radiographie(get_from_encode($encode, RADIOGRAFIA));
+		// LA VISTA
 		include 'html/radiografias/ver.php';
 	}
 
-	public function editar($id) {
-		$decrypt_params = decrypt_params($id);
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		
+	public function editar($encode) 
+	{
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
-
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
-		$Radiographie = $Treatment->get_radiographie($decrypt_params[RADIOGRAFIA]);
-
+		// OBTENGO EL TRATAMIENTO
+		$Treatment = $Patient->treatment(get_from_encode($encode, TRATAMIENTO));
+		// OBTENGO LA SESSION DE RADIOGRAFIAS
+		$Radiographie = $Treatment->get_radiographie(get_from_encode($encode, RADIOGRAFIA));
+		// LA VISTA
 		include 'html/radiografias/editar.php';
 	}
 
 	public function check_user($Patient)
 	{
+		// SI EL USUARIO NO LE PERTENECE
 		if(!$Patient->check_user(get_user()->id)){
+			// MENSAJE PARA EL FRONT
 			add_error_flash('NO TIENE PERMISOS PARA OPERAR SOBRE LOS RADIOGRAFIAS DE ESTE PACIENTE.');
-			redirect_exit($Patient->url('radiografias'));
+			redirect_exit($Patient->url());
 		}
 	}
 }

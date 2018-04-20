@@ -6,9 +6,9 @@ class Page extends Controller{
 		_global('navbar-title', 'PACIENTE');
 
 		parent::__construct(
-			array('tratamiento/[:id]', 'main'),
-			array('tratamiento/nuevo/[:id]', 'nuevo'),
-			array('tratamiento/editar/[:id]', 'editar'));
+			array('tratamiento/[:encode]', 'main'),
+			array('tratamiento/nuevo/[:encode]', 'nuevo'),
+			array('tratamiento/editar/[:encode]', 'editar'));
 	}
 
 	public function main($id) {

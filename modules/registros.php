@@ -6,10 +6,10 @@ class Page extends Controller{
 		_global('navbar-title', 'REGISTROS');
 
 		parent::__construct(
-			array('registros/[:id]', 'main'),
-			array('registros/nuevo/[:id]', 'nuevo'),
-			array('registros/editar/[:id]', 'editar'),
-			array('registros/ver/[:id]', 'ver'));
+			array('registros/[:encode]', 'main'),
+			array('registros/nuevo/[:encode]', 'nuevo'),
+			array('registros/editar/[:encode]', 'editar'),
+			array('registros/ver/[:encode]', 'ver'));
 
 	}
 

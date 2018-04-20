@@ -3,69 +3,97 @@
 class Page extends Controller{
 
 	public function __construct() {
+		// EL TITULO DE LA PAGINA
 		_global('navbar-title', 'FOTOGRAF&Iacute;AS');
-		_global('navbar-back', URL_ROOT);
 
-		parent::__construct(
-			array('fotografias/[:id]', 'main'),
-			array('fotografias/nueva/[:id]', 'nueva'),
-			array('fotografias/ver/[:id]', 'ver'),
-			array('fotografias/editar/[:id]', 'editar'),
-			array('fotografias/modelos/[:id]', 'modelos'));
+		try {
+			parent::__construct(
+				array('fotografias/[:encode]', 'main'),
+				array('fotografias/nueva/[:encode]', 'nueva'),
+				array('fotografias/ver/[:encode]', 'ver'),
+				array('fotografias/editar/[:encode]', 'editar'),
+				array('fotografias/modelos/[:encode]', 'modelos')
+			);
+		} 
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (PhotoException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+			redirect_exit();
+		}
 	}
 	
-	public function main($id) {
-		$Patient = get_patient($id);
-		
+	public function main($encode) {
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// LA VISTA
 		include 'html/fotografias/main.php';
 	}
 
-	public function nueva($id) {
-		$decrypt_params = decrypt_params($id);
-		$Paciente = get_patient($decrypt_params);
-		
-		$this->check_user($Paciente);
-
-		$model = $decrypt_params[MODELO];
-		
+	public function nueva($encode) {
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
+		$this->check_user($Patient);
+		// SACO EL NUMERO DE MODELO EN EL ENCODE
+		$model = get_from_encode($encode, MODELO);
+		// LA VISTA
 		include 'html/fotografias/nueva.php';
 	}
 
-	public function modelos($id) {
-		$Paciente = get_patient($id);
-		
-		
-		$this->check_user($Paciente);
-
+	public function modelos($encode) {
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
+		$this->check_user($Patient);
+		// INCLUDE VISTA
 		include 'html/fotografias/modelos.php';
 	}
 
-	public function ver($id) {
-		$decrypt_params = decrypt_params($id);
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
-		$Photo = $Treatment->get_photo($decrypt_params[FOTOGRAFIA]);
-
+	public function ver($encode) {
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
+		$this->check_user($Patient);
+		// OBTENGO EL TRATAMIENTO
+		$Treatment = $Patient->treatment(get_from_encode($encode, TRATAMIENTO));
+		// OBTENGO LA SESSION DE FOTOS
+		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
+		// LA VISTA
 		include 'html/fotografias/ver.php';
 	}
 
 	public function editar($id) {
-		$decrypt_params = decrypt_params($id);
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
-
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
-		$Photo = $Treatment->get_photo($decrypt_params[FOTOGRAFIA]);
-
+		// OBTENGO EL TRATAMIENTO
+		$Treatment = $Patient->treatment(get_from_encode($encode, TRATAMIENTO));
+		// OBTENGO LA SESSION DE FOTOS
+		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
+		// LA VISTA
 		include 'html/fotografias/editar.php';
 	}
 
 	public function check_user($Patient)
 	{
+		// SI EL USUARIO NO LE PERTENECE
 		if(!$Patient->check_user(get_user()->id)){
+			// MENSAJE PARA EL FRONT
 			add_error_flash('NO TIENE PERMISOS PARA OPERAR SOBRE LOS FOTOGRAFIAS DE ESTE PACIENTE.');
-			redirect_exit($Patient->url('fotografias'));
+			// REDIRIJO AL PERFIL DEL PACIENTE
+			redirect_exit($Patient->url());
 		}
 	}
 }

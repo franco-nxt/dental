@@ -7,9 +7,9 @@ class Page extends Controller{
 		_global('navbar-back', URL_ROOT);
 
 		parent::__construct(
-			array('odontograma/[:id]', 'main'),
-			array('odontograma/ver/[:id]', 'vista'),
-			array('odontograma/editar/[:id]', 'editar')
+			array('odontograma/[:encode]', 'main'),
+			array('odontograma/ver/[:encode]', 'vista'),
+			array('odontograma/editar/[:encode]', 'editar')
 		);
 	}
 	

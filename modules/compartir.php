@@ -8,9 +8,9 @@ class Page extends Controller{
 
 		parent::__construct(
 			array('compartir', 'main'),
-			array('compartir/paciente/[:id]', 'paciente'),
-			array('compartir/out/[:id]', 'out'),
-			array('compartir/usuarios/[:id]', 'usuarios'),
+			array('compartir/paciente/[:encode]', 'paciente'),
+			array('compartir/out/[:encode]', 'out'),
+			array('compartir/usuarios/[:encode]', 'usuarios'),
 			array('compartir/nuevo', 'nuevo'));
 	}
 	

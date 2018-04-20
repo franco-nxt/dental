@@ -7,9 +7,9 @@ class Page extends Controller{
 		_global('navbar-back', URL_ROOT);
 
 		parent::__construct(
-			array('diagnostico/[:id]', 'main'),
-			array('diagnostico/[a:vista]/[:id]', 'vista'),
-			array('diagnostico/[a:vista]/editar/[:id]', 'editar')
+			array('diagnostico/[:encode]', 'main'),
+			array('diagnostico/[a:vista]/[:encode]', 'vista'),
+			array('diagnostico/[a:vista]/editar/[:encode]', 'editar')
 		);
 	}
 	

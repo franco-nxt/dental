@@ -7,11 +7,11 @@ class Page extends Controller{
 		_global('navbar-back', URL_ROOT);
 
 		parent::__construct(
-			array('cefalometrias/[:id]', 'main'),
-			array('cefalometrias/nueva/[:id]', 'nueva'),
-			array('cefalometrias/ver/[:id]', 'ver'),
-			array('cefalometrias/editar/[:id]', 'editar'),
-			array('cefalometrias/modelos/[:id]', 'modelos'));
+			array('cefalometrias/[:encode]', 'main'),
+			array('cefalometrias/nueva/[:encode]', 'nueva'),
+			array('cefalometrias/ver/[:encode]', 'ver'),
+			array('cefalometrias/editar/[:encode]', 'editar'),
+			array('cefalometrias/modelos/[:encode]', 'modelos'));
 	}
 	
 	public function main($id) {

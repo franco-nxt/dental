@@ -33,6 +33,7 @@ class Page extends Controller{
 		else{
 			add_error_flash(implode('<br/>', $FormValidator->errors));
 		}
-		redirect_exit();
+
+		refresh_page();
 	}
 }

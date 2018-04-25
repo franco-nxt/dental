@@ -18,21 +18,21 @@
 			Secciones a compartir
 		</h3>
 		<div class="pl5 field field-blue field-checkbox-check">
-			<input type="checkbox" id="FOTOGRAFIAS" name="fotografias">
+			<input type="checkbox" id="FOTOGRAFIAS" name="access[]" value="fotografias">
 			<label for="FOTOGRAFIAS" class="show">
 				<strong>FOTOGRAFIAS</strong>
 			</label>
 		</div>
 
 		<div class="pl5 field field-blue field-checkbox-check">
-			<input type="checkbox" id="CEFALOMETRIAS" name="cefalometrias">
+			<input type="checkbox" id="CEFALOMETRIAS" name="access[]" value="cefalometrias">
 			<label for="CEFALOMETRIAS" class="show">
 				<strong>CEFALOMETRIAS</strong>
 			</label>
 		</div>
 
 		<div class="pl5 field field-blue field-checkbox-check">
-			<input type="checkbox" id="RADIOGRAFIAS" name="radiografias">
+			<input type="checkbox" id="RADIOGRAFIAS" name="access[]" value="radiografias">
 			<label for="RADIOGRAFIAS" class="show">
 				<strong>RADIOGRAFIAS</strong>
 			</label>

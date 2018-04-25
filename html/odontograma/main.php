@@ -1,6 +1,6 @@
 <?php 
-$Treatment = $Patient->get_treatment();
-$treatments = (Array) $Patient->old_treatments();
+!isset($Patient, $Treatment) && redirect_exit();
+$old_treatments = (Array) $Patient->old_treatments();
 ?>
 <div class="bar-subtitle">
 	<div class="container">
@@ -19,19 +19,19 @@ $treatments = (Array) $Patient->old_treatments();
 	<ul class="p0">
 		<li class="p5 sm-4 center"><a href="<?= URL_ROOT ?>/odontograma/ver/<?= $Treatment->url ?>" class="btn btn-primary btn-block"><strong>VER ODONTOGRAMA</strong></a></li>
 	</ul>
-	<?php if (!empty($treatments)): ?>
-		<div class="p5 txt-center">
-			<button class="btn show-old-treatments">VER TRATAMIENTOS ANTERIORES</button>
+	<?php if (!empty($old_treatments)): ?>
+	<div class="p5 txt-center">
+		<button class="btn show-old-treatments">VER TRATAMIENTOS ANTERIORES</button>
+	</div>
+	<div id="old-treatments" style="display:none">
+		<?php foreach ($old_treatments as $treatment): ?>
+		<div class="bar-bordered">
+			<span><?= $treatment->inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?> - <?= $treatment->descripcion ?></span>
 		</div>
-		<div id="old-treatments" style="display:none">
-			<?php foreach ($treatments as $treatment): ?>
-				<div class="bar-bordered">
-					<span><?= $treatment->inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?> - <?= $treatment->descripcion ?></span>
-				</div>
-				<ul class="p0">
-					<li class="p5 sm-4 center"><a href="<?= URL_ROOT ?>/odontograma/ver/<?= $treatment->url ?>" class="btn btn-primary btn-block"><strong>VER ODONTOGRAMA</strong></a></li>
-				</ul>
-			<?php endforeach ?>
-		</div>
+		<ul class="p0">
+			<li class="p5 sm-4 center"><a href="<?= URL_ROOT ?>/odontograma/ver/<?= $treatment->url ?>" class="btn btn-primary btn-block"><strong>VER ODONTOGRAMA</strong></a></li>
+		</ul>
+		<?php endforeach ?>
+	</div>
 	<?php endif ?>
 </div>

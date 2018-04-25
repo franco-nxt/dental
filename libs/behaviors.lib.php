@@ -101,15 +101,15 @@ function crypt_params($param) {
 }
 
 /**
-* Diferencia en meses o años entre fechas.
-* ESTA FUNCION ES PARA VERSIONES DE PHP < 5.3
-*
-* @param string $dt1 primer fecha
-* @param string $dt2 segunda fecha
-* @param string $uni unidad en la que se mustran los resultados 'Y' para años y 'M' para meses.
-* @return string
-* */
-
+ * Diferencia en meses o años entre fechas.
+ * 
+ * ESTA FUNCION ES PARA VERSIONES DE PHP < 5.3
+ * 
+ * @param  String $dt1 primer fecha
+ * @param  String $dt2 segunda fecha
+ * @param  String $uni unidad en la que se mustran los resultados 'Y' para años y 'M' para meses.
+ * @return String      
+ */
 function diff_date($dt1, $dt2, $uni = null) {
 	$dt1 = new DateTime($dt1);
 	$dt2 = new DateTime($dt2);
@@ -119,14 +119,13 @@ function diff_date($dt1, $dt2, $uni = null) {
 }
 
 /**
-* Calcula el avance en el dia de hoy desde una fecha inicial y hasta un nuemero de meses dados
-* Si la fecha incial es menor a la de hoy -time()- retorna 100
-*
-* @param string $ini fecha inicio
-* @param string $dur total en meses
-* @return integer|bool porcentaje de avance|false si la duracion no es valida
-* */
-
+ * Calcula el avance en el dia de hoy desde una fecha inicial y hasta un nuemero de meses dados.
+ * Si la fecha incial es menor a la de hoy -time()- retorna 100
+ * 
+ * @param  String $dt1 fecha inicio
+ * @param  String $dur total en meses
+ * @return Integer     porcentaje de avance
+ */
 function progress($dt1, $dur) {
 	if (!is_numeric($dur) || $dur == 0) {
 		return false;
@@ -148,25 +147,22 @@ function progress($dt1, $dur) {
 }
 
 /**
-* decodea un archivo json
-*
-* @param string $json ruta del json
-* @return array vector obtenido
-* */
-
-function json_decode_file($json) {
-
+ * decodea un archivo json.
+ * @param  String $json ruta del json.
+ * @return Array        vector obtenido
+ */
+function json_decode_file($json) 
+{
 	return json_decode(file_get_contents($json), true);
-
 }
 
 /**
-* Parsea una url y devuelve el elemento pedido
-*
-* 
-* @return array;
-* */
-function url_paths() {
+ * Parsea una url y devuelve el elemento pedido.
+ * 
+ * @return Array
+ */
+function url_paths() 
+{
 	$url   = $_SERVER['SERVER_NAME'] . str_replace('?' . $_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
 	$base  = str_replace(preg_replace('@http[s:]+//@', '', URL_ROOT), '', $url);
 	$paths = explode('/', $base);
@@ -175,33 +171,49 @@ function url_paths() {
 	return $paths;
 }
 
-function isset_get(&$o){
+function isset_get(&$o)
+{
 	return !empty($o) ? $o : null;
 }
 
-function isset_disabled(&$o){
+function isset_disabled(&$o)
+{
 	return !isset($o) ? 'disabled' : null;
 }
 
-function isset_checked(&$o){
+function isset_checked(&$o)
+{
 	return isset($o) ? 'checked="true"' : null;
 }
 
-function checked($o) {
+function checked($o) 
+{
 	return $o ? 'checked="true"' : null;
 }
 
-function selected($o) {
+function selected($o) 
+{
 	return $o ? 'selected="selected"' : null;
 }
 
-function disabled($o) {
+function disabled($o) 
+{
 	return $o ? null : 'disabled';
 }
 
+/**
+ * Redirige a la misma url.
+ * 
+ */
+function refresh_page()
+{
+	$actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	redirect_exit($actual_link);
+}
 
-function redirect_exit($param = null) {
-	$param && is_string($param) || ($param = URL_ROOT);
+function redirect_exit($param = null) 
+{
+	$param && is_string($param) || $param = URL_ROOT;
 	
 	header('Location: ' . $param);
 	exit;
@@ -244,8 +256,8 @@ function &load_class($class, $directory = NULL, $param = NULL) {
 	return $name;
 }
 
-function &get_user($email = null, $pass = null) {
-
+function &get_user($email = null, $pass = null) 
+{
 	$Session = load_class('Session');
 
 	try {
@@ -267,7 +279,6 @@ function &get_user($email = null, $pass = null) {
 		}
 
 		return $User;
-		
 	} 
 	catch (DentalException $e) {
 		add_error_flash($e->getMessage(), true);
@@ -295,6 +306,7 @@ function get_patient($id) {
 		redirect_exit();
 	}
 }
+
 /**
  * funcion para obtener un Patient desde el encode.
  *
@@ -353,7 +365,8 @@ function get_msg_flash($glue = '<br>', $wrap = '%s') {
  * @param String $str El mensaje a guardar
  * @return void
  **/
-function add_error_flash($str) {
+function add_error_flash($str)
+{
 	$Session = load_class('Session', CLASS_PATH . '/core');
 	$msg = $Session->__error__;
 	
@@ -368,12 +381,14 @@ function add_error_flash($str) {
 
 /**
  * Devuelve todos los mensajes en la clase Session concatenados
+ * 
  * @param String $glue valor que se le pasa al implode
  * @param String $wrap String con las directivas para contener el resultado, siempre debe esperar un string: %s
  * @example ./ get_msg_flash('</span><span>', '<span>%s</span>');
  * @return String
  **/
-function get_error_flash($glue = '<br>', $wrap = '%s') {
+function get_error_flash($glue = '<br>', $wrap = '%s') 
+{
 	$Session = load_class('Session', CLASS_PATH . '/core');
 	$msg = $Session->__error__;
 
@@ -383,10 +398,12 @@ function get_error_flash($glue = '<br>', $wrap = '%s') {
 		return sprintf($wrap, $msg);
 	}
 }
+
 /**
  * Dada un fecha de formato d/m/y devuelve una 
  * con formato listo para BD
  *
+ * @uses 
  * @return String Un date con formato Y-m-d H:i:s
  */
 function format_date($date)
@@ -400,7 +417,8 @@ function format_date($date)
 /**
  * Asigna y devuelve variables globales.
  * Es util para asignar valores fuera del scope.
- * 
+ *
+ * @uses 
  * @param  String $key   Clave del valor a asignar o que se esta pidiendo.
  * @param  $value Valor que se asigna a $key.
  * @return El valor de la variable almacenada en $key
@@ -415,64 +433,6 @@ function _global($key, $value = null){
 
 	return null;
 }
-
-/**
- * matchea contra la url de la request.
- * de esta menarea por ejemplo:
- * 
- * match_url('static/$class/$method?/$encode:[a-z0-9]')
- * 
- * array(5) {
- *  [0]=> "/static/clase1/metodo2/g6d4f6h"
- *  ["class"]=> "clase1"
- *  [1]=> "clase1"
- *  ["method"]=> "metodo2"
- *  [2]=> "metodo2"
- *  ["encode"]=> "g6d4f6h"
- *  [3]=> "g6d4f6h"
- * }
- * 
- * -El primer elemento (0) es la url que enalizo.
- * 
- * Para capturar una variable es necesario que en $pattern pasado como parametro,
- * la clave asignada tenga de sufijo el caracter '$', antes del nombre dado 
- * y despues de la barra.
- * En el ejemplo el valor static es ignorado porque no tiene sufijo $.
- *
- * La asignacion puede ser opcional tambien (puede no estar dentro de la url)
- * si la misma tiene como sufijo '?'. Como $method? en el ejemplo anterior.
- * Por eso el ejemplo tambien valida a la url "/static/clase1/g6d4f6h"
- * y retornara:
- * 
- * array(5) {
- *  [0]=> "/static/clase1/g6d4f6h"
- *  ["class"]=> "clase1"
- *  [1]=> "clase1"
- *  ["encode"]=> "g6d4f6h"
- *  [2]=> "g6d4f6h"
- * }
- * 
- * @param  String $pattern El pattern a validar
- * @return Array|Bool Asociativo con las coincidencias o false si no valida
- */
-function match_url($pattern){
-	function handler($a){
-		extract($a);
-		return "(?:\\" . $slash . "(?'" . $key . "'" . (isset($rgx) && $rgx ? $rgx : "\w+") . "))" . (isset($optional) && $optional ? '?' : null);
-	}
-
-	$url = $_SERVER['SERVER_NAME'] . str_replace('?' . $_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']);
-	$base = str_replace(preg_replace('@http[s:]+//@', '', URL_ROOT), '', $url);
-	$base = '/' . trim($base, '/') . '/';
-	$pattern = '/' . trim($pattern, '/') . '/';
-
-	$rgx = "#" . preg_replace_callback('#(?<slash>\/)(?:\$)(?<key>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(?<optional>\?|)(?:\:(?<rgx>[^\/]+))?#', 'handler' ,$pattern) . "$#";
-
-	preg_match($rgx, $base, $output_array);
-
-	return empty($output_array) ? false : $output_array;
-}
-
 
 /**
  * Checkea que el usuario este logueado y la session no este vencida.
@@ -492,4 +452,16 @@ function check_user()
 	}
 
 	return false;
+}
+
+/**
+ * Util para mostrar en el browser algunas variables.
+ * 
+ * @param  Mixed $data Info a mostroar por consola.
+ */
+function console_log( $data )
+{
+	echo '<script>';
+	echo 'console.log('. json_encode( $data ) .')';
+	echo '</script>';
 }

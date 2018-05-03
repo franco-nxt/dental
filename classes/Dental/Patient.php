@@ -6,6 +6,144 @@
 class Patient
 {
 	/**
+	 * 	
+	 * @var Numeric
+	 */
+	public $id;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $apellido;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $nombre;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $sexo;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $dni;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $fecha_nacimiento;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $fecha_ingreso;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $telefono;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $celular;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $correo_electronico;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $direccion;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $ciudad;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $provincia;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $madre_apellido;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $madre_nombre;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $padre_apellido;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $padre_nombre;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $codigo_postal;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $foto;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $estado;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $derivado_por;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $eliminado;
+	
+	/**
+	 * 
+	 * @var String
+	 */
+	public $borrado;
+
+	/**
 	 * Id del usuario asigando al paciente.
 	 *
 	 * @var Numeric
@@ -13,12 +151,28 @@ class Patient
 	public $id_usuario; 
 
 	/**
+	 * Uri que encodea $id.
+	 * 
+	 * @var String
+	 */
+	private $url;
+	
+	/**
 	 * Array con todos los tratamientos del paciente
 	 *
 	 * @var Array
 	 */
 	public $treatments = array();
 
+	/**
+	 * Este mtodo magico sirve para llamar a la 
+	 * conexion con BD dentro de la instancia y 
+	 * cuando se usan algunos sinonimos de las propiedades.
+	 *
+	 * @throws PatientException Desde select.
+	 * @param  String $name Nombre de la prop a obtener.
+	 * @return Mixed        
+	 */
 	public function __get($name) {
 		if ($name == 'db') {
 			return MySQL::getInstance();
@@ -141,7 +295,7 @@ class Patient
 	public function select($data = '*') 
 	{
 		// ES NECESARIO EL ID DEL PACIENTE
-		if (!$this->id) {
+		if (empty($this->id) || !is_numeric($this->id)) {
 			throw new PatientException('PACIENTE NO ENCONTRADO.');
 		}
 		// SI EL PARAMETRO ES UN STRING LO PASO A UN ARRAY

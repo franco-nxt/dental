@@ -5,61 +5,41 @@
 class Radiographie
 {
 	/**
-	 * @var [type]
-	 */
-	private static $RGX_BD = '#^(id_tratamiento|fecha_hora|datos_json|etapa|eliminado|\*)$#';
-	
-
-	/**
 	 * @var Treatment
 	 */
 	public $Treatment;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $fecha_hora;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $datos_json;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $cantidad;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $name;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $etapa;
 
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $url;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $eliminado;
@@ -146,7 +126,6 @@ class Radiographie
 
 	public function __construct($id = null) 
 	{
-
 		// SI id ES UN ARRAY ES PARA INSERTAR UNO NUEVO
 		if ( is_array($id) ) {
 			$this->create($id);
@@ -154,41 +133,47 @@ class Radiographie
 		elseif ( is_numeric($id) ) {
 			$this->id = $id;
 		}
-
-		return $this->select(array('fecha_hora', 'etapa', 'cantidad', 'url'));
+		else{
+			// EL PARAMETRO NO ES VALIDO
+			throw new RadiographieException('OCURRIO UN ERROR CON LA SESION DE RADIOGRAFIAS, VUELVA A INTENTARLO OTRA VEZ.');
+		}
+		// ACTUALIZO LOS DATOS DE LA INSTANCIA
+		$this->select(array('fecha_hora', 'etapa', 'cantidad', 'url'));
 	}
 
 	/**
-	 * Crea la session en la BD
+	 * Hace las validaciones y crea la session en BD.
 	 *
-	 * @return Photo|Bool segun como haya resultado
+	 * Para crear un registro en la base es necesario que SIEMPRE
+	 * dentro de la informacion enviada esten el Array de session 
+	 * que contiene los nombres de las imagenes y el id del tratamiento
+	 * al que pertence la session de imagenes.
+	 *
+	 * @throws RadiographieException Si falta alguno de los valores elementales (session, id_tratamiento).
+	 * @param Array $data Array asociativo con la info de la session.
 	 */
 	private function create($data)
 	{
 		// DATOS SON NECESARIOS PARA CREAR UN REGISTRO, datos_json TIENE QUE SER UN JSON
 		if (empty($data['session']) || empty($data['session']) || empty($data['id_tratamiento'])  || !is_numeric($data['id_tratamiento'])) { 
-			return false;
+			throw new RadiographieException('ERROR AL CARGAR LA SESION FOTOGRAFICA, LOS DATOS SON INCORRECTOS');
 		}
-
-		$eliminado = 0;  // ELIMINADO POR DEFECTO ES FALSE
-
+		// ELIMINADO POR DEFECTO ES FALSE
+		$eliminado = 0;
+		// VAR $id_tratamiento
 		$id_tratamiento = $data['id_tratamiento'];
-
+		// FORMATEO EL JSON DE LA SESSION (NOMBRE : SESSION) Y LO ENCODEO
 		$datos_json = json_encode(array('name' => $data['name'], 'session' => $data['session']));
-
+		// SI NO VIENE UNA FECHA CARGADA LA SETEO YO
 		$date = !empty($data['fecha_hora']) ? format_date($data['fecha_hora']) : date('Y-m-d H:i:s');
-
+		// SI NO VIENE UNA ETAPA CARGADA POR DEFECTO ES INICIALES
 		$etapa = !empty($data['etapa']) && defined( "BD_ETAPA_{$data['etapa']}" ) ? constant("BD_ETAPA_{$data['etapa']}") : BD_ETAPA_INICIALES; 
-
+		// QUERY FINALE
 		$q = stripslashes("INSERT INTO radiografias (id_tratamiento, fecha_hora, datos_json, etapa, eliminado) VALUES ({$id_tratamiento}, '{$date}', '{$datos_json}', {$etapa}, {$eliminado})");
-
+		// EJECUTO
 		$this->db->query($q);
-
+		// ASIGNO EL ID A LA INSTANCIA
 		$this->id = $this->db->lastID();
-
-		$this->db->free();
-
-		return $this->id ? $this : false;
 	}
 
 	/**
@@ -197,18 +182,19 @@ class Radiographie
 	 * @return void
 	 * @author 
 	 */
-	public function select($fields = '*') {
+	public function select($fields = '*') 
+	{
+		// ES NECESARIO EL ID DE LA SESSION
 		if (!$this->id) {
-			return false;
+			throw new RadiographieException('ERROR AL CARGAR LA SESION DE RADIOGRAFIAS.');
 		}
-
 		// SI EL PARAMETRO ES UN STRING LO PASO A UN ARRAY
 		!is_array($fields) && $fields = array($fields);
-
+		// VAR COLUMNAS DE LA BBDD
 		$keys = array();
-
 		// FILTRO LOS CAMPOS Y AJUSTO LOS NOMBRES DE LOS CAMPOS SOLICITADOS A LOS REALES DE LA BBDD
 		foreach ($fields as $field) {
+			// ARREGLO LOS SINONIMOS
 			switch ($field) {
 				case 'fecha':
 				$field = 'fecha_hora';
@@ -225,19 +211,18 @@ class Radiographie
 				break;
 			}
 
-			if (preg_match(self::$RGX_BD, $field)) {
+			if ($fields == '*' && self::valid_field($field)) {
 				$keys[] = $field;
 			}
 		}
-
+		// SI HAY CAMPOS VALIDOS
 		if (count($keys)) {
-			//// $q = "SELECT X.eliminado, X.etapa, X.id_tratamiento AS tratamiento, X.fecha_hora, X.datos_json, T.id_paciente AS paciente FROM radiografias AS X INNER JOIN tratamientos AS T ON T.id_tratamiento = X.id_tratamiento WHERE X.id_radiografia = {$this->id}";
-			$q = "SELECT " . implode(', ', array_unique($keys)) . " FROM radiografias WHERE id_radiografia = {$this->id}";
+			// FILTRO LOS CAMPOS DUPLICADOS
+			$implode_nique = implode(', ', array_unique($keys));
+			// ARMO LA QUERY
+			$q = "SELECT {$implode_nique} FROM radiografias WHERE id_radiografia = {$this->id}";
+			// EJECUTO
 			$_ = $this->db->oneRowQuery($q);
-
-			if (!$_) {
-				return false;
-			}
 
 			if (isset($_['datos_json'])) {
 				$json_decode = (array) json_decode($_['datos_json']);
@@ -267,17 +252,18 @@ class Radiographie
 		return $this;
 	}
 
-    public function update($data = null) {
-        // ES NECESARIO EL id Y LA INFO
-        if (!$this->id) {
-            return false;
-        }
-
+    public function update($data) 
+    {
+		// ES NECESARIO EL ID DE LA SESSION
+		if (!$this->id) {
+			throw new RadiographieException('NO SE PUEDE ACTUALIZAR LA SESION DE RADIOGRAFIAS.');
+		}
+		// LA DATA ENVIADA ESTA MAL
+		if (empty($data) || !is_array($data)) {
+			throw new RadiographieException('ERROR AL ACTUALIZAR LA SESION DE RADIOGRAFIAS. LOS DATOS SON INCORRECTOS.');
+		}
+		// VAR PARA GUARDAR LOS "SETS" DE LA QUERY
         $fields = array();
-
-        if (!is_array($data)) {
-            $data = array('session' => $this->session, 'etapa' => $this->etapa, 'fecha_hora' => $this->fecha_hora);
-        }
 
 		if (!empty($data['session'])) {
 			$session = array_merge($this->session , $data['session']);
@@ -295,22 +281,27 @@ class Radiographie
 			$fields[] = "etapa = {$etapa}";
 		}
         
+        // SI HAY CAMPOS PARA UPDATEAR
 		if (!empty($fields)) {
-			$q = "UPDATE radiografias SET " . implode(",", $fields) . " WHERE id_radiografia = '{$this->id}'";
+			// IMPLODE SOBRE LOS SET DE CADA CAMPO
+			$implode = implode(",", $fields);
+			// ARMO LA QUERY 
+			$q = "UPDATE radiografias SET {$implode} WHERE id_radiografia = '{$this->id}'";
+			// Y EJECUTO
 			$this->db->query($q);
 		}
-
+		// ATUALIZO LA INSTANCIA
 		return $this->select();
     }
 
     public function delete() {
-        // ES NECESARIO EL id Y LA INFO
+        // ES NECESARIO EL id
         if (!$this->id) {
-            return false;
+			throw new RadiographieException('NO SE PUEDE ELIMINAR LA SESION DE RADIOGRAFIAS.');
         }
-
+        // QUERY PARA ELIMINAR
         $q = "UPDATE radiografias SET eliminado = 1 WHERE id_radiografia = '{$this->id}'";
-		
+        // EJECUTO LA QUERY
 		return $this->db->query($q);
     }
 
@@ -323,29 +314,36 @@ class Radiographie
 	 */
 	public function trash($fields)
 	{
+		// LOS CAMPOS TIENEN QUE VENIR EN UN ARRAY
+		if (!is_array($fields) || empty($fields)) {
+			throw new RadiographieException('LAS IMAGENES NO PUDIERON SER BORRADAS');
+		}
+		// PRIMERO ACTUALIZO LA INSTANCIA
 		$this->select('session');
-		
+		// RECORRO LA COLECCION DE IMAGENES
 		foreach ($this->session as $key => $src) {
-			if (is_array($fields) && in_array($key, $fields)) {
+			// SI ES UNA DE LA IMAGENES SOLICITADAS
+			if (in_array($key, $fields)) {
+				// LA ELIMINO
 				unset($this->session[$key]);
 			}
 		}
-
-		$datos_json = addslashes(json_encode(array('name' => $this->name, 'session' => $this->session)));
-
-		$q = "UPDATE radiografias SET datos_json = \"{$datos_json}\" WHERE id_radiografia = {$this->id}";
-
+		// CON LOS DATOS NUEVOS ACTUALIZO EN BD
+		$datos_json = json_encode(array('name' => $this->name, 'session' => $this->session));
+		// ARMO LA QUERY
+		$q = addslashes("UPDATE radiografias SET datos_json = '{$datos_json}' WHERE id_radiografia = {$this->id}");
+		// EJECUTO
 		return $this->db->query($q);
-	}
-
-	
+	}	
 
 	/**
-	 * Obtengo la imagen desde el tipo de radiografia 
+	 * Obtengo la imagen desde el tipo de fotografia 
 	 * que es pasado por parametro. Si no lo encuentro
-	 * devuelvo el palceholder en la constante.
+	 * devuelvo NULL.
 	 *
-	 * @param String $key Tiente que ser un tipo de radiografia apropiado para la session
+	 * Usada en html/radiografias/*.php
+	 *
+	 * @param String $key Tiente que ser un tipo de fotografia apropiado para la session
 	 * @return String Url de la imagen
 	 */
 	public function get_picture($key) 
@@ -353,6 +351,14 @@ class Radiographie
 		return isset($this->session[$key]) ? URL_ROOT . '/' . RADIOGRAFIAS_PATH . $this->session[$key] : null;
 	}
 
+	/**
+	 * Se le pasa el titulo de la imagen que se 
+	 * quiere el thumb. Si no lo encuentro
+	 * devuelvo NULL.
+	 *
+	 * @param String $key Tiente que ser un tipo de fotografia apropiado para la session
+	 * @return String Url de la imagen
+	 */
 	public function get_thumb($key) 
 	{
 		return isset($this->session[$key]) ? URL_ROOT . '/' . RADIOGRAFIAS_PATH . 'thumb/' . $this->session[$key] : null;
@@ -368,10 +374,18 @@ class Radiographie
 	 */
 	public static function get_session_model($model)
 	{
+		// EL NUMERO DE MODELO TIENE QUE ESTAR SETEADO
+		if (empty($model) || !is_numeric($model)) {
+			throw new RadiographieException('NO ENCONTRAMOS EL MODELO SOLICITADO.');
+		}
+		// INTENTO ARMAR EL NOMBRE DE MODELO
 		$varname = 'M' . $model;
-
-		if (is_numeric($model) && isset(self::$$varname)) {
+		// SI EXISTE EL MODELO
+		if (isset(self::$$varname)) {
 			return self::$$varname;
+		}
+		else{
+			throw new RadiographieException('NO ENCONTRAMOS EL MODELO SOLICITADO.');
 		}
 	}
 
@@ -384,5 +398,19 @@ class Radiographie
 	public function url($action)
 	{
 		return trim(URL_ROOT, '/') . '/radiografias/' . trim($action, '/') . '/' . $this->url;
+	}
+
+	/**
+	 * Valido que el campo corresponda con los de la BD.
+	 *
+	 * Usado en select, create y update.
+	 * 
+	 * @param String $fieldname
+	 * @return Bool
+	 */
+	public static function valid_field($fieldname)
+	{
+		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
+		return !empty($fieldname) && is_string($fieldname) && preg_match('/^(id_tratamiento|fecha_hora|datos_json|e(tapa|liminado))$/', $fieldname);
 	}
 }

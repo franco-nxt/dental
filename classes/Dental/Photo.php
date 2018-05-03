@@ -6,61 +6,41 @@
 class Photo
 {
 	/**
-	 * @var [type]
-	 */
-	private static $RGX_BD = '#^(id_tratamiento|fecha_hora|datos_json|etapa|eliminado|\*)$#';
-	
-
-	/**
 	 * @var Treatment
 	 */
 	public $Treatment;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $fecha_hora;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $datos_json;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $cantidad;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $name;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $etapa;
 
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $url;
 	
 	/**
-	 * 
-	 *
 	 * @var string
 	 */
 	public $eliminado;
@@ -171,22 +151,31 @@ class Photo
 
 	public function __construct($id = null) 
 	{
-
 		// SI id ES UN ARRAY ES PARA INSERTAR UNO NUEVO
 		if ( is_array($id) ) {
-			return $this->create($id);
+			$this->create($id);
 		}
 		elseif ( is_numeric($id) ) {
 			$this->id = $id;
 
-			return $this->select(array('fecha_hora', 'etapa', 'cantidad', 'url'));
+			$this->select(array('fecha_hora', 'etapa', 'cantidad', 'url'));
 		}
-
-		return false;
+		else{
+			// EL PARAMETRO NO ES VALIDO
+			throw new PhotoException('OCURRIO UN ERROR CON LA SESION FOTOGRAFICA, VUELVA A INTENTARLO OTRA VEZ.');
+		}
 	}
 
 	/**
-	 * Crea la session en la BD
+	 * Hace las validaciones y crea la session en BD.
+	 *
+	 * Para crear un registro en la base es necesario que SIEMPRE
+	 * dentro de la informacion enviada esten el Array de session 
+	 * que contiene los nombres de las imagenes y el id del tratamiento
+	 * al que pertence la session de fotografias.
+	 *
+	 * @throws PhotoException Si falta alguno de los valores elementales (session, id_tratamiento).
+	 * @param Array $data Array asociativo con la info de la session.
 	 */
 	private function create($data)
 	{
@@ -213,7 +202,7 @@ class Photo
 	}
 
 	/**
-	 * Methodo para traer info desde la BF
+	 * Methodo para traer info desde la BD
 	 *
 	 * @param Strign|Array $fields campos de la BBDD para seleccionar
 	 * @return Photo Retorna la misma instancia
@@ -297,19 +286,31 @@ class Photo
 		return $this;
 	}
 
-    public function update($data = null) 
+	/**
+	 * Actualiza los datos en BD.
+	 *
+	 * Para actualizar la colleccion de imagenes es necesario mandarlas
+	 * en un Array asociativo dentro de $data en el campo 'session'.
+	 * Cada clave de la session corresponde con el tipo de imagen.
+	 *
+	 * Usada en actions/fografias.php
+	 *
+	 * @param Array $data Arreglo con los datos a actualizar en BD.
+	 * @return Photo La misma instancia
+	 */
+    public function update($data) 
     {
 		// ES NECESARIO EL ID DE LA SESSION
-		if (!$this->id) {
-			throw new PhotoException('ERROR AL CARGAR LA SESION FOTOGRAFICA.');
+		if (empty($this->id) || !is_numeric($this->id)) {
+			throw new PhotoException('NO SE PUEDE ACTUALIZAR LA SESION FOTOGRAFICA.');
 		}
-		// ES NECESARIO EL ID DE LA SESSION
+		// LA DATA ENVIADA ESTA MAL
 		if (empty($data) || !is_array($data)) {
 			throw new PhotoException('ERROR AL ACTUALIZAR LA SESION FOTOGRAFICA. LOS DATOS SON INCORRECTOS.');
 		}
 		// VAR PARA GUARDAR LOS "SETS" DE LA QUERY
         $fields = array();
-        // SI VIENE EL CAMPO DE SESSION
+        // SI VIENE EL CAMPO DE SESSION DONDE SE GUARDAN LAS IMAGENES
 		if (!empty($data['session'])) {
 			// COMBINO LA SESSION ACTUAL Y LOS DATOS QUE VIENEN
 			$session = array_merge($this->session , $data['session']);
@@ -334,8 +335,10 @@ class Photo
 		}
         // SI HAY CAMPOS PARA UPDATEAR
 		if (!empty($fields)) {
+			// IMPLODE SOBRE LOS SET DE CADA CAMPO
+			$implode = implode(",", $fields);
 			// ARMO LA QUERY 
-			$q = stripslashes("UPDATE fotografias SET " . implode(",", $fields) . " WHERE id_fotografia = '{$this->id}'");
+			$q = stripslashes("UPDATE fotografias SET {$implode} WHERE id_fotografia = '{$this->id}'");
 			// Y EJECUTO
 			$this->db->query($q);
 		}
@@ -343,40 +346,59 @@ class Photo
 		return $this->select();
     }
 
+    /**
+     * Cambia el estado de la session a eliminado.
+	 *
+	 * Usada en actions/fotografias.php
+     *
+     * @return NULL
+     */
     public function delete() {
-        // ES NECESARIO EL id Y LA INFO
+        // ES NECESARIO EL id
         if (!$this->id) {
-            return false;
+			throw new PhotoException('NO SE PUEDE ELIMINAR LA SESION FOTOGRAFICA.');
         }
-
+        // QUERY PARA ELIMINAR
         $q = "UPDATE fotografias SET eliminado = 1 WHERE id_fotografia = '{$this->id}'";
-		
-		return $this->db->query($q);
+        // EJECUTO LA QUERY
+        $this->db->query($q);
     }
 
 	/**
 	 * Obtengo la imagen desde el tipo de fotografia 
 	 * que es pasado por parametro. Si no lo encuentro
-	 * devuelvo el palceholder en la constante.
+	 * devuelvo NULL.
+	 *
+	 * Usada en html/fotografias/*.php
 	 *
 	 * @param String $key Tiente que ser un tipo de fotografia apropiado para la session
 	 * @return String Url de la imagen
 	 */
 	public function get_picture($key) 
 	{
-
-		return isset($this->session[$key]) ? URL_ROOT . '/' . FOTOGRAFIAS_PATH . $this->session[$key] : null;
+		// SOLO SI DENTRO DE LA COLLECCION LA ENVIO COMO UNA RUTA ABSOLUTA
+		return !empty($this->session[$key]) ? URL_ROOT . '/' . FOTOGRAFIAS_PATH . $this->session[$key] : null;
 	}
 
+	/**
+	 * Se le pasa el titulo de la imagen que se 
+	 * quiere el thumb. Si no lo encuentro
+	 * devuelvo NULL.
+	 *
+	 * @param String $key Tiente que ser un tipo de fotografia apropiado para la session
+	 * @return String Url de la imagen
+	 */
 	public function get_thumb($key) 
 	{
-
-		return isset($this->session[$key]) ? URL_ROOT . '/' . FOTOGRAFIAS_PATH . 'thumb/' . $this->session[$key] : null;
+		// SOLO SI DENTRO DE LA COLLECCION LA ENVIO COMO UNA RUTA ABSOLUTA
+		return !empty($this->session[$key]) ? URL_ROOT . '/' . FOTOGRAFIAS_PATH . 'thumb/' . $this->session[$key] : null;
 	}
 
 	/**
 	 * concatena los datos para obtener la url necesaria para ver
 	 *
+	 * Usada en html/fotografias/*.php y actions/fotografias.php
+	 * 
 	 * @return sting url para ver/editar la fotografia
 	 * @param String $action ver|editar
 	 * */
@@ -386,26 +408,35 @@ class Photo
 	}
 
 	/**
-	 * Elimina los campos de la session.
+	 * Elimina de la session los campos que son pasados 
+	 * por parametro.
+	 * 
 	 * Esta funcion es usada en actions/fotografias.php
 	 *
-	 * @return Bool Resultados de la query
 	 * @param Array Las columnas que se quieren eliminar
+	 * @return Bool Resultados de la query
 	 */
 	public function trash($fields)
 	{
+		// LOS CAMPOS TIENEN QUE VENIR EN UN ARRAY
+		if (!is_array($fields) || empty($fields)) {
+			throw new PhotoException('LAS IMAGENES NO PUDIERON SER BORRADAS');
+		}
+		// PRIMERO ACTUALIZO LA INSTANCIA
 		$this->select('session');
-		
+		// RECORRO LA COLECCION DE IMAGENES
 		foreach ($this->session as $key => $src) {
-			if (is_array($fields) && in_array($key, $fields)) {
+			// SI ES UNA DE LA IMAGENES SOLICITADAS
+			if (in_array($key, $fields)) {
+				// LA ELIMINO
 				unset($this->session[$key]);
 			}
 		}
-
+		// CON LOS DATOS NUEVOS ACTUALIZO EN BD
 		$datos_json = json_encode(array('name' => $this->name, 'session' => $this->session));
+		// ARMO LA QUERY
 		$q = stripslashes("UPDATE fotografias SET datos_json = '{$datos_json}' WHERE id_fotografia = {$this->id}");
-		dump($q);
-
+		// EJECUTO
 		return $this->db->query($q);
 	}
 
@@ -419,7 +450,8 @@ class Photo
 	 */
 	public static function valid_field($fieldname)
 	{
-		return !empty($fieldname) && is_string($fieldname) && preg_match('/^(fecha_hora|datos_json|e(tapa|eliminado))$/', $fieldname);
+		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
+		return !empty($fieldname) && is_string($fieldname) && preg_match('/^(id_tratamiento|fecha_hora|datos_json|e(tapa|liminado))$/', $fieldname);
 	}
 	
 	/**
@@ -427,16 +459,23 @@ class Photo
 	 * desde las props estaticas.
 	 * Usada en los html/fotografias/[ver|editar|nueva].php
 	 *
-	 * @return Array Si es que existe el modelo, retorna un array de strings.
 	 * @param Integer $model Un numerico que corresponda a un modelo de session.
+	 * @return Array Si es que existe el modelo, retorna un array de strings.
 	 */
 	public static function get_session_model($model)
-	{
+	{	
+		// EL NUMERO DE MODELO TIENE QUE ESTAR SETEADO
+		if (empty($model) || !is_numeric($model)) {
+			throw new PhotoException('NO ENCONTRAMOS EL MODELO SOLICITADO.');
+		}
+		// INTENTO ARMAR EL NOMBRE DE MODELO
 		$varname = 'M' . $model;
-
-		if (is_numeric($model) && isset(self::$$varname)) 
-			{
+		// SI EXISTE EL MODELO
+		if (isset(self::$$varname)) {
 			return self::$$varname;
+		}
+		else{
+			throw new PhotoException('NO ENCONTRAMOS EL MODELO SOLICITADO.');
 		}
 	}
 }

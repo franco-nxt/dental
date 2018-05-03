@@ -3,12 +3,12 @@
 /**
  * summary
  */
-class PhotoException extends Exception
+class ResumeException extends Exception
 {
     public function __construct($message, $code = 0) {
 
     	if ($code == 1) {
-	    	$file = @fopen("pPhotoExceptionhoto-logs.txt","a");
+	    	$file = @fopen("ResumeException-logs.txt","a");
 
 			if($file){
 				$date = date("d/m/Y H:i:s");

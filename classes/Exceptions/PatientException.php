@@ -5,7 +5,7 @@ class PatientException extends Exception
 	public function __construct($message, $code = 0) {
 
 		if ($code == 1) {
-			$file = @fopen("patient-logs.txt","a");
+			$file = @fopen("PatientException-logs.txt","a");
 
 			if($file){
 				$date = date("d/m/Y H:i:s");

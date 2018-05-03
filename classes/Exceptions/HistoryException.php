@@ -1,11 +1,11 @@
 <?php
 
-class TreatmentException extends Exception
+class HistoryException extends Exception
 {
 	public function __construct($message, $code = 0) {
 
 		if ($code == 1) {
-			$file = @fopen("TreatmentException-logs.txt","a");
+			$file = @fopen("HistoryException-logs.txt","a");
 
 			if($file){
 				$date = date("d/m/Y H:i:s");

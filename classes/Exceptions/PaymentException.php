@@ -8,7 +8,7 @@ class PaymentException extends Exception
     public function __construct($message, $code = 0) {
 
     	if ($code == 1) {
-	    	$file = @fopen("payiment-logs.txt","a");
+	    	$file = @fopen("PaymentException-logs.txt","a");
 
 			if($file){
 				$date = date("d/m/Y H:i:s");

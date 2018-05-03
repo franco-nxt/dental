@@ -54,7 +54,7 @@
 				<strong>NACIMIENTO : </strong>
 			</div>
 			<div class="col-xs-7 col-sm-8 field field-read">
-				<span><?= $Patient->nacimiento ?></span>
+				<span><?= $Patient->fecha_nacimiento ?></span>
 			</div>
 			<div class="col-xs-4 label label-read">
 				<strong>EDAD : </strong>
@@ -91,7 +91,7 @@
 			<strong>FECHA INICIO : </strong>
 		</div>
 		<div class="col-xs-7 col-sm-8 field field-read">
-			<span><?= $Treatment->inicio ?> </span>
+			<span><?= $Treatment->fecha_hora_inicio ?> </span>
 		</div>
 		<div class="col-xs-5 col-sm-4 label label-read">
 			<strong>PRESUPUESTO : </strong>

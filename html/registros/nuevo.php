@@ -13,7 +13,7 @@
 		<a href="<?= $Patient->url('registros') ?>" class="btn btn-default btn-ico-x">CANCELAR</a>
 	</div>
 	<div class="bar-bordered">
-		<span><?= $Treatment->inicio ?>	- <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+		<span><?= $Treatment->fecha_hora_inicio ?>	- <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
 	</div>
 	<div class="row pt5">
 		<label for="reg_fecha" class="form-group col-sm-6 m0">

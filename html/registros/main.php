@@ -13,7 +13,7 @@
 		<a href="<?= URL_ROOT ?>/registros/nuevo/<?= $Treatment->url ?>" class="btn btn-warning">NUEVO REGISTRO</a>
 	</div>
 	<div class="bar-bordered">
-		<span><?= $Treatment->inicio ?>	- <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+		<span><?= $Treatment->fecha_hora_inicio ?>	- <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
 	</div>
 	<?php $treatments = $Patient->get_treatments(); ?>
 	<?php $c = 0; foreach ($treatments as $treatment): if ($treatment->id == $Treatment->id) continue ?>

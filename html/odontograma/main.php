@@ -14,7 +14,7 @@ $old_treatments = (Array) $Patient->old_treatments();
 </div>
 <div class="container p5">
 	<div class="bar-bordered">
-		<span><?= $Treatment->inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?> - <?= $Treatment->descripcion ?></span>
+		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?> - <?= $Treatment->descripcion ?></span>
 	</div>
 	<ul class="p0">
 		<li class="p5 sm-4 center"><a href="<?= URL_ROOT ?>/odontograma/ver/<?= $Treatment->url ?>" class="btn btn-primary btn-block"><strong>VER ODONTOGRAMA</strong></a></li>
@@ -26,7 +26,7 @@ $old_treatments = (Array) $Patient->old_treatments();
 	<div id="old-treatments" style="display:none">
 		<?php foreach ($old_treatments as $treatment): ?>
 		<div class="bar-bordered">
-			<span><?= $treatment->inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?> - <?= $treatment->descripcion ?></span>
+			<span><?= $Treatment->fecha_hora_inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?> - <?= $treatment->descripcion ?></span>
 		</div>
 		<ul class="p0">
 			<li class="p5 sm-4 center"><a href="<?= URL_ROOT ?>/odontograma/ver/<?= $treatment->url ?>" class="btn btn-primary btn-block"><strong>VER ODONTOGRAMA</strong></a></li>

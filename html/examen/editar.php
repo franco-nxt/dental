@@ -17,7 +17,7 @@ $Exam->select();
 	</div>
 	<div class="container">
 		<div class="bar-bordered mt5">
-			<span><?= $Treatment->inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?> - <?= $Treatment->descripcion ?></span>
+			<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?> - <?= $Treatment->descripcion ?></span>
 		</div>
 		<div class="bar-bordered clear mb5">
 			<strong>EXAMEN CLINICO</strong>

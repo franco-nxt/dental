@@ -22,7 +22,7 @@
 	</div>
 	<?php endif ?>
 	<div class="bar-bordered">
-		<span><?= $Treatment->inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
 	</div>
 	<div class="table-rounded">
 		<table class="table">
@@ -61,7 +61,7 @@
 		<div id="old-treatments" style="display:none">
 		<?php foreach ($tratments as $treatment): if ($treatment->id == $Treatment->id) continue ?>
 		<div class="bar-bordered">
-			<span><?= $treatment->inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?></span>
+			<span><?= $Treatment->fecha_hora_inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?></span>
 		</div>
 		<div class="table-rounded">
 			<table class="table">

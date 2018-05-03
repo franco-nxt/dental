@@ -15,7 +15,7 @@
 </div>
 <div class="container">
 	<div class="bar-bordered mt5 mb5">
-		<span><?= $Treatment->inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
 	</div>
 	<div class="row odntgrm-wrap">
 

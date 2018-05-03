@@ -17,7 +17,7 @@ $History->select();
 	</div>
 	<div class="container p5">
 		<div class="bar-bordered">
-			<span><?= $Treatment->inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+			<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
 		</div>
 		<div>
 			<div class="col-sm-5 col-md-3 label label-read">

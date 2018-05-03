@@ -4,4 +4,9 @@
 	margin-top: 3px;
 	padding-left: 0;
 	@include clearfix;
+	font-size: 12px;
+	white-space: nowrap;
+	@include min(sm){
+		font-size: 14px;
+	}
 }

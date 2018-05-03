@@ -1,14 +1,38 @@
-%paciente-padding{
+%patient-padding{
 	padding-top: 12px;
 	padding-left: 10px;
 	padding-right: 10px;
 }
-.paciente{
-	@extend %paciente-padding;
+
+.patient{
 	background-color: #1B1B1B;
+	&-main{
+		&-data{
+			@include clearfix();
+			padding-bottom: 5px;
+			padding-top: 5px;
+		}
+		&-fields{
+			padding-right: 10px;
+			width: calc(100% - 150px);
+			float: left;
+			@include max(420px){
+				.field{
+					margin-top: 0;
+					margin-bottom: 0;
+					width: 100%;
+				}
+			}
+		}
+		&-img{
+			float: left;
+		}
+		
+	}
+
 	&-img{
-		height: 100px;
-		width: 100px;
+		height: 150px;
+		width: 150px;
 		background-position: center;
 		background-size: cover;
 		@include border-radius-base;
@@ -27,14 +51,15 @@
 			}
 		}
 	}
+
 	&-tratamiento{
-		@extend %paciente-padding;
 		padding-top: 5px;
 		padding-bottom: 5px;
 		background-color: #292929;
 	}
+
 	&-menu{
-		@extend %paciente-padding;
+		background-color: $bg-body;
 		margin-bottom: 0;
 		&-item{
 			background-repeat: no-repeat;

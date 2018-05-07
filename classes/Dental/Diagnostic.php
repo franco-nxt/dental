@@ -2,17 +2,119 @@
 
 class Diagnostic
 {
-
-	public function __get($name) {
-		if ($name == 'db') {
-			return MySQL::getInstance();
-		}
-		elseif (isset($this->{$name})) {
-			return $this->{$name};
-		}
-		
-		return null;
-	}
+	/**
+	 * @var Numeric
+	 */
+	private $id_tratamiento;
+	
+	/**
+	 * @var String
+	 */
+	public $panoramica;
+	/**
+	 * @var String
+	 */
+	public $ricketts;
+	/**
+	 * @var String
+	 */
+	public $fotografias;
+	/**
+	 * @var String
+	 */
+	public $trx_perfil;
+	/**
+	 * @var String
+	 */
+	public $jarabak;
+	/**
+	 * @var String
+	 */
+	public $vto_crecimiento;
+	/**
+	 * @var String
+	 */
+	public $trx_frontal;
+	/**
+	 * @var String
+	 */
+	public $steiner;
+	/**
+	 * @var String
+	 */
+	public $vto_tratamiento;
+	/**
+	 * @var String
+	 */
+	public $seriada;
+	/**
+	 * @var String
+	 */
+	public $powell;
+	/**
+	 * @var String
+	 */
+	public $otros;
+	/**
+	 * @var String
+	 */
+	public $patron;
+	/**
+	 * @var String
+	 */
+	public $esq_clase;
+	/**
+	 * @var String
+	 */
+	public $esq_pos_vertical;
+	/**
+	 * @var String
+	 */
+	public $clase_molar_der;
+	/**
+	 * @var String
+	 */
+	public $clase_molar_izq;
+	/**
+	 * @var String
+	 */
+	public $pos_molar_sup;
+	/**
+	 * @var String
+	 */
+	public $pos_incisivo_inf;
+	/**
+	 * @var String
+	 */
+	public $pos_incisivo_sup;
+	/**
+	 * @var String
+	 */
+	public $incl_incisivo_inf;
+	/**
+	 * @var String
+	 */
+	public $incl_incisivo_sup;
+	/**
+	 * @var String
+	 */
+	public $overjet;
+	/**
+	 * @var String
+	 */
+	public $overbite;
+	/**
+	 * @var String
+	 */
+	public $angulo_interincisivo;
+	/**
+	 * @var String
+	 */
+	public $protusion_labial;
+	/**
+	 * @var String
+	 */
+	public $observaciones;
 
 	/**
 	 * El constructor espera un id numerico que va a usar 
@@ -45,9 +147,9 @@ class Diagnostic
 		// LA QUERY CREA UN REGISTRO VACIO EN LA DB
 		$q = "INSERT INTO diagnosticos () VALUES ()";
 		// EJCUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// ASIGNO EL ID A LA INSTANCIA
-		$this->id = $this->db->lastID();
+		$this->id = self::DB()->lastID();
 	}
 
 	/**
@@ -62,10 +164,11 @@ class Diagnostic
 		if (!$this->id || !is_numeric($this->id)) {
 			throw new DiagnosticException('OCURRIO UN ERROR, NO SE PUEDEN OBTENER LOS DATOS DEL DIAGNOSTICO.');
 		}
+		$columns = implode(',', self::get_fieldnames());
 		// QUERY QUE TRAE TODOS LOS DATOS DEL DIAGNOSTICO
 		$q = "SELECT panoramica, ricketts, fotografias, trx_perfil, jarabak, vto_crecimiento, trx_frontal, steiner, vto_tratamiento, seriada, powell, otros, patron, esq_clase, esq_pos_vertical, clase_molar_der, clase_molar_izq, pos_molar_sup, pos_incisivo_inf, pos_incisivo_sup, incl_incisivo_inf, incl_incisivo_sup, overjet, overbite, angulo_interincisivo, protusion_labial, observaciones FROM diagnosticos WHERE id_diagnostico = {$this->id}";
 		// EJECUTO
-		$_ = $this->db->oneRowQuery($q);
+		$_ = self::DB()->oneRowQuery($q);
 		// FILL SOBRE LA INSTANCIA
 		foreach ($_ as $k => $v) {
 			// ALGUNOS DATOS VIENEN EN JSON
@@ -108,11 +211,11 @@ class Diagnostic
 
 		}
 		// IMPLODE SOBRE LOS CAMPOS;
-		$implode = implode(', ', $q);
+		$implode = implode(', ', $set);
 		// GUARDO LA QUERY
 		$q = utf8_decode("UPDATE diagnosticos SET {$implode} WHERE id_diagnostico = {$this->id}");
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// SINCRONIZO LA INSTANCIA
 		$this->select();
 	}
@@ -133,7 +236,7 @@ class Diagnostic
 		// SI EL ID NO ESTA CARGADO
 		if (empty($this->id_tratamiento)) {
 			$q = "SELECT id_tratamiento AS id FROM tratamientos WHERE id_diagnostico = {$this->id}";
-			$this->id_tratamiento = $this->db->oneFieldQuery($q);
+			$this->id_tratamiento = self::DB()->oneFieldQuery($q);
 		}
 
 		return new Treatment($this->id_tratamiento);
@@ -174,5 +277,51 @@ class Diagnostic
 	{
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return (Bool) !empty($fieldname) && is_string($fieldname) && preg_match('/^(angulo_interincisivo|clase_molar_(der|izq)|esq_(clase|pos_vertical)|fotografias|incl_incisivo_(inf|sup)|jarabak|o(tros|ver(bite|jet)|bservaciones)|p(os_(incisivo|molar)_(inf|sup)|anoramica|atron|owell|rotusion_labial)|ricketts|s(eriada|teiner)|tr(x_(fronta|perfi)l|atamiento)|vto_(creci|trata)miento)$/i', $fieldname);
+	}
+
+	private static function DB()
+	{
+		return MySQL::getInstance();
+	}
+
+	/**
+	 * Retorna todos los nombres de las columnas
+	 * de la tabla historia.
+	 * 
+	 * @return Array Colleccion de strings.
+	 */
+	public static function get_fieldnames()
+	{
+		$COLUMNS = array(
+			'panoramica',
+			'ricketts',
+			'fotografias',
+			'trx_perfil',
+			'jarabak',
+			'vto_crecimiento',
+			'trx_frontal',
+			'steiner',
+			'vto_tratamiento',
+			'seriada',
+			'powell',
+			'otros',
+			'patron',
+			'esq_clase',
+			'esq_pos_vertical',
+			'clase_molar_der',
+			'clase_molar_izq',
+			'pos_molar_sup',
+			'pos_incisivo_inf',
+			'pos_incisivo_sup',
+			'incl_incisivo_inf',
+			'incl_incisivo_sup',
+			'overjet',
+			'overbite',
+			'angulo_interincisivo',
+			'protusion_labial',
+			'observaciones'
+		);
+
+		return $COLUMNS;
 	}
 }

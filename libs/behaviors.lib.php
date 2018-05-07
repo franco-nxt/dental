@@ -459,7 +459,7 @@ function check_user()
  * 
  * @param  Mixed $data Info a mostroar por consola.
  */
-function console_log( $data )
+function clog( $data )
 {
 	echo '<script>';
 	echo 'console.log('. json_encode( $data ) .')';

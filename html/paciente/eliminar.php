@@ -1,8 +1,3 @@
-<?php
-!isset($Patient) && redirect_exit();
-!isset($User) && $User = get_user();
-!isset($Treatment) && $Treatment = $Patient->get_treatment();
-?>
 <form action="" method="POST" enctype="multipart/form-data">
 	<div class="bar-btn">
 		<div class="container">
@@ -12,22 +7,47 @@
 		</div>
 	</div>
 </form>
-<div class="paciente">
+<div class="patient">
 	<div class="container">
-		<figure><img src="<?= $Patient->thumb() ?>" alt="<?= $Patient->fullname() ?>" class="paciente-img img-rounded"></figure>
+		<div class="patient-main-data">
+			<div class="patient-main-fields">
+				<div class="col-xs-4 label label-read">
+					<strong>APELLIDO : </strong>
+				</div>
+				<div class="col-xs-8 field field-read">
+					<span><?= $Patient->apellido ?></span>
+				</div>
+				<div class="col-xs-4 label label-read">
+					<strong>NOMBRE : </strong>
+				</div>
+				<div class="col-xs-8 field field-read">
+					<span><?= $Patient->nombre ?></span>
+				</div>
+				<div class="col-xs-5 col-sm-4 label label-read">
+					<strong>NACIMIENTO : </strong>
+				</div>
+				<div class="col-xs-7 col-sm-8 field field-read">
+					<span><?= $Patient->fecha_nacimiento ?></span>
+				</div>
+			</div>
+			<figure class="patient-main-img">
+				<img src="<?= $Patient->thumb() ?>" alt="<?= $Patient->fullname() ?>" class="patient-img img-rounded" />
+			</figure>
+		</div>
+	</div>
+	<div class="patient-menu">
+		<ul class="container">
+			<li class="patient-menu-item"><a href="<?= $Patient->url('fotografias') ?>">FOTOGRAF&Iacute;AS</a></li>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('radiografias') ?>">RADIOGRAF&Iacute;AS</a></li>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('cefalometrias') ?>">CEFALOMET&Iacute;AS</a></li>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('diagnostico') ?>">DIAGN&Oacute;STICO</a></li>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('economia') ?>">ECONOM&Iacute;A</a></li>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('odontograma') ?>">ODONTOGRAMA</a></li>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('registros') ?>">REGISTRO DE ATENC&Iacute;ON</a></li>
+		</ul>
+	</div>
+	<div class="container">
 		<div>
-			<div class="col-xs-4 label label-read">
-				<strong>APELLIDO : </strong>
-			</div>
-			<div class="col-xs-8 field field-read">
-				<span><?= $Patient->apellido ?></span>
-			</div>
-			<div class="col-xs-4 label label-read">
-				<strong>NOMBRE : </strong>
-			</div>
-			<div class="col-xs-8 field field-read">
-				<span><?= $Patient->nombre ?></span>
-			</div>
 			<div class="col-xs-4 label label-read">
 				<strong>DNI : </strong>
 			</div>
@@ -56,14 +76,8 @@
 				<strong>SEXO : </strong>
 			</div>
 			<div class="col-xs-8 field field-read field-radio-check">
-				<span class="<?= $Patient->genero == MALE ? 'checked' : null ?>">M</span>
-				<span class="<?= $Patient->genero == FEMALE ? 'checked' : null ?>">F</span>
-			</div>
-			<div class="col-xs-5 col-sm-4 label label-read">
-				<strong>NACIMIENTO : </strong>
-			</div>
-			<div class="col-xs-7 col-sm-8 field field-read">
-				<span><?= $Patient->nacimiento ?></span>
+				<span class="<?= $Patient->sexo == MALE ? 'checked' : null ?>">M</span>
+				<span class="<?= $Patient->sexo == FEMALE ? 'checked' : null ?>">F</span>
 			</div>
 			<div class="col-xs-4 label label-read">
 				<strong>EDAD : </strong>
@@ -131,7 +145,7 @@
 		</div>
 	</div>
 </div>
-<div class="paciente-tratamiento">
+<div class="patient-tratamiento">
 	<div class=" container">
 		<div class="col-xs-10 col-sm-4 label label-read">
 			<strong>DURACION DEL TRATAMIENTO : </strong> 
@@ -157,7 +171,7 @@
 			<strong>FECHA INICIO : </strong>
 		</div>
 		<div class="col-xs-7 col-sm-8 field field-read">
-			<span><?= $Treatment->inicio ?> </span>
+			<span><?= $Treatment->fecha_hora_inicio ?> </span>
 		</div>
 		<div class="col-xs-5 col-sm-4 label label-read">
 			<strong>PRESUPUESTO : </strong>
@@ -182,15 +196,4 @@
 			<span><?= $Treatment->descripcion ?></span>
 		</div>
 	</div>
-</div>
-<div class="container">
-	<ul class="paciente-menu">
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('fotografias') ?>">FOTOGRAF&Iacute;AS</a></li>
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('radiografias') ?>">RADIOGRAF&Iacute;AS</a></li>
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('cefalometrias') ?>">CEFALOMET&Iacute;AS</a></li>
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('diagnostico') ?>">DIAGN&Oacute;STICO</a></li>
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('economia') ?>">ECONOM&Iacute;A</a></li>
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('odontograma') ?>">ODONTOGRAMA</a></li>
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('registros') ?>">REGISTRO DE ATENC&Iacute;ON</a></li>
-	</ul>
 </div>

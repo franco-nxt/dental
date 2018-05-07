@@ -21,7 +21,7 @@ class Page extends Controller{
 
 
 		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
+		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
 		$Radiographie = $Treatment->get_radiographie($decrypt_params[RADIOGRAFIA]);
 		
 		if ($Form->input('action') == 'delete') {

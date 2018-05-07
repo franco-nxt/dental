@@ -33,14 +33,16 @@ class Page extends Controller{
 		}
 	}
 	
-	public function main($encode) {
+	public function main($encode) 
+	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// LA VISTA
 		include 'html/fotografias/main.php';
 	}
 
-	public function nueva($encode) {
+	public function nueva($encode) 
+	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
@@ -51,7 +53,8 @@ class Page extends Controller{
 		include 'html/fotografias/nueva.php';
 	}
 
-	public function modelos($encode) {
+	public function modelos($encode) 
+	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
@@ -60,26 +63,28 @@ class Page extends Controller{
 		include 'html/fotografias/modelos.php';
 	}
 
-	public function ver($encode) {
+	public function ver($encode) 
+	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
 		// OBTENGO EL TRATAMIENTO
-		$Treatment = $Patient->treatment(get_from_encode($encode, TRATAMIENTO));
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE FOTOS
 		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
+		console_log($Photo);
 		// LA VISTA
 		include 'html/fotografias/ver.php';
 	}
 
-	public function editar($id) {
+	public function editar($encode) {
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
 		// OBTENGO EL TRATAMIENTO
-		$Treatment = $Patient->treatment(get_from_encode($encode, TRATAMIENTO));
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE FOTOS
 		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
 		// LA VISTA

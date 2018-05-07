@@ -3,8 +3,26 @@
 class Page extends Controller{
 
 	public function __construct() {
-		parent::__construct(
-			array('odontograma/editar/[:encode]', 'editar'));
+		try {
+			parent::__construct(
+				array('odontograma/editar/[:encode]', 'editar')
+			);
+		}
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (OdontogramException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+		}
+		finally{
+			redirect_exit();
+		}
 	}
 
 	public function editar($id)

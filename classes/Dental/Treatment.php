@@ -133,25 +133,6 @@ class Treatment
 	 */
 	public $Resume;
 
-	
-	public function __get($name) {
-		if ($name == 'db') {
-			return MySQL::getInstance();
-		}
-		elseif (isset($this->{$name})) {
-			return $this->{$name};
-		}
-		elseif($name == 'paciente'){
-			return $this->patient();
-		}
-		elseif($name == 'inicio'){
-			return date('d/m/y', strtotime($this->fecha_hora_inicio));
-		}
-		else{
-			return $this->select($name)->{$name};
-		}
-	}
-
 	/**
 	 * Contructor para Taramiento.
 	 *
@@ -170,13 +151,14 @@ class Treatment
 			// SI ES UN NUMERICO 
 			$q = "SELECT {$id} IN (SELECT id_tratamiento FROM tratamientos WHERE id_tratamiento = {$id})";
 			// VALIDO QUE EXISTA
-			$treatment_exist = $this->db->oneFieldQuery($q);
+			$treatment_exist = self::DB()->oneFieldQuery($q);
 			// SI NO EXISTE EL TRATAMIENTO
 			if (!$treatment_exist) {
 				throw new TreatmentException('EL TRATAMIENTO INDICADO NO EXISTE');
 			}
 			// SI NO ASIGNO EL ID A LA INSTANCIA
 			$this->id = $id;
+			$this->select(array('id_paciente', 'fecha_hora_inicio', 'duracion', 'estado', 'tecnica', 'descripcion'));
 			// ARMO LA URI ENCODEADA CON LOS DATOS
 			$this->url = crypt_params(array(TRATAMIENTO => $this->id, PACIENTE => $this->id_paciente));
 		}
@@ -210,7 +192,7 @@ class Treatment
 			// VALIDO QUE EL CAMPO SEA VALIDO
 			if (self::valid_field($k) && $v) {
 				// Y AGREGO EL VALOR
-				$value = $this->db->escape(utf8_decode($v));
+				$value = self::DB()->escape(utf8_decode($v));
 
 				if ($value) {
 					$fields[$k] = $value;
@@ -239,9 +221,9 @@ class Treatment
 		// ARMO LA QUERY
 		$q = "INSERT INTO tratamientos ({$implode_keys}) VALUES ('{$implode_values}')";
 		// EJECUTO LA QUERY
-		$this->db->query($q);
+		self::DB()->query($q);
 		// SETEO EL ID A LA INSTANCIA
-		$this->id = $this->db->lastID();
+		$this->id = self::DB()->lastID();
 	}
 
 	/**
@@ -277,12 +259,12 @@ class Treatment
 				// ARMO LA QUERY
 				$q = "SELECT {$implode_keys} FROM tratamientos WHERE id_tratamiento = {$this->id}";
 				// TRAIGO EL REGISTRO DE LA BD
-				$tratamiento = $this->db->oneRowQuery($q);
+				$tratamiento = self::DB()->oneRowQuery($q);
 				// ACTUALIZO LAS PROPS DE LA ISNTANCIA
 				foreach ($tratamiento as $k => $v) {
 					switch ($k) {
 						case 'fecha_hora_inicio':
-						$this->{$k} = $v; 
+						$this->{$k} = date('d/m/y', strtotime($v)); 
 						break;
 						case 'estado':
 						$this->estado = is_numeric($v) ? constant('TRATAMIENTO_ESTADO_' . $v) : $v; 
@@ -388,9 +370,9 @@ class Treatment
 		if (!empty($fields)) {
 			$implode = implode(",", $fields);
 			// ARMO LA QUERY
-			$q = "UPDATE tratamientos SET {$fields} WHERE id_tratamiento = '{$this->id}'";
+			$q = "UPDATE tratamientos SET {$implode} WHERE id_tratamiento = '{$this->id}'";
 			// ACTUALIZO
-			$this->db->query($q);
+			self::DB()->query($q);
 			// SINCRONIZO LA INSTANCIA
 			$this->select();
 		}
@@ -411,9 +393,9 @@ class Treatment
 		// TRAE TODOS LOS ID DE LAS RADIOGRAFIAS PARA ESTE TRATAMIENTO
 		$q = "SELECT id_radiografia AS id FROM radiografias WHERE id_tratamiento = {$this->id} AND eliminado <> 1 ORDER BY fecha_hora ASC";
 
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			$this->get_radiographie($_['id']);
 		}
 		// RETORNO TODAS LAS INSTANCIAS DE RADIOGRAFIAS
@@ -495,9 +477,9 @@ class Treatment
 
 		$this->photos = array();
 
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			$this->get_photo($_['id']);
 		}
 
@@ -574,9 +556,9 @@ class Treatment
 
 		$q = "SELECT id_cefalometria AS id FROM cefalometrias WHERE id_tratamiento = {$this->id} AND eliminado <> 1 ORDER BY fecha_hora ASC";
 
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			$this->get_cephalometry($_['id']);
 		}
 
@@ -648,9 +630,9 @@ class Treatment
 
 		$q = "SELECT id_registro AS id FROM registros WHERE id_tratamiento = {$this->id} ORDER BY fecha_hora ASC";
 
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			$this->get_register($_['id']);
 		}
 
@@ -723,10 +705,10 @@ class Treatment
 
 		$q = "SELECT id_pago AS id FROM pagos WHERE id_tratamiento = {$this->id} ORDER BY fecha_hora ASC";
 
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		if ($this->db->numRows()) {
-			while ($_ = $this->db->fetchAssoc()) {
+		if (self::DB()->numRows()) {
+			while ($_ = self::DB()->fetchAssoc()) {
 				$this->get_payment($_['id']);
 			}
 		}
@@ -785,31 +767,55 @@ class Treatment
 
 	public function get_history()
 	{
+		// SI EL ID NO ESTA CARGADO
+		if (empty($this->id_tratamiento)) {
+			$this->select('id_historia');
+		}
 		return new History($this->id_historia);
 	}
 
 	public function get_exam()
 	{
+		// SI EL ID NO ESTA CARGADO
+		if (empty($this->id_tratamiento)) {
+			$this->select('id_examen');
+		}
 		return new Exam($this->id_examen);
 	}
 
 	public function get_fullDiagnostic()
 	{
+		// SI EL ID NO ESTA CARGADO
+		if (empty($this->id_tratamiento)) {
+			$this->select('id_diagnostico');
+		}
 		return new Diagnostic($this->id_diagnostico);
 	}
 
 	public function get_resume()
 	{
+		// SI EL ID NO ESTA CARGADO
+		if (empty($this->id_tratamiento)) {
+			$this->select('id_resumen');
+		}
 		return new Resume($this->id_resumen);
 	}
 
 	public function get_patient()
 	{
+		// SI EL ID NO ESTA CARGADO
+		if (empty($this->id_tratamiento)) {
+			$this->select('id_paciente');
+		}
 		return new Patient($this->id_paciente);
 	}
 	
 	public function get_odontogram()
 	{
+		// SI EL ID NO ESTA CARGADO
+		if (empty($this->id_tratamiento)) {
+			$this->select('id_odontograma');
+		}
 		return new Odontogram($this->id_odontograma);
 	}
 
@@ -858,7 +864,7 @@ class Treatment
 		// SUMA DE TODOS LOS PAGOS
 		$q = "SELECT SUM(monto) AS acumulado FROM pagos WHERE id_tratamiento = {$this->id}";
 
-		return (int) $this->db->oneFieldQuery($q);
+		return (int) self::DB()->oneFieldQuery($q);
 	}
 
 	/**
@@ -898,5 +904,9 @@ class Treatment
 	{
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return !empty($fieldname) && is_string($fieldname) && preg_match("/^(id_(examen|historia|diagnostico|resumen|odontograma|paciente)|(fecha_hora_inici|estad|presupuest|eliminad)o|tecnica|(descrip|dura)cion)$/i", $fieldname);
+	}
+
+	private static function DB(){
+		return MySQL::getInstance();
 	}
 }

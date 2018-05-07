@@ -1,8 +1,3 @@
-<?php 
-!isset($Patient , $Treatment) && redirect_exit();
-$Exam = $Treatment->get_exam();
-$Exam->select();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
@@ -10,7 +5,7 @@ $Exam->select();
 </div>
 <div class="bar-btn">
 	<div class="container">
-		<a href="<?= $Treatment->url('examen', 'editar') ?>" class="btn btn-primary">EDITAR</a>
+		<a href="<?= $Exam->url('editar') ?>" class="btn btn-primary">EDITAR</a>
 		<a href="<?= $Patient->url('diagnostico') ?>" class="btn btn-default">CANCELAR</a>
 	</div>
 </div>

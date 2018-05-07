@@ -14,7 +14,7 @@ class Page extends Controller{
 		// SI NO ESTAN ESTOS DATOS NO AVANZA
 		if (isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO])){
 			$Patient = get_patient($decrypt_params[PACIENTE]);
-			$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
+			$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
 	
 			$FormValidator = $this->validate_form();
 
@@ -44,7 +44,7 @@ class Page extends Controller{
 		// SI NO ESTAN ESTOS DATOS NO AVANZA
 		if (isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO], $decrypt_params[REGISTRO])){
 			$Patient = get_patient($decrypt_params[PACIENTE]);
-			$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
+			$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
 			$Register = $Treatment->get_register($decrypt_params[REGISTRO]);
 	
 			$FormValidator = $this->validate_form();

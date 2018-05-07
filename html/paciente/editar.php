@@ -1,8 +1,3 @@
-<?php
-!isset($Patient) && redirect_exit();
-!isset($User) && $User = get_user();
-!isset($Treatment) && $Treatment = $Patient->get_treatment();
-?>
 <form action="" method="POST" enctype="multipart/form-data">
 	<div class="bar-btn">
 		<div class="container">
@@ -11,39 +6,53 @@
 			<a class="btn btn-danger btn-ico-delete" href="<?= $Patient->url('eliminar') ?>">ELIMINAR</a>
 		</div>
 	</div>
-	<div class="paciente">
+	<div class="patient">
 		<div class="container">
-			<figure class="paciente-img-wrap">
-				<div class="paciente-img" id="paciente-img">
-					<img src="<?= $Patient->thumb() ?>" alt="<?= $Patient->fullname() ?>" class="img-rounded">
+			<div class="patient-main-data">
+				<div class="patient-main-fields">
+					<label for="patient_apellido" class="form-group m0 clear">
+						<div class="col-xs-4 label">
+							<strong>APELLIDO : </strong>
+						</div>
+						<div class="col-xs-8 field">
+							<input type="text" id="patient_apellido" value="<?= $Patient->apellido ?>" name="apellido">
+						</div>
+					</label>
+					<label for="patient_nombre" class="form-group m0 clear">
+						<div class="col-xs-4 label">
+							<strong>NOMBRE : </strong>
+						</div>
+						<div class="col-xs-8 field">
+							<input type="text" id="patient_nombre" value="<?= $Patient->nombre ?>" name="nombre">
+						</div>
+					</label>
+					<label for="patient_fecha_nacimiento" class="form-group m0 clear">
+						<div class="col-xs-4 label">
+							<strong>NACIMIENTO : </strong>
+						</div>
+						<div class="col-xs-8 field">
+							<input type="text" id="patient_fecha_nacimiento" value="<?= $Patient->fecha_nacimiento ?>" name="fecha_nacimiento" class="input-date">
+						</div>
+					</label>
 				</div>
-				<div>
-					<figcaption>
-						<label for="patient_img" class="btn btn-primary">
-							<input type="file" id="patient_img" class="upload-img-btn" data-target="paciente-img" style="display: none" name="img" />
-							CARGAR FOTO
-						</label>
-						<h5>150 x 150</h5>
-					</figcaption>
-				</div>
-			</figure>
+				<figure class="patient-main-img">
+					<div class="patient-img" id="patient-img">
+						<img src="<?= $Patient->thumb() ?>" alt="<?= $Patient->fullname() ?>" class="img-rounded">
+					</div>
+					<div>
+						<figcaption class="mt5 txt-center">
+							<h5>150 x 150</h5>
+							<label for="patient_img" class="btn btn-primary">
+								<input type="file" id="patient_img" class="upload-img-btn" data-target="patient-img" style="display: none" name="img" />
+								CARGAR FOTO
+							</label>
+						</figcaption>
+					</div>
+				</figure>
+			</div>
+		</div>
+		<div class="container">
 			<div>
-				<label for="patient_apellido" class="form-group m0 clear">
-					<div class="col-xs-4 label">
-						<strong>APELLIDO : </strong>
-					</div>
-					<div class="col-xs-8 field">
-						<input type="text" id="patient_apellido" value="<?= $Patient->apellido ?>" name="apellido">
-					</div>
-				</label>
-				<label for="patient_nombre" class="form-group m0 clear">
-					<div class="col-xs-4 label">
-						<strong>NOMBRE : </strong>
-					</div>
-					<div class="col-xs-8 field">
-						<input type="text" id="patient_nombre" value="<?= $Patient->nombre ?>" name="nombre">
-					</div>
-				</label>
 				<label for="patient_dni" class="form-group m0 clear">
 					<div class="col-xs-4 label">
 						<strong>DNI : </strong>
@@ -81,18 +90,10 @@
 						<strong>SEXO : </strong>
 					</div>
 					<div class="col-xs-8 field field-radio-check">
-						<input type="radio" name="sexo" id="patient_genre_male" <?= checked($Patient->genero == MALE) ?> value="<?= BD_MALE ?>"><label for="patient_genre_male">M</label>
-						<input type="radio" name="sexo" id="patient_genre_female" <?= checked($Patient->genero == FEMALE) ?> value="<?= BD_FEMALE ?>"><label for="patient_genre_female">F</label>
+						<input type="radio" name="sexo" id="patient_genre_male" <?= checked($Patient->sexo == MALE) ?> value="<?= BD_MALE ?>"><label for="patient_genre_male">M</label>
+						<input type="radio" name="sexo" id="patient_genre_female" <?= checked($Patient->sexo == FEMALE) ?> value="<?= BD_FEMALE ?>"><label for="patient_genre_female">F</label>
 					</div>
 				</div>
-				<label for="patient_fecha_nacimiento" class="form-group m0 clear">
-					<div class="col-xs-4 label">
-						<strong>NACIMIENTO : </strong>
-					</div>
-					<div class="col-xs-8 field">
-						<input type="text" id="patient_fecha_nacimiento" value="<?= $Patient->nacimiento ?>" name="fecha_nacimiento" class="input-date">
-					</div>
-				</label>
 				<label for="patient_direccion" class="form-group m0 clear">
 					<div class="col-xs-4 label label-read">
 						<strong>DIRECCIÓN : </strong>
@@ -168,12 +169,12 @@
 			</div>
 		</div>
 	</div>
-	<div class="paciente-tratamiento">
+	<div class="patient-tratamiento">
 		<div class="container">
 			<?php if ($Treatment->estado !== TRATAMIENTO_ACTIVO): ?>
-			<div class="notification mb5">
-				<span>Para iniciar un tratamiento nuevo o eliminar, primero es necesario <strong>FINALIZAR</strong> o <strong>INACTIVAR</strong> el corriente.</span>
-			</div>
+				<div class="notification mb5">
+					<span>Para iniciar un tratamiento nuevo o eliminar, primero es necesario <strong>FINALIZAR</strong> o <strong>INACTIVAR</strong> el corriente.</span>
+				</div>
 			<?php endif ?>
 			<label class="col-xs-10 col-sm-4 label label-read" for="treatment_duracion"><strong>DURACION DEL TRATAMIENTO : </strong></label> 
 			<div class="col-xs-2 col-sm-8 field field-read">
@@ -206,7 +207,7 @@
 					<strong>FECHA INICIO : </strong>
 				</div>
 				<div class="col-xs-8 field">
-					<input type="text" id="treatment_inicio" value="<?= $Treatment->inicio ?>" name="fecha_hora_inicio" class="input-date">
+					<input type="text" id="treatment_inicio" value="<?= $Treatment->fecha_hora_inicio ?>" name="fecha_hora_inicio" class="input-date">
 				</div>
 			</label>
 			<label for="treatment_presupuesto" class="form-group m0 clear">
@@ -224,9 +225,9 @@
 				</div>
 			</label>
 			<?php if ($Treatment->estado !== TRATAMIENTO_ACTIVO): ?>
-			<div class="clear p10 txt-center">
-				<a class="btn btn-primary" href="<?= $Patient->url('tratamiento/nuevo') ?>">INICIAR NUEVO TRATAMIENTO</a>
-			</div>
+				<div class="clear p10 txt-center">
+					<a class="btn btn-primary" href="<?= $Patient->url('tratamiento/nuevo') ?>">INICIAR NUEVO TRATAMIENTO</a>
+				</div>
 			<?php endif ?>
 		</div>
 	</div>

@@ -2,9 +2,27 @@
 class Page extends Controller {
 
 	function __construct() {
-		parent::__construct(
-			array('compartir/editar/[:encode]', 'editar'),
-			array('compartir/[:encode]', 'eliminar'));
+		try{
+			parent::__construct(
+				array('compartir/editar/[:encode]', 'editar'),
+				array('compartir/[:encode]', 'eliminar')
+			);
+		} 
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (DentalException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+		}
+		finally{
+			redirect_exit();
+		}
 	}
 
 	public function eliminar($id) 
@@ -26,31 +44,14 @@ class Page extends Controller {
 	{
 		$decrypt_params = decrypt_params($id);
 
-		dump($decrypt_params);
-
-		// $User = get_user();
-
-		// if (!empty($decrypt_params[COMPARTIR])) {
-		// 	$User->edit_share_patient($_POST) && add_msg_flash('SE CAMBIARON LAS SECCIONES COMPARTIDAS DEL PACIENTE.');
-		// }
-		// else{
-		// 	add_error_flash('NO SE ENCUENTRA EL PACIENTE SOLICITADO.');
-		// }
-
-		// redirect_exit('/compartir');
-
-   //      if (empty($decrypt_params[VINCULO]) ||empty($decrypt_params[PACIENTE])) {
-			// add_error_flash("NO SE ENCUENTRA AL PACIENTE O EL USUARIO INDICADO.");
-   //      }
-   //      else{
-
-        // }
 		$User = get_user();
+		
 		$Patient = get_patient($decrypt_params[PACIENTE]);
 		
 		$User->edit_share_patient($decrypt_params[COMPARTIR], $_POST);
 
+		add_msg_flash('SE EDITARON LOS PERMISOS, CON EXITO.');
+		
 		redirect_exit("/paciente/compartido/{$id}");
-
 	}
 }

@@ -8,21 +8,16 @@ class Page extends Controller{
             array('tratamiento/nuevo/[:encode]', 'nuevo'));
     }
     
-    public function main($id) {
-        echo $id;
+    public function main($encode) {
+        echo $encode;
     }
 
-    public function editar($id) 
+    public function editar($encode) 
     {
-        $decrypt_params = decrypt_params($id);
-        // SI NO ESTAN ESTOS DATOS NO AVANZA
-        if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO])){
-            add_error_flash("NO SE PUDO EDITAR EL TRATAMIENTO.");
-            redirect_exit();
-        }
-
-        $Patient = get_patient($decrypt_params[PACIENTE]);
-        $Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
+        // OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+        $Patient = decode_patient($encode);
+        // OBTENGO EL TRATAMIENTO
+        $Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 
         $FormValidator = $this->validate_form();
         
@@ -46,9 +41,9 @@ class Page extends Controller{
         }
     }
 
-    public function nuevo($id) 
+    public function nuevo($encode) 
     {
-        $decrypt_params = decrypt_params($id);
+        $decrypt_params = decrypt_params($encode);
         // SI NO ESTAN ESTOS DATOS NO AVANZA
         if (!isset($decrypt_params[PACIENTE])){
             add_error_flash("NO SE PUDO EDITAR EL TRATAMIENTO.");
@@ -67,7 +62,7 @@ class Page extends Controller{
         // VALIDO EL FORM
         if($FormValidator->validate()){
             $form_data = $FormValidator->input; // POST DATA
-            $Treatment = $Patient->treatment($form_data);
+            $Treatment = $Patient->get_treatment($form_data);
 
             // MENSAJE PARA EL FRONT
             add_msg_flash('SE CREO UN NUEVO TRATAMIENTO CON EXITO.');

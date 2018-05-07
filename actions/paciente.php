@@ -7,54 +7,52 @@ class Page extends Controller{
 		// CUANDO ENVIEN EL ACTION RESTORE LLAMO AL METODO 'restaurar'
 		$method = filter_input(INPUT_POST, 'action') === 'restore' ? 'restaurar' :  'editar';
 		
-		parent::__construct(
-			array('@paciente/([^(nuevo|buscar)]+)$', 'main'),
-			array('paciente/nuevo', 'nuevo'),
-			array('paciente/editar/[:encode]', $method),
-			array('paciente/eliminar/[:encode]', 'eliminar'));
+		try{	
+			parent::__construct(
+				array('@paciente/([^(nuevo|buscar)]+)$', 'main'),
+				array('paciente/nuevo', 'nuevo'),
+				array('paciente/editar/[:encode]', $method),
+				array('paciente/eliminar/[:encode]', 'eliminar')
+			);
+		} 
+		catch (PatientException $e) {
+			add_msg_flash($e->getMessage());
+		}
+		catch (TreatmentException $e) {
+			add_msg_flash($e->getMessage());
+		}
+		catch (DentalException $e) {
+			add_msg_flash($e->getMessage());
+		}
+		catch (Exception $e) {
+			dump($e);
+		}
+		finally{
+			// redirect_exit();
+		}
 	}
 
 	public function editar($encode) 
 	{
-		try {
-			// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
-			$Patient = decode_patient($encode);
-			// VALIDO LOS DATOS, SI HAY ALGO MAL REDIRECT AL PERFIL DEL PACIENTE
-			$FormValidator = $this->validate_form($Patient->url('editar'));
-			// DATOS DEL FORMULARIO
-			$form_data = $FormValidator->input;
-			// SUBO LA IMAGEN, PASO EL FORMULARIO POR REFERENCIA
-			$this->upload_profile_image($form_data);
-			// ACTUALIZO AL PACIENTE CON LOS DATOS DEL FORMULARIO
-			$Patient->update($form_data); 
-			// TRAIGO EL ULTIMO TRATAMIENTO
-			$Tratamiento = $Patient->get_treatment(); 
-			// ACTUALIZO EL TRATAMIENTO CON LOS DATOS DEL FORMULARIO
-			$Tratamiento->update($form_data); 
-			// MENSAJE PARA EL FRONT
-			add_msg_flash('SE REALIZARON LOS CAMBIOS CON EXITO.');
-			// REDIRECT AL PERFIL DEL PACIENTE
-			redirect_exit($Patient->url());
-		}
-		catch (PatientException $e) {
-			// ALGO SALE MAL CON LA CLASE Patient
-			add_msg_flash($e->getMessage());
-		}
-		catch (TreatmentException $e) {
-			// ALGO SALE MAL CON LA CLASE Treatment
-			add_msg_flash($e->getMessage());
-		}
-		catch (DentalException $e) {
-			// ALGO SALE MAL EN LA CLASE Dental O EN  LA CARGA DE LA FOTO 
-			add_msg_flash($e->getMessage());
-		}
-		catch (Exception $e) {
-			add_msg_flash("OCURRIO UN ERROR MIENTRAS SE GENERABA UN NUEVO PACIENTE");
-		}
-		finally{
-			// VOY AL HOME
-			redirect_exit();
-		}
+
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// VALIDO LOS DATOS, SI HAY ALGO MAL REDIRECT AL PERFIL DEL PACIENTE
+		$FormValidator = $this->validate_form($Patient->url('editar'));
+		// DATOS DEL FORMULARIO
+		$form_data = $FormValidator->input;
+		// SUBO LA IMAGEN, PASO EL FORMULARIO POR REFERENCIA
+		$this->upload_profile_image($form_data);
+		// ACTUALIZO AL PACIENTE CON LOS DATOS DEL FORMULARIO
+		$Patient->update($form_data); 
+		// TRAIGO EL ULTIMO TRATAMIENTO
+		$Tratamiento = $Patient->get_treatment(); 
+		// ACTUALIZO EL TRATAMIENTO CON LOS DATOS DEL FORMULARIO
+		$Tratamiento->update($form_data); 
+		// MENSAJE PARA EL FRONT
+		add_msg_flash('SE REALIZARON LOS CAMBIOS CON EXITO.');
+		// REDIRECT AL PERFIL DEL PACIENTE
+		redirect_exit($Patient->url());
 	}
 
 	public function nuevo() 
@@ -62,47 +60,26 @@ class Page extends Controller{
 		// VALIDO LOS DATOS, SI HAY ALGO MAL REDIRECT AL HOME
 		$FormValidator = $this->validate_form();
 
-		try {
-			// DATOS DEL FORMULARIO
-			$form_data = $FormValidator->input;
-			// SUBO LA IMAGEN
-			$this->upload_profile_image($form_data);
-			// AGREGO EL ID DEL USUARIO A LA DATA DEL FORMULARIO, PARA LA CARGA EN BBDD
-			$form_data['id_usuario'] = get_user()->id;
-			// CREO EL PACIENTE CON LOS DATOS DEL FORMULARIO
-			$Patient = new Patient($form_data);
-			// TODO ESTA BIEN CREO EL TRATAMIENTO
-			if ($Patient->id) {
-				// CREO EL TRTAMIENTO CON LOS DATOS DEL FORMULARIO
-				$Tratamiento = $Patient->create_treatment($form_data);
-				
-				add_msg_flash('SE GUARDO EL NUEVO PACIENTE.');
-				
-				redirect_exit($Patient->url());
-			}
-			else{
-				// ANTES DE LLEGAR ACA TENDRIA QUE SALTAR UNA PatientException PERO POR LAS DUDAS
-				throw new Exception();
-			}
-		} 
-		catch (PatientException $e) {
-			// ALGO SALE MAL CON EL CONSTRUCTOR DE LA CLASE Patient
-			add_msg_flash($e->getMessage());
+		// DATOS DEL FORMULARIO
+		$form_data = $FormValidator->input;
+		// SUBO LA IMAGEN
+		$this->upload_profile_image($form_data);
+		// AGREGO EL ID DEL USUARIO A LA DATA DEL FORMULARIO, PARA LA CARGA EN BBDD
+		$form_data['id_usuario'] = get_user()->id;
+		// CREO EL PACIENTE CON LOS DATOS DEL FORMULARIO
+		$Patient = new Patient($form_data);
+		// TODO ESTA BIEN CREO EL TRATAMIENTO
+		if ($Patient->id) {
+			// CREO EL TRTAMIENTO CON LOS DATOS DEL FORMULARIO
+			$Tratamiento = $Patient->create_treatment($form_data);
+
+			add_msg_flash('SE GUARDO EL NUEVO PACIENTE.');
+
+			redirect_exit($Patient->url());
 		}
-		catch (TreatmentException $e) {
-			// ALGO SALE MAL CON EL CONSTRUCTOR DE LA CLASE Treatment
-			add_msg_flash($e->getMessage());
-		}
-		catch (DentalException $e) {
-			// ALGO SALE MAL EN LA CLASE Dental O EN  LA CARGA DE LA FOTO 
-			add_msg_flash($e->getMessage());
-		}
-		catch (Exception $e) {
-			add_msg_flash("OCURRIO UN ERROR MIENTRAS SE GENERABA UN NUEVO PACIENTE");
-		}
-		finally{
-			// VOY AL HOME
-			redirect_exit();
+		else{
+			// ANTES DE LLEGAR ACA TENDRIA QUE SALTAR UNA PatientException PERO POR LAS DUDAS
+			throw new Exception();
 		}
 	}
 
@@ -110,50 +87,31 @@ class Page extends Controller{
 	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
-		
-		try {
-			// UPDATE EN LA BBDD COMO ELIMINADO
-			$Patient->delete();
-			// MENSAJE PARA EL FRONT
-			add_msg_flash('PACIENTE ELIMINADO.');
-		} 
-		catch (PatientException $e) {
-			// FALTA EL ID, EN EL OBJETO PATIENT
-			add_msg_flash($e->getMessage());
-		}
-		catch (Exception $e) {
-			// ALGO SALIO MAL
-			add_msg_flash('OCURRIO UN ERROR AL ELIMINAR EL PACIENTE.');
-		}
-		finally{
-			redirect_exit();
-		}
+		// UPDATE EN LA BBDD COMO ELIMINADO
+		$Patient->delete();
+		// MENSAJE PARA EL FRONT
+		add_msg_flash('PACIENTE ELIMINADO.');
+
+		redirect_exit();
 	}
 
 	public function restaurar($encode)
 	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
-		try {
-			$Patient->restore();
+		
+		$Patient->restore();
 
-			// MENSAJE PARA EL FRONT
-			add_msg_flash('PACIENTE RESTAURADO.');
-			// REDIRJO AL PERFIL DEL PACIENTE            
-			redirect_exit($Patient->url());
-		} 
-		catch (PatientException $e) {
-			// FALTA EL ID, EN EL OBJETO PATIENT
-			add_msg_flash($e->getMessage());
-			redirect_exit();
-		}
-
+		// MENSAJE PARA EL FRONT
+		add_msg_flash('PACIENTE RESTAURADO.');
+		// REDIRJO AL PERFIL DEL PACIENTE            
+		redirect_exit($Patient->url());
 	}
 
 	private function upload_profile_image(&$form_data)
 	{
 		// SI NO ESTA LA IMAGEN 
-		if (!empty($_FILES['img']['name'])) {
+		if (empty($_FILES['img']['name'])) {
 			return false;
 		}
 		// CARGO LA CLASE 'Upload'
@@ -185,7 +143,7 @@ class Page extends Controller{
 	{
 		// INSTACIO 
 		$FormValidator = load_class('FormValidator');
-		
+
 		// AGREGO LAS REGLAS DE VALIDACION
 		$FormValidator->add_rule("nombre", "REQ&alpha_s");
 		$FormValidator->add_rule("apellido", "REQ&alpha_s");
@@ -209,9 +167,9 @@ class Page extends Controller{
 		// VALIDO, SI HAY ALGUN ERROR LO REDIRIJO
 		if(!$FormValidator->validate()){
 			$errors = implode('<br/>', $FormValidator->errors);
-			
+
 			add_error_flash($errors);
-			
+
 			redirect_exit($redirect);
 		}
 

@@ -28,48 +28,41 @@ class Page extends Controller{
 		include 'html/compartir/nuevo.php';
 	}
 	
-	public function paciente($id) 
+	public function paciente($encode) 
 	{
-		$decrypt_params = decrypt_params($id);
-
-		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE])){
-			add_error_flash("NO SE ENCUENTRA AL PACIENTE INDICADO.");
-			redirect_exit();
-		}
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// DEL PACIENTE OBTENGO EL TRATAMIENTO
 		$Treatment = $Patient->get_treatment();
-
+		// HTML
 		include 'html/compartir/paciente.php';
 	}
 
-	public function usuarios($id)
+	public function usuarios($encode)
 	{
-		$decrypt_params = decrypt_params($id);
+		// USUARIO
 		$User = get_user();
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// USAURIOS DISPONIBLES CON QUIEN COMPARTIR EL PACIENTE
 		$available_users = $User->get_available_users($Patient);
-
+		// HTML
 		include 'html/compartir/usuarios.php';
 	}
 
 	public function out($encode)
 	{
-		$decrypt_params = decrypt_params($encode);
-
-        if (empty($decrypt_params[VINCULO]) ||empty($decrypt_params[PACIENTE])) {
-			add_error_flash("NO SE ENCUENTRA AL PACIENTE O EL USUARIO INDICADO.");
-        }
-        else{
-			$User = get_user();
-			$Patient = get_patient($decrypt_params[PACIENTE]);
-
-			$User->share_patient($Patient, $decrypt_params[VINCULO], $_GET);
-        }
-
-
+		// USUARIO
+		$User = get_user();
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// ACCESOS QUE SE LE VAN A PERMITIR AL USUARIO
+		$access = empty($_GET['access']) || !is_array($_GET['access'])? null : $_GET['access'];
+		// VINCULO ENTRE USUARIOS
+		$link = get_from_encode($encode, VINCULO);
+		// COMPARTO AL PACIENTE 
+		$User->share_patient($Patient, $link, $access);
+		// VUELVO A LA VISTA PRINCIPAÑ
         $this->main();
 	}
 }

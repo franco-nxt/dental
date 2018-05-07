@@ -138,17 +138,6 @@ class Photo
 		'eofrenteconsonrisa'
 	);
 
-	public function __get($name) {
-		if ($name == 'db') {
-			return MySQL::getInstance();
-		} 
-		elseif (isset($this->{$name})) {
-			return $this->{$name};
-		}
-
-		return null;
-	}
-
 	public function __construct($id = null) 
 	{
 		// SI id ES UN ARRAY ES PARA INSERTAR UNO NUEVO
@@ -157,13 +146,12 @@ class Photo
 		}
 		elseif ( is_numeric($id) ) {
 			$this->id = $id;
-
-			$this->select(array('fecha_hora', 'etapa', 'cantidad', 'url'));
 		}
 		else{
 			// EL PARAMETRO NO ES VALIDO
 			throw new PhotoException('OCURRIO UN ERROR CON LA SESION FOTOGRAFICA, VUELVA A INTENTARLO OTRA VEZ.');
 		}
+		$this->select(array('fecha_hora', 'etapa', 'cantidad', 'url'));
 	}
 
 	/**
@@ -196,9 +184,9 @@ class Photo
 		// QUERY FINALE
 		$q = stripslashes("INSERT INTO fotografias (id_tratamiento, fecha_hora, datos_json, etapa, eliminado) VALUES ({$id_tratamiento}, '{$date}', '{$datos_json}', {$etapa}, {$eliminado})");
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// ASIGNO EL ID A LA INSTANCIA
-		$this->id = $this->db->lastID();
+		$this->id = self::DB()->lastID();
 	}
 
 	/**
@@ -236,7 +224,7 @@ class Photo
 				break;
 			}
 
-			if (self::valid_field($field)) {
+			if ($field == '*' || self::valid_field($field)) {
 				$keys[] = $field;
 			}
 		}
@@ -247,7 +235,7 @@ class Photo
 			// ARMO LA QUERY
 			$q = "SELECT {$unique_implode} FROM fotografias WHERE id_fotografia = {$this->id}";
 			// EJECUTO
-			$_ = $this->db->oneRowQuery($q);
+			$_ = self::DB()->oneRowQuery($q);
 
 			if (isset($_['datos_json'])) {
 				// DECODE DEL OBJETO
@@ -274,7 +262,7 @@ class Photo
 				// EXTRAIGO EL TRATAMIENTO
 				$this->Treatment = new Treatment($_['id_tratamiento']);
 				// CON ESTOS DATOS YA PUEDO CREAR LA URL PARA LA SESSION
-				$this->url = crypt_params(array(FOTOGRAFIA => $this->id, TRATAMIENTO => $this->Treatment->id, PACIENTE => $this->Treatment->paciente->id));
+				$this->url = crypt_params(array(FOTOGRAFIA => $this->id, TRATAMIENTO => $this->Treatment->id, PACIENTE => $this->Treatment->id_paciente));
 			}
 
 			if (isset($_['eliminado'])) {
@@ -340,7 +328,7 @@ class Photo
 			// ARMO LA QUERY 
 			$q = stripslashes("UPDATE fotografias SET {$implode} WHERE id_fotografia = '{$this->id}'");
 			// Y EJECUTO
-			$this->db->query($q);
+			self::DB()->query($q);
 		}
 		// ATUALIZO LA INSTANCIA
 		return $this->select();
@@ -361,7 +349,7 @@ class Photo
         // QUERY PARA ELIMINAR
         $q = "UPDATE fotografias SET eliminado = 1 WHERE id_fotografia = '{$this->id}'";
         // EJECUTO LA QUERY
-        $this->db->query($q);
+        self::DB()->query($q);
     }
 
 	/**
@@ -437,7 +425,7 @@ class Photo
 		// ARMO LA QUERY
 		$q = stripslashes("UPDATE fotografias SET datos_json = '{$datos_json}' WHERE id_fotografia = {$this->id}");
 		// EJECUTO
-		return $this->db->query($q);
+		return self::DB()->query($q);
 	}
 
 	/**
@@ -477,5 +465,10 @@ class Photo
 		else{
 			throw new PhotoException('NO ENCONTRAMOS EL MODELO SOLICITADO.');
 		}
+	}
+
+	private static function DB()
+	{
+		return MySQL::getInstance();
 	}
 }

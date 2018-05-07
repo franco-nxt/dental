@@ -17,7 +17,7 @@
 <?php endif ?>
 <div class="container">
 	<div class="row pt5">
-		<div class="form-group clear col-sm-6">
+		<div class="form-group clear col-sm-6 m0">
 			<div class="col-xs-3 label label-read">
 				<strong>FECHA : </strong>
 			</div>
@@ -25,7 +25,7 @@
 				<span><?= $Photo->fecha_hora ?></span>
 			</div>
 		</div>
-		<div class="form-group clear col-sm-6">
+		<div class="form-group clear col-sm-6 m0">
 			<div class="col-xs-3 label label-read">
 				<strong>ETAPA : </strong>
 			</div>

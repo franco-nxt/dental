@@ -1,24 +1,44 @@
-<?php
-!isset($Patient) && redirect_exit();
-!isset($User) && $User = get_user();
-!isset($Treatment) && $Treatment = $Patient->get_treatment();
-?>
-<div class="paciente">
+<div class="patient">
 	<div class="container">
-		<figure><img src="<?= $Patient->thumb() ?>" alt="<?= $Patient->fullname() ?>" class="paciente-img img-rounded"></figure>
+		<div class="patient-main-data">
+			<div class="patient-main-fields">
+				<div class="col-xs-4 label label-read">
+					<strong>APELLIDO : </strong>
+				</div>
+				<div class="col-xs-8 field field-read">
+					<span><?= $Patient->apellido ?></span>
+				</div>
+				<div class="col-xs-4 label label-read">
+					<strong>NOMBRE : </strong>
+				</div>
+				<div class="col-xs-8 field field-read">
+					<span><?= $Patient->nombre ?></span>
+				</div>
+				<div class="col-xs-5 col-sm-4 label label-read">
+					<strong>NACIMIENTO : </strong>
+				</div>
+				<div class="col-xs-7 col-sm-8 field field-read">
+					<span><?= $Patient->fecha_nacimiento ?></span>
+				</div>
+			</div>
+			<figure class="patient-main-img">
+				<img src="<?= $Patient->thumb() ?>" alt="<?= $Patient->fullname() ?>" class="patient-img img-rounded" />
+			</figure>
+		</div>
+	</div>
+	<div class="patient-menu">
+		<ul class="container">
+			<?php if (!empty($allowed_sections['fotografias'])): ?>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('fotografias') ?>">FOTOGRAF&Iacute;AS</a></li>
+			<?php endif; if (!empty($allowed_sections['radiografias'])): ?>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('radiografias') ?>">RADIOGRAF&Iacute;AS</a></li>
+			<?php endif; if (!empty($allowed_sections['cefalometrias'])): ?>
+			<li class="patient-menu-item"><a href="<?= $Patient->url('cefalometrias') ?>">CEFALOMET&Iacute;AS</a></li>
+			<?php endif ?>
+		</ul>
+	</div>
+	<div class="container">
 		<div>
-			<div class="col-xs-4 label label-read">
-				<strong>APELLIDO : </strong>
-			</div>
-			<div class="col-xs-8 field field-read">
-				<span><?= $Patient->apellido ?></span>
-			</div>
-			<div class="col-xs-4 label label-read">
-				<strong>NOMBRE : </strong>
-			</div>
-			<div class="col-xs-8 field field-read">
-				<span><?= $Patient->nombre ?></span>
-			</div>
 			<div class="col-xs-4 label label-read">
 				<strong>DNI : </strong>
 			</div>
@@ -65,7 +85,7 @@
 		</div>
 	</div>
 </div>
-<div class="paciente-tratamiento">
+<div class="patient-tratamiento">
 	<div class=" container">
 		<div class="col-xs-10 col-sm-4 label label-read">
 			<strong>DURACION DEL TRATAMIENTO : </strong> 
@@ -116,11 +136,4 @@
 			<span><?= $Treatment->descripcion ?></span>
 		</div>
 	</div>
-</div>
-<div class="container">
-	<ul class="paciente-menu">
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('fotografias') ?>">FOTOGRAF&Iacute;AS</a></li>
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('radiografias') ?>">RADIOGRAF&Iacute;AS</a></li>
-		<li class="paciente-menu-item"><a href="<?= $Patient->url('cefalometrias') ?>">CEFALOMET&Iacute;AS</a></li>
-	</ul>
 </div>

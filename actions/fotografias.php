@@ -8,9 +8,9 @@ class Page extends Controller{
 			array('fotografias/editar/[:encode]', 'editar')); // EDITO UNA SESSION DE FOTOS
 	}
 
-	public function editar($id)
+	public function editar($encode)
 	{
-		$decrypt_params = decrypt_params($id);
+		$decrypt_params = decrypt_params($encode);
 		// SI NO ESTAN ESTOS DATOS NO AVANZA
 		if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO], $decrypt_params[FOTOGRAFIA])){
 			add_error_flash("NO SE PUDO CARGAR LA SESION DE CEFALOMETR&Iacute;AS.");
@@ -19,9 +19,9 @@ class Page extends Controller{
 
 		$Form = $this->load_form();
 
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
-		$Photo = $Treatment->get_photo($decrypt_params[FOTOGRAFIA]);
+		$Patient = decode_patient($decrypt_params);
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
 		
 		if ($Form->input('action') == 'delete') {
 			$Photo->delete();
@@ -29,10 +29,12 @@ class Page extends Controller{
 			add_msg_flash('SE ELIMINO LA SESION DE FOTOGRAF&Iacute;AS.');
 			redirect_exit($Patient->url('fotografias'));
 		}
-
+		// SI APARECE ALGUNA ALGUNA IMAGEN A ELIMINAR
 		$trash = filter_input(INPUT_POST, 'trash', FILTER_DEFAULT , FILTER_REQUIRE_ARRAY);
 
-		$Photo->trash($trash);
+		if (!empty($trash)) {
+			$Photo->trash($trash);
+		}
 
 		$files = $this->upload_files($trash);
 		$data = $Form->input;
@@ -47,9 +49,9 @@ class Page extends Controller{
 		redirect_exit($Photo->url('ver'));
 	}
 
-	public function nueva($id)
+	public function nueva($encode)
 	{
-		$decrypt_params = decrypt_params($id);
+		$decrypt_params = decrypt_params($encode);
 		// SI NO ESTAN ESTOS DATOS NO AVANZA
 		if (!isset($decrypt_params[PACIENTE], $decrypt_params[MODELO])){
 			add_error_flash("NO SE PUDO CARGAR LA SESION DE FOTOGRAF&Iacute;AS.");
@@ -75,10 +77,8 @@ class Page extends Controller{
 
 		$Photo = $Treatment->create_photo($data);
 
-		if ($Photo->id) {
-			add_msg_flash('SESION DE FOTOGRAF&Iacute;AS CREADA CON EXITO.');
-			redirect_exit($Photo->url('ver'));
-		}
+		add_msg_flash('SESION DE FOTOGRAF&Iacute;AS CREADA CON EXITO.');
+		redirect_exit($Photo->url('ver'));
 	}
 
 	private function load_form()

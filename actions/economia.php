@@ -3,58 +3,69 @@
 class Page extends Controller{
 
 	public function __construct() {
-		parent::__construct(
-			array('economia/nuevo/[:encode]', 'nuevo'),
-			array('economia/ver/[:encode]', 'ver'));
-	}
-
-	public function nuevo($id)
-	{
-		$decrypt_params = decrypt_params($id);
-		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE])){
-			add_error_flash("NO SE ENCUENTRA LA SECCI&Oacute;N ECONOMIA PARA EL PACIENTE.");
+		try{
+			parent::__construct(
+				array('economia/nuevo/[:encode]', 'nuevo'),
+				array('economia/ver/[:encode]', 'ver')
+			);
+		} 
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (PaymentException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+		}
+		finally{
 			redirect_exit();
 		}
-		$Patient = get_patient($decrypt_params[PACIENTE]);
+	}
 
-        $FormValidator = load_class('FormValidator');
-        
-        $FormValidator->add_rule("monto", "REQ&greaterthan=0");
-        $FormValidator->add_rule("motivo", "alnum_s&maxlen=200");
-        $FormValidator->add_rule("anotaciones", "alnum_s&maxlen=200");
+	public function nuevo($encode)
+	{
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+
+		$FormValidator = load_class('FormValidator');
+
+		$FormValidator->add_rule("monto", "REQ&greaterthan=0");
+		$FormValidator->add_rule("motivo", "alnum_s&maxlen=200");
+		$FormValidator->add_rule("anotaciones", "alnum_s&maxlen=200");
 
         // VALIDO EL FORM
-        if(!$FormValidator->validate()){
+		if(!$FormValidator->validate()){
 			add_error_flash(implode("<br/>", $FormValidator->errors));
 			redirect_exit($Patient->url('economia'));
-        }
-        else{
+		}
+		else{
 			$Treatment = $Patient->get_treatment();
+			dump($Treatment);
 			$Payment = $Treatment->create_payment($FormValidator->input);
-			add_msg_flash("PAGO REGISTRADO.");
-			redirect_exit($Payment->url());
-        }
+			// add_msg_flash("PAGO REGISTRADO.");
+			// redirect_exit($Payment->url());
+		}
 	}
 
-	public function ver($id)
+	public function ver($encode)
 	{
-		
-		$decrypt_params = decrypt_params($id);
-		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO], $decrypt_params[PAGO])){
-			add_error_flash("NO SE ENCUENTRA LA SECCI&Oacute;N ECONOMIA PARA EL PACIENTE.");
-			redirect_exit();
-		}
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
-		$Payment = $Treatment->get_payment($decrypt_params[PAGO]);
-
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// OBTENGO EL TRATAMIENTO
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		// OBTENGO EL PAGO
+		$Payment = $Treatment->get_payment(get_from_encode($encode, PAGO));
+		// LA UNICA ACCION POR LA QUE LLEGO ACA ES PARA ELIMINARLO
 		$Payment->delete();
+		// AHORA HAY QUE HACER UNA BALANCE
 		$Treatment->balancear();
-
+		// MENSJAE PARA EL FORNT
 		add_msg_flash("PAGO ELIMINADO.");
+		// REDIRIJO
 		redirect_exit($Patient->url('economia'));
 	}
 }

@@ -9,13 +9,13 @@ $Resume = $Treatment->get_resume()->select();
 </div>
 <div class="bar-btn">
 	<div class="container">
-		<a href="<?= $Treatment->url('resumen', 'editar') ?>" class="btn btn-primary">EDITAR</a>
+		<a href="<?= $Resume->url('editar') ?>" class="btn btn-primary">EDITAR</a>
 		<a href="<?= $Patient->url('diagnostico') ?>" class="btn btn-default">CANCELAR</a>
 	</div>
 </div>
 <div class="container p5">
 		<div class="bar-bordered">
-			<span><?= $Treatment->inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+			<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
 		</div>
 	<div class="bar-bordered clear mb5">
 		<strong>RESUMEN DIAGNOSTICO</strong>

@@ -26,12 +26,12 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $photos = $Treatment->get_radiographies() ?>
-				<?php if (count($photos)): foreach ($photos as $Photo) : ?>
+				<?php $radiographies = $Treatment->get_radiographies() ?>
+				<?php if (count($radiographies)): foreach ($radiographies as $Radiographie) : ?>
 				<tr>
-					<td><a href="<?= $Photo->url('ver') ?>" class="block nexa-l p-xs"><?= $Photo->fecha_hora ?></a></td>
-					<td><a href="<?= $Photo->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $Photo->cantidad ?></a></td>
-					<td><a href="<?= $Photo->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $Photo->etapa ?></a></td>
+					<td><a href="<?= $Radiographie->url('ver') ?>" class="block nexa-l p-xs"><?= $Radiographie->fecha_hora ?></a></td>
+					<td><a href="<?= $Radiographie->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $Radiographie->cantidad ?></a></td>
+					<td><a href="<?= $Radiographie->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $Radiographie->etapa ?></a></td>
 				</tr>
 				<?php endforeach;else: ?>
 				<tr class="tr-void">

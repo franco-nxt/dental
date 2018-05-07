@@ -3,9 +3,27 @@
 class Page extends Controller{
 
 	public function __construct() {
-		parent::__construct(
-			array('cefalometrias/nueva/[:encode]', 'nueva'), // CREO UNA SESSION DE FOTOS NUEVAS
-			array('cefalometrias/editar/[:encode]', 'editar')); // EDITO UNA SESSION DE FOTOS
+		try{
+			parent::__construct(
+				array('cefalometrias/nueva/[:encode]', 'nueva'),
+				array('cefalometrias/editar/[:encode]', 'editar')
+			);
+		} 
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (CephalometryException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+		}
+		finally{
+			redirect_exit();
+		}
 	}
 
 	public function editar($id)
@@ -21,7 +39,7 @@ class Page extends Controller{
 
 
 		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
+		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
 		$Cephalometry = $Treatment->get_cephalometry($decrypt_params[CEFALOMETRIA]);
 		
 		if ($Form->input('action') == 'delete') {

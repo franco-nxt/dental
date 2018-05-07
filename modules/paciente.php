@@ -1,5 +1,4 @@
 <?php 
-
 class Page extends Controller{
 
 	public function __construct() 
@@ -17,22 +16,25 @@ class Page extends Controller{
 
 	public function main($encode) 
 	{
+		// OBTENGO EL PACIENTE
+        $Patient = decode_patient($encode)->select();
+        // SACO LOS PARAMETROS ENCODEADO
 		$decrypt_params = decrypt_params($encode);
+		// SI VIENE UN ID DE TRATAMIENTO INSTANCIO SI NO INSTANCIO EL ULTIMO TRATAMIENTO
+		$treatment_id = empty($decrypt_params[TRATAMIENTO]) ? null : $decrypt_params[TRATAMIENTO];
+	
+		$Treatment = $Patient->get_treatment($treatment_id)->select();
 
-        $Patient = decode_patient($encode);
-
-        if (empty($decrypt_params[TRATAMIENTO])) {
-			$Treatment = $Patient->get_treatment();
-        }
-        else{
-			$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
-        }
-		// SI EL USUARIO ES EL DUEÑO
 		if($Patient->check_user()){
+			// SI EL USUARIO ES EL DUEÑO
 			_global('edit-patient', $Patient->url('editar')); // <- GLOBAL PARA QUE EL BOTON DE EDITAR APAREZCA EN LA BARRA BLANCA de html/index.php
+			
 			include 'html/paciente/main.php';
 		}
 		else{
+			// SECCIONES COMPARTIDAS DESDE OTRO USUARIO
+			$allowed_sections = $Patient->get_allowed_sections();
+
 			include 'html/paciente/shared.php';
 		}
 	}
@@ -40,13 +42,14 @@ class Page extends Controller{
 	public function editar($encode) 
 	{
 		$User = get_user();
-        $Patient = decode_patient($encode);
-
+        $Patient = decode_patient($encode)->select();
 
 		if(!$Patient->check_user($User->id)){
 			add_error_flash('NO TIENE PERMISOS PARA EDITAR ESTE PACIENTE.');
 			redirect_exit($Patient->url());
 		}
+
+		$Treatment = $Patient->get_treatment()->select();
 
 		if (!$Patient->eliminado) {
 			include 'html/paciente/editar.php';
@@ -70,22 +73,24 @@ class Page extends Controller{
 
 	public function compartido($encode) 
 	{
-        $Patient = decode_patient($encode);
+        $Patient = decode_patient($encode)->select();
 
-		$shared = $Patient->get_shared(get_from_encode($encode, COMPARTIR));
+		$shared = $Patient->get_shared_sections(get_from_encode($encode, COMPARTIR));
 		
 		include 'html/paciente/compartido.php';
 	}
 
 	public function eliminar($encode)
 	{
-        $Patient = decode_patient($encode);
+        $Patient = decode_patient($encode)->select();
 
 		if(!$Patient->check_user()){
 			add_error_flash('NO TIENE PERMISOS PARA ELIMINAR ESTE PACIENTE.');
 			redirect_exit($Patient->url());
 		}
 
+		$Treatment = $Patient->get_treatment()->select();
+		
 		include 'html/paciente/eliminar.php';
 	}
 }

@@ -5,6 +5,11 @@
 class Radiographie
 {
 	/**
+	 * @var id
+	 */
+	public $id;
+
+	/**
 	 * @var Treatment
 	 */
 	public $Treatment;
@@ -113,17 +118,6 @@ class Radiographie
         'trx6_'
     );
 
-	public function __get($name) {
-		if ($name == 'db') {
-			return MySQL::getInstance();
-		} 
-		elseif (isset($this->{$name})) {
-			return $this->{$name};
-		}
-
-		return null;
-	}
-
 	public function __construct($id = null) 
 	{
 		// SI id ES UN ARRAY ES PARA INSERTAR UNO NUEVO
@@ -171,9 +165,9 @@ class Radiographie
 		// QUERY FINALE
 		$q = stripslashes("INSERT INTO radiografias (id_tratamiento, fecha_hora, datos_json, etapa, eliminado) VALUES ({$id_tratamiento}, '{$date}', '{$datos_json}', {$etapa}, {$eliminado})");
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// ASIGNO EL ID A LA INSTANCIA
-		$this->id = $this->db->lastID();
+		$this->id = self::DB()->lastID();
 	}
 
 	/**
@@ -211,7 +205,7 @@ class Radiographie
 				break;
 			}
 
-			if ($fields == '*' && self::valid_field($field)) {
+			if ($field == '*' || self::valid_field($field)) {
 				$keys[] = $field;
 			}
 		}
@@ -222,8 +216,7 @@ class Radiographie
 			// ARMO LA QUERY
 			$q = "SELECT {$implode_nique} FROM radiografias WHERE id_radiografia = {$this->id}";
 			// EJECUTO
-			$_ = $this->db->oneRowQuery($q);
-
+			$_ = self::DB()->oneRowQuery($q);
 			if (isset($_['datos_json'])) {
 				$json_decode = (array) json_decode($_['datos_json']);
 				$this->session = isset($json_decode['session']) ? (array) $json_decode['session'] : array();
@@ -241,7 +234,7 @@ class Radiographie
 
 			if (isset($_['id_tratamiento'])) {
 				$this->Treatment = new Treatment($_['id_tratamiento']);
-				$this->url = crypt_params(array(RADIOGRAFIA => $this->id, TRATAMIENTO => $this->Treatment->id, PACIENTE => $this->Treatment->paciente->id));
+				$this->url = crypt_params(array(RADIOGRAFIA => $this->id, TRATAMIENTO => $this->Treatment->id, PACIENTE => $this->Treatment->id_paciente));
 			}
 
 			if (isset($_['eliminado'])) {
@@ -288,7 +281,7 @@ class Radiographie
 			// ARMO LA QUERY 
 			$q = "UPDATE radiografias SET {$implode} WHERE id_radiografia = '{$this->id}'";
 			// Y EJECUTO
-			$this->db->query($q);
+			self::DB()->query($q);
 		}
 		// ATUALIZO LA INSTANCIA
 		return $this->select();
@@ -302,7 +295,7 @@ class Radiographie
         // QUERY PARA ELIMINAR
         $q = "UPDATE radiografias SET eliminado = 1 WHERE id_radiografia = '{$this->id}'";
         // EJECUTO LA QUERY
-		return $this->db->query($q);
+		return self::DB()->query($q);
     }
 
 	/**
@@ -333,7 +326,7 @@ class Radiographie
 		// ARMO LA QUERY
 		$q = addslashes("UPDATE radiografias SET datos_json = '{$datos_json}' WHERE id_radiografia = {$this->id}");
 		// EJECUTO
-		return $this->db->query($q);
+		return self::DB()->query($q);
 	}	
 
 	/**
@@ -412,5 +405,10 @@ class Radiographie
 	{
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return !empty($fieldname) && is_string($fieldname) && preg_match('/^(id_tratamiento|fecha_hora|datos_json|e(tapa|liminado))$/', $fieldname);
+	}
+
+	private static function DB()
+	{
+		return MySQL::getInstance();
 	}
 }

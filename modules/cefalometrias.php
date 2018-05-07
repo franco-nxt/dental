@@ -4,69 +4,99 @@ class Page extends Controller{
 
 	public function __construct() {
 		_global('navbar-title', 'CEFALOMETR&Iacute;AS');
-		_global('navbar-back', URL_ROOT);
 
-		parent::__construct(
-			array('cefalometrias/[:encode]', 'main'),
-			array('cefalometrias/nueva/[:encode]', 'nueva'),
-			array('cefalometrias/ver/[:encode]', 'ver'),
-			array('cefalometrias/editar/[:encode]', 'editar'),
-			array('cefalometrias/modelos/[:encode]', 'modelos'));
+		try{
+			parent::__construct(
+				array('cefalometrias/[:encode]', 'main'),
+				array('cefalometrias/nueva/[:encode]', 'nueva'),
+				array('cefalometrias/ver/[:encode]', 'ver'),
+				array('cefalometrias/editar/[:encode]', 'editar'),
+				array('cefalometrias/modelos/[:encode]', 'modelos')
+			);
+		} 
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (CephalometryException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+			redirect_exit();
+		}
 	}
 	
-	public function main($id) {
-		$Patient = get_patient($id);
-		
+	public function main($encode) 
+	{
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// LA VISTA
 		include 'html/cefalometrias/main.php';
 	}
 
-	public function nueva($id) {
-		$decrypt_params = decrypt_params($id);
-		$Patient = get_patient($decrypt_params);
-		
+	public function nueva($encode) 
+	{
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
-
-		$model = $decrypt_params[MODELO];
-		
+		// SACO EL NUMERO DE MODELO EN EL ENCODE
+		$model = get_from_encode($encode, MODELO);
+		// LA VISTA
 		include 'html/cefalometrias/nueva.php';
 	}
 
-	public function modelos($id) {
-		$Patient = get_patient($id);
-		
+	public function modelos($encode) 
+	{
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
-
-		
+		// INCLUDE VISTA		
 		include 'html/cefalometrias/modelos.php';
 	}
 
-	public function ver($id) 
+	public function ver($encode) 
 	{
-		$decrypt_params = decrypt_params($id);
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
-		$Cephalometry = $Treatment->get_cephalometry($decrypt_params[CEFALOMETRIA]);
-		
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
+		$this->check_user($Patient);
+		// OBTENGO EL TRATAMIENTO
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		// OBTENGO LA SESSION DE FOTOS
+		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
+		// LA VISTA
 		include 'html/cefalometrias/ver.php';
 	}
 
-	public function editar($id) 
+	public function editar($encode) 
 	{
-		$decrypt_params = decrypt_params($id);
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
-
-		$Treatment = $Patient->treatment($decrypt_params[TRATAMIENTO]);
-		$Cephalometry = $Treatment->get_cephalometry($decrypt_params[CEFALOMETRIA]);
-		
+		// OBTENGO EL TRATAMIENTO
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		// OBTENGO LA SESSION DE FOTOS
+		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
+		// LA VISTA
 		include 'html/cefalometrias/editar.php';
 	}
 
 	public function check_user($Patient)
 	{
+		// SI EL USUARIO NO LE PERTENECE
 		if(!$Patient->check_user(get_user()->id)){
+			// MENSAJE PARA EL FRONT
 			add_error_flash('NO TIENE PERMISOS PARA OPERAR SOBRE LOS CEFALOMETRIAS DE ESTE PACIENTE.');
+			// REDIRIJO AL PERFIL DEL PACIENTE
 			redirect_exit($Patient->url('cefalometrias'));
 		}
 	}

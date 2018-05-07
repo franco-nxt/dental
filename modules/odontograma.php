@@ -5,68 +5,77 @@ class Page extends Controller{
 	public function __construct() {
 		_global('navbar-title', 'ODONTOGRAMA');
 		_global('navbar-back', URL_ROOT);
-
-		parent::__construct(
-			array('odontograma/[:encode]', 'main'),
-			array('odontograma/ver/[:encode]', 'vista'),
-			array('odontograma/editar/[:encode]', 'editar')
-		);
+		try{
+			parent::__construct(
+				array('odontograma/[:encode]', 'main'),
+				array('odontograma/ver/[:encode]', 'vista'),
+				array('odontograma/editar/[:encode]', 'editar')
+			);
+		} 
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (OdontogramException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (Exception $e) {
+			dump($e);
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+			redirect_exit();
+		}
 	}
 	
-	public function main($id) {
-		$Patient = get_patient($id);
-		// $Treatment = $Patient->get_treatment();
-		
+	public function main($encode) {
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
-
-
+		// SACO EL TRATAMIENTO
+		$Treatment = $Patient->get_treatment();
+		// VISTA		
 		include 'html/odontograma/main.php';
 	}
 
-	public function vista($id) 
+	public function vista($encode) 
 	{
-		$decrypt_params = decrypt_params($id);
-
-		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO])){
-			add_error_flash("NO SE ENCUENTRA AL PACIENTE INDICADO.");
-			redirect_exit();
-		}
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
+		// SI NO ESTAN ESTOS DATOS NO AVANZA		
 		$this->check_user($Patient);
-
-		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
+		// TRATAMIENTO 
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		// // ODONTOGRAMA
 		$Odontogram = $Treatment->get_odontogram();
-
+		// // VISTA
 		include "html/odontograma/ver.php";
 	}
 
-	public function editar($id) 
+	public function editar($encode) 
 	{
-		$decrypt_params = decrypt_params($id);
-
+		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
+		$Patient = decode_patient($encode);
 		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE])){
-			add_error_flash("NO SE ENCUENTRA AL PACIENTE INDICADO.");
-			redirect_exit();
-		}
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		
 		$this->check_user($Patient);
-
-		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
+		// TRATAMIENTO 
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		// ODONTOGRAMA
 		$Odontogram = $Treatment->get_odontogram();
-
+		// VISTA
 		include "html/odontograma/editar.php";
 	}
 
 	public function check_user($Patient)
 	{
-		if(!$Patient->check_user(get_user()->id)){
+		if(!$Patient->check_user()){
+			// EL USUARIO NO TIENE PERMISOS
 			add_error_flash('NO TIENE PERMISOS PARA OPERAR SOBRE EL ODONTOGRAMA DE ESTE PACIENTE.');
+			// LO MANDO AL PERFIL DEL PACIENTE
 			redirect_exit($Patient->url());
 		}
 	}

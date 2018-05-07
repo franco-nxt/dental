@@ -240,8 +240,10 @@ class History
 		if (!$this->id || !is_numeric($this->id)) {
 			throw new HistoryException('OCURRIO UN ERROR, NO SE PUEDEN ACTUALIZAR LA HISTORIA MEDICA Y DENTAL DEL PACIENTE.');
 		}
+
+		$columns = implode(',',self::get_fieldnames());
 		// QUERY QUE TRAE TODOS LOS DATOS
-		$q = "SELECT motivo, tratamiento_medico, enfermedad_sistemica, medicacion_actual, hepatitis, hiv, medicos_observaciones, higene_bucal, ortopedia, ortodoncia, ginjivitis, periodontitis, xerostomia, placa_dormir, ronca_dormir, resfrio_frecuente, respira_boca, dificultad_masticar, dificultad_tragar, fonoaudiologico, pubertad, dolor_articular, ruido_articular, traumatismo_boca_menton, interposicion_labio_inferior, succion_digital, bruxismo, odontologicos_observaciones FROM historia WHERE id_historia = {$this->id}";
+		$q = "SELECT {$columns} FROM historia WHERE id_historia = {$this->id}";
 		// EJECUTO
 		$_ = $this->db->oneRowQuery($q);
 		// FILL SOBRE LA INSTANCIA
@@ -249,7 +251,7 @@ class History
 			// ALGUNOS DATOS VIENEN EN JSON
 			$json = json_decode(utf8_encode($v));
 			// LOS QUE NO SON JSON QUEDAN EN NULL, USO EL VALOR REAL
-			$this->{$k} = empty($json) ? $json : utf8_encode($v);
+			$this->{$k} = $json ? $json : utf8_encode($v);
 		}
 		// RETORNA LA MISMA INSTACIA CON LOS CAMPOS SINCRONIZADOS
 		return $this;
@@ -285,7 +287,7 @@ class History
 			}
 		}
 		// IMPLODE SOBRE LOS CAMPOS;
-		$implode = implode(', ', $q);
+		$implode = implode(', ', $set);
 		// GUARDO LA QUERY
 		$q = utf8_decode("UPDATE historia SET {$implode} WHERE id_historia = {$this->id}");
 		// EJECUTO
@@ -345,11 +347,53 @@ class History
 	 * @param String $fieldname
 	 * @return Bool
 	 */
-	public function valid_field($fieldname)
+	public static function valid_field($fieldname)
 	{
 		$ptrn = '/^(bruxismo|d(ificultad_(mastic|trag)|olor_articul)ar|enfermedad_sistemica|fonoaudiologico|ginjivitis|h(epatitis|i(gene_bucal|v))|interposicion_labio_inferior|m(edic(acion_actual|os_observaciones)|otivo)|o(dontologicos_observaciones|rto(donc|ped)ia)|p(eriodontitis|laca_dormir|ubertad)|r(es(frio_frecuente|pira_boca)|onca_dormir|uido_articular)|succion_digital|tratamiento_(medico|boca_menton)|xerostomia)$/i';
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return (Bool) !empty($fieldname) && is_string($fieldname) && preg_match($ptrn, $fieldname);
+	}
+
+	/**
+	 * Retorna todos los nombres de las columnas
+	 * de la tabla historia.
+	 * 
+	 * @return Array Colleccion de strings.
+	 */
+	public static function get_fieldnames()
+	{
+		$COLUMNS = array(
+			'motivo',
+			'tratamiento_medico',
+			'enfermedad_sistemica',
+			'medicacion_actual',
+			'hepatitis',
+			'hiv',
+			'medicos_observaciones',
+			'higene_bucal',
+			'ortopedia',
+			'ortodoncia',
+			'ginjivitis',
+			'periodontitis',
+			'xerostomia',
+			'placa_dormir',
+			'ronca_dormir',
+			'resfrio_frecuente',
+			'respira_boca',
+			'dificultad_masticar',
+			'dificultad_tragar',
+			'fonoaudiologico',
+			'pubertad',
+			'dolor_articular',
+			'ruido_articular',
+			'traumatismo_boca_menton',
+			'interposicion_labio_inferior',
+			'succion_digital',
+			'bruxismo',
+			'odontologicos_observaciones',
+		);
+
+		return $COLUMNS;
 	}
 
 }

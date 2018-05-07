@@ -68,7 +68,7 @@ class Exam
 			// ALGUNOS DATOS VIENEN EN JSON
 			$json = json_decode(utf8_encode($v));
 			// LOS QUE NO SON JSON QUEDAN EN NULL, USO EL VALOR REAL
-			$this->{$k} = empty($json) ? $json : utf8_encode($v);
+			$this->{$k} = $json ? $json : utf8_encode($v);
 		}
 		// RETORNA LA MISMA INSTACIA CON LOS CAMPOS SINCRONIZADOS
 		return $this;
@@ -125,7 +125,7 @@ class Exam
 	{
 		// ES NECESARIO EL ID DE LA SESSION
 		if (empty($this->id) || !is_numeric($this->id)) {
-			throw new ExamException('ERROR AL CARGAR EL RESUMEN.');
+			throw new ExamException('ERROR AL CARGAR EXAMEN CLINICO Y BUCAL.');
 		}
 		// SI EL ID NO ESTA CARGADO
 		if (empty($this->id_tratamiento)) {

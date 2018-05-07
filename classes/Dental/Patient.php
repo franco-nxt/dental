@@ -155,7 +155,7 @@ class Patient
 	 * 
 	 * @var String
 	 */
-	private $url;
+	public $url;
 	
 	/**
 	 * Array con todos los tratamientos del paciente
@@ -163,30 +163,6 @@ class Patient
 	 * @var Array
 	 */
 	public $treatments = array();
-
-	/**
-	 * Este mtodo magico sirve para llamar a la 
-	 * conexion con BD dentro de la instancia y 
-	 * cuando se usan algunos sinonimos de las propiedades.
-	 *
-	 * @throws PatientException Desde select.
-	 * @param  String $name Nombre de la prop a obtener.
-	 * @return Mixed        
-	 */
-	public function __get($name) {
-		if ($name == 'db') {
-			return MySQL::getInstance();
-		}
-		elseif ($name == 'nacimiento') {
-			return date('d/m/y', strtotime($this->fecha_nacimiento));
-		}
-		elseif ($name == 'genero') {
-			return defined("SEXO_{$this->sexo}") ? constant("SEXO_{$this->sexo}") : null;
-		}
-		else{
-			return $this->select($name)->{$name};
-		}
-	}
 
 	/**
 	 * Crea un Patient nuevo en la BBDD. 
@@ -216,13 +192,13 @@ class Patient
 			// QUERY PARA TRAER A QUIEN REALMENTE LE PERTENCE EL PACIENTE
 			$q = "SELECT id_usuario FROM pacientes WHERE id_paciente = {$id}";
 			// ID DEL USUARIO ASIGANDO A ESTE PACIENTE
-			$owner_user_id = $this->db->oneFieldQuery($q);
+			$owner_user_id = self::DB()->oneFieldQuery($q);
 			// SI SON DISTINTOS USUARIOS
 			if ($owner_user_id != $user_id) {
 				// QUERY PARA CHEQUEAR SI EL PACIENTE ESTA COMPARTIDO A ESTE USUARIO DEDE ALGUN OTRO
 				$q = "SELECT {$id} IN (SELECT C.id_paciente FROM vinculos AS V  LEFT JOIN compartidos AS C ON C.id_vinculo = V.id_vinculo WHERE V.id_usuario_out = {$owner_user_id} AND V.id_usuario_in = {$user_id})";
 				// EJECUTO 
-				$is_shared = (Bool) $this->db->oneFieldQuery($q);
+				$is_shared = (Bool) self::DB()->oneFieldQuery($q);
 				// EL PACIENTE NO ES SUYO NI ESTA COMPARTIDO POR OTRO PACIENTE
 				if (!$is_shared) {
 					throw new PatientException('EL PACIENTE INDICADO NO EXISTE');
@@ -232,6 +208,7 @@ class Patient
 			$this->id = $id;
 			$this->id_usuario = $user_id;
 		}
+		$this->select(array('apellido', 'nombre', 'fecha_nacimiento'));
 		// ASIGNO EL ENCODE QUE LLEVA LA URL
 		$this->url = crypt_params(array(PACIENTE => $this->id));
 	}
@@ -268,7 +245,7 @@ class Patient
 			// SOLO LAS CLAVES DEL ARRAY CORRECTAS VAN A SER GUARDADAS
 			if ($this->valid_field($key) && is_string($value)) {
 				$keys[]   = $key;
-				$values[] = $this->db->escape($value);
+				$values[] = self::DB()->escape($value);
 			}
 		}
 		// IMPLODE CON LOS CAMPOS
@@ -278,9 +255,9 @@ class Patient
 		// QUERY FINAL
 		$q = utf8_decode("INSERT INTO pacientes ({$implode_keys}) VALUES ('{$implode_values}')");
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// ASIGNO EL ID DEL PACIENTE A LA INSTANCIA
-		$this->id = $this->db->lastID();
+		$this->id = self::DB()->lastID();
 	}
 
 	/**
@@ -296,7 +273,7 @@ class Patient
 	{
 		// ES NECESARIO EL ID DEL PACIENTE
 		if (empty($this->id) || !is_numeric($this->id)) {
-			throw new PatientException('PACIENTE NO ENCONTRADO.');
+			throw new PatientException('OCURRIO UN ERROR AL OBTENER LOS DATOS DEL PACIENTE.');
 		}
 		// SI EL PARAMETRO ES UN STRING LO PASO A UN ARRAY
 		!is_array($data) && $data = array($data);
@@ -305,7 +282,7 @@ class Patient
 		// FILTRO LOS CAMPOS Y AJUSTO LOS NOMBRES DE LOS CAMPOS SOLICITADOS A LOS REALES DE LA BBDD
 		foreach ($data as $field) {
 			// FILTRO LOS CAMPOS VALIDOS
-			if ($this->valid_field($field)) {
+			if ($field == '*' || self::valid_field($field)) {
 				$keys[] = $field;
 			}
 		}
@@ -316,11 +293,22 @@ class Patient
 			// ARMO LA QUERY FINAL
 			$q = "SELECT {$unique_implode} FROM pacientes WHERE id_paciente = {$this->id}";
 			// EJECUTO
-			$paciente = $this->db->oneRowQuery($q);
+			$paciente = self::DB()->oneRowQuery($q);
 			// FILL EN LAS PROPIEDADES DEL PACIENTE
 			foreach ($paciente as $k => $v) {
 				// SI ES ALGUNA DE LAS FECHA LA FORMATEO, SINO MANDO EL ENCODE
-				$this->{$k} = preg_match('/^fecha_(nacimient|ingres)o$/', $k) ? date('d/m/y', strtotime($v)) : utf8_encode($v);
+				switch ($k) {
+					case 'sexo':
+						$this->sexo = defined("SEXO_{$v}") ? constant("SEXO_{$v}") : null;
+						break;
+					case 'fecha_nacimiento':
+					case 'fecha_ingreso':
+						$this->{$k} = date('d/m/y', strtotime($v));
+						break;
+					default:
+						$this->{$k} = utf8_encode($v);
+						break;
+				}
 			}
 		}
 		// SE RETORNA A SI MISMO
@@ -346,7 +334,8 @@ class Patient
 		}
 		// VARIABLE PARA GUARDAR LOS CAMPOS SET DE LA QUERY
 		$set_query = array();
-
+		// LLAMO A select PARA ACTUALIZAR LOS DATOS DE LA INSTANCIA
+		$this->select();
 		// SI LA FECHA DE NACIMIENTO ES ENVIADA LA FORMATEO
 		if(!empty($data['fecha_nacimiento'])) {
 			$data['fecha_nacimiento'] = self::format_date($data['fecha_nacimiento']);
@@ -358,7 +347,7 @@ class Patient
 
 		foreach ($data as $k => $v) {
 			// SI EL NOMBRE DEL CAMPO Y EL VALOR SON CORRECTOS
-			if ($this->valid_field($k) && is_string($v)) {
+			if ($this->valid_field($k) && is_string($v) && $this->{$k} !== $v) {
 				// AGREGO EL CAMPO
 				$set_query[] = utf8_decode("{$k} = '{$v}'");
 			}
@@ -370,7 +359,7 @@ class Patient
 			// ARMO LA QUERY FINAL
 			$q = "UPDATE pacientes SET {$implode} WHERE id_paciente = '{$this->id}'";
 			// EJECUTO
-			$this->db->query($q);
+			self::DB()->query($q);
 			// LLAMO A select PARA ACTUALIZAR LOS DATOS DE LA INSTANCIA
 			$this->select();
 			// EL PACIENTE FUE ACTUALIZADO
@@ -389,17 +378,17 @@ class Patient
 	{
 		$q = "SELECT T.id_tratamiento AS id FROM tratamientos T INNER JOIN pacientes P ON P.id_paciente = T.id_paciente AND P.id_paciente = {$this->id} AND (T.eliminado <> 1 OR T.eliminado IS NULL) ORDER BY T.id_tratamiento DESC";
 
-		$this->db->query($q);
+		self::DB()->query($q);
 		
 		!isset($this->treatments) && $this->treatments = array();
 
-		if ($this->db->numRows()) {
-			while ($_ = $this->db->fetchAssoc()) {
+		if (self::DB()->numRows()) {
+			while ($_ = self::DB()->fetchAssoc()) {
 				$this->get_treatment($_['id']); //] = new Tratamiento($_['id']);
 			}
 		}
 
-		$this->db->free();
+		self::DB()->free();
 
 		return $this->treatments;
 	}
@@ -413,15 +402,15 @@ class Patient
 	{
 		$q = "SELECT T.id_tratamiento AS id FROM tratamientos T INNER JOIN pacientes P ON P.id_paciente = T.id_paciente AND P.id_paciente = {$this->id} AND (T.eliminado <> 1 OR T.eliminado IS NULL) ORDER BY T.id_tratamiento DESC LIMIT 1,100";
 
-		$this->db->query($q);
+		self::DB()->query($q);
 		
 		$treatments = array();
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			$treatments[] = $this->get_treatment($_['id']);
 		}
 
-		$this->db->free();
+		self::DB()->free();
 
 		return $treatments;
 	}
@@ -471,7 +460,7 @@ class Patient
 			// TRAIGO EL ID DEL ULTIMO TRATAMIENTO DEL PACIENTE
 			$q  = "SELECT id_tratamiento as id FROM tratamientos WHERE id_paciente = {$this->id} AND (eliminado <> 1 OR eliminado IS NULL) ORDER BY id_tratamiento DESC LIMIT 0, 1";
 			// EJECUTO Y SETEO ESTE ID
-			$id = $this->db->oneFieldQuery($q);
+			$id = self::DB()->oneFieldQuery($q);
 		}
 		// COMPRUEBO SI NO ESTA CARGADO PREVIAMENTE
 		if (!empty($this->treatments[$id]) && $this->treatments[$id] instanceof Treatment) {
@@ -515,7 +504,7 @@ class Patient
 	 * @return string
 	 */
 	public function fullname()
-	{
+	{		
 		return $this->apellido . ', ' . $this->nombre;
 	}
 
@@ -556,15 +545,41 @@ class Patient
 		return false;
 	}
 
-	public function get_shared($share_id)
+	public function get_shared_sections($share_id)
 	{
+		if (empty($this->id) || !is_numeric($this->id)) {
+			throw new PatientException('PACIENTE NO ENCONTRADO');
+		}
+
 		if (!is_numeric($share_id)) {
 			return false;	
 		}
 
 		$q = "SELECT fotografias, radiografias, cefalometrias FROM compartidos WHERE id_compartir = {$share_id} AND id_paciente = {$this->id}";
 
-		return $this->db->oneRowQuery($q);
+		return self::DB()->oneRowQuery($q);
+	}
+
+	/**
+	 * Retorna un Array con los nombres de las secciones 
+	 * que el usuario dueño permite compartir conmigo.
+	 *
+	 * @throws PatientException Es necesario el id del paciente.
+	 * @return Array
+	 */
+	public function get_allowed_sections()
+	{
+		if (empty($this->id) || !is_numeric($this->id)) {
+			throw new PatientException('PACIENTE NO ENCONTRADO');
+		}
+
+		$this->select('id_usuario');
+
+		$user_id = get_user()->id;
+
+		$q = "SELECT fotografias, radiografias, cefalometrias FROM vinculos AS V INNER JOIN compartidos AS C ON C.id_vinculo = V.id_vinculo WHERE id_usuario_out = '{$this->id_usuario}' AND id_usuario_in = '{$user_id}'";
+
+		return self::DB()->oneRowQuery($q);
 	}
 
 	/**
@@ -574,18 +589,18 @@ class Patient
 	 */
 	public function check_user()
 	{
-		return $this->id_usuario == get_user()->id;
+		return $this->select('id_usuario')->id_usuario == get_user()->id;
 	}
 
 	public function delete()
 	{
-		if (!$this->id) {
+		if (empty($this->id) || !is_numeric($this->id)) {
 			throw new PatientException('PACIENTE NO ENCONTRADO');
 		}
 
 		$q = "UPDATE pacientes SET eliminado = 1 WHERE id_paciente = '{$this->id}'";
 
-		$this->db->query($q);
+		self::DB()->query($q);
 	}
 
 	public function restore()
@@ -596,7 +611,7 @@ class Patient
 
 		$q = "UPDATE pacientes SET eliminado = 0 WHERE id_paciente = '{$this->id}'";
 
-		$this->db->query($q);
+		self::DB()->query($q);
 	}
 
 	/**
@@ -609,8 +624,13 @@ class Patient
 	 * @param String $fielname Nombre del campo a validar.
 	 * @return Bool Si es valido o no.
 	 */
-	public function valid_field($fieldname)
+	public static function valid_field($fieldname)
 	{
 		return !empty($fieldname) && is_string($fieldname) && preg_match("#^(id_usuario|(fecha_(nacimient|ingres)|apellid|telefon|eliminad|estad|fot|sex|correo_electronic)o|[mp]adre_(apellido|nombre)|d(ni|erivado_por|ireccion)|c(elular|iudad|odigo_postal)|provincia|nombre)$#", $fieldname);
+	}
+
+	private static function DB()
+	{
+		return MySQL::getInstance();
 	}
 }

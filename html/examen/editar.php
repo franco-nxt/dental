@@ -1,8 +1,3 @@
-<?php 
-!isset($Patient , $Treatment) && redirect_exit();
-$Exam = $Treatment->get_exam();
-$Exam->select();
-?>
 <form method="POST">
 	<div class="bar-subtitle">
 		<div class="container">

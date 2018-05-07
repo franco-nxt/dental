@@ -33,14 +33,16 @@ class Page extends Controller{
 		}
 	}
 	
-	public function main($encode) {
+	public function main($encode) 
+	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// LA VISTA
 		include 'html/radiografias/main.php';
 	}
 
-	public function nueva($encode) {
+	public function nueva($encode) 
+	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
@@ -68,7 +70,7 @@ class Page extends Controller{
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
 		// OBTENGO EL TRATAMIENTO
-		$Treatment = $Patient->treatment(get_from_encode($encode, TRATAMIENTO));
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE RADIOGRAFIAS
 		$Radiographie = $Treatment->get_radiographie(get_from_encode($encode, RADIOGRAFIA));
 		// LA VISTA
@@ -82,7 +84,7 @@ class Page extends Controller{
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
 		// OBTENGO EL TRATAMIENTO
-		$Treatment = $Patient->treatment(get_from_encode($encode, TRATAMIENTO));
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE RADIOGRAFIAS
 		$Radiographie = $Treatment->get_radiographie(get_from_encode($encode, RADIOGRAFIA));
 		// LA VISTA

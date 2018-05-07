@@ -1,12 +1,9 @@
-<?php
-!isset($Patient, $shared) && redirect_exit();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
 	</div>
 </div>
-<form action="<?= URL_ROOT ?>/compartir/editar/<?= $id ?>" method="POST" enctype="multipart/form-data">
+<form action="<?= URL_ROOT ?>/compartir/editar/<?= $encode ?>" method="POST" enctype="multipart/form-data">
 	<div class="bar-btn">
 		<div class="container">
         	<a class="btn btn-default" href="<?= URL_ROOT ?>/compartir">CANCELAR</a>

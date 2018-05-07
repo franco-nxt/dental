@@ -12,7 +12,7 @@ $Treatment = $Patient->get_treatment();
 	</div>
 </div>
 <div class="container pl10 pr10">
-	<?php if ($Patient->check_user(get_user()->id)): // SOLOR SI EL USUARIO ES EL ASIGNADO MUESTRO ESTE BUTTON ?>
+	<?php if ($Patient->check_user()): // SOLOR SI EL USUARIO ES EL ASIGNADO MUESTRO ESTE BUTTON ?>
 	<div class="txt-center p5">
 		<a href="<?= URL_ROOT ?>/fotografias/modelos/<?= $Patient->url ?>" class="btn btn-warning">TOMA DE FOTOGRAF&Iacute;AS</a>
 	</div>

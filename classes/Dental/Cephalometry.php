@@ -54,17 +54,6 @@ class Cephalometry
 		'pag6'
 	);
 
-	public function __get($name) {
-		if ($name == 'db') {
-			return MySQL::getInstance();
-		} 
-		elseif (isset($this->{$name})) {
-			return $this->{$name};
-		}
-
-		return null;
-	}
-
 	public function __construct($id) 
 	{
 		// SI id ES UN ARRAY ES PARA INSERTAR UNO NUEVO
@@ -105,9 +94,9 @@ class Cephalometry
 		// ARMO LA QUERY
 		$q = stripslashes("INSERT INTO cefalometrias (id_tratamiento, fecha_hora, datos_json, etapa, tipo, eliminado) VALUES ({$id_tratamiento}, '{$date}', '{$datos_json}', {$etapa}, {$tipo}, {$eliminado})");
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// SETEO EL ID DE LA INSTANCIA
-		$this->id = $this->db->lastID();
+		$this->id = self::DB()->lastID();
 	}
 
 	/**
@@ -116,7 +105,7 @@ class Cephalometry
 	 * @return Cephalometry La misma instancia
 	 * @author 
 	 */
-	public function select($fields) 
+	public function select($fields = '*') 
 	{
 		// ES NECESARIO EL ID DE LA SESSION
 		if (!$this->id) {
@@ -145,7 +134,7 @@ class Cephalometry
 				break;
 			}
 			// AGREGO SOLO LOS CAMPOS VALIDOS
-			if (self::valid_field($field)) {
+			if ($field == '*' || self::valid_field($field)) {
 				$keys[] = $field;
 			}
 		}
@@ -156,7 +145,7 @@ class Cephalometry
 			// ARMO LA QUERY
 			$q = "SELECT {$unique_implode} FROM cefalometrias WHERE id_cefalometria = {$this->id}";
 			// EJECUTO
-			$_ = $this->db->oneRowQuery($q);
+			$_ = self::DB()->oneRowQuery($q);
 
 			if (isset($_['datos_json'])) {
 				// DECODE DEL OBJETO
@@ -261,7 +250,7 @@ class Cephalometry
 			// ARMO LA QUERY 
 			$q = stripslashes("UPDATE cefalometrias SET {$implode} WHERE id_cefalometria = '{$this->id}'");
 			// ACTUALIZO EN BD
-			$this->db->query($q);
+			self::DB()->query($q);
 		}
 		// ATUALIZO LA INSTANCIA
 		return $this->select();
@@ -281,7 +270,7 @@ class Cephalometry
 		// ARMO LA QUERY PARA ELIMINAR
 		$q = "UPDATE cefalometrias SET eliminado = 1 WHERE id_cefalometria = '{$this->id}'";
 		// EJECUTO LA QUERY PARA ELIMANR
-		$this->db->query($q);
+		self::DB()->query($q);
 	}
 
 	/**
@@ -312,7 +301,7 @@ class Cephalometry
 		// ARMO LA QUERY
 		$q = "UPDATE cefalometrias SET datos_json = \"{$datos_json}\" WHERE id_cefalometria = {$this->id}";
 		// ACTUALIZO EN BD
-		$this->db->query($q);
+		self::DB()->query($q);
 	}
 
 	/**
@@ -385,5 +374,10 @@ class Cephalometry
 	{
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return !empty($fieldname) && is_string($fieldname) && preg_match('/^(fecha_hora|datos_json|etapa|tipo|eliminado)$/', $fieldname);
+	}
+
+	private static function DB()
+	{
+		return MySQL::getInstance();
 	}
 }

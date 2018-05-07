@@ -2,12 +2,16 @@
 
 class Register {
 
+	
 	public $id;
+	
 	public $fecha_hora;
+	
 	public $motivo;
+	
 	public $descripcion;
+	
 	public $Treatment;
-	private static $RGX_BD = "#^(id_(registro|tratamiento)|fecha_hora|motivo|descripcion)$#";
 
 	public function __get($name) {
 		if ($name == 'db') {

@@ -71,7 +71,7 @@ class Diagnostic
 			// ALGUNOS DATOS VIENEN EN JSON
 			$json = json_decode(utf8_encode($v));
 			// LOS QUE NO SON JSON QUEDAN EN NULL, USO EL VALOR REAL
-			$this->{$k} = empty($json) ? $json : utf8_encode($v);
+			$this->{$k} = $json ? $json : utf8_encode($v);
 		}
 		// RETORNA LA MISMA INSTACIA CON LOS CAMPOS SINCRONIZADOS
 		return $this;

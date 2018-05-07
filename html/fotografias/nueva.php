@@ -18,12 +18,12 @@
 	</div>
 	<div class="container">
 		<div class="row pt5">
-			<label for="patient_apellido" class="form-group clear col-sm-6">
+			<label for="patient_apellido" class="form-group clear col-sm-6 m0">
 				<div class="col-xs-3 label">
 					<strong>FECHA</strong>
 				</div>
 				<div class="col-xs-9 field field-blue">
-					<input type="text" id="patient_apellido" value="<?= '' ?>" name="fecha" class="input-date">
+					<input type="text" id="patient_apellido" value="<?= date('d/m/y') ?>" name="fecha" class="input-date">
 				</div>
 			</label>
 			<div class="form-group clear col-sm-6 m0">

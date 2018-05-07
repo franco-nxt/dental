@@ -44,7 +44,7 @@ class Exam
 		// EJCUTO
 		$this->db->query($q);
 		// ASIGNO EL ID A LA INSTANCIA
-		$this->id = $this->db->lastID();
+		$this->id = self::DB()->lastID();
 	}
 	
 	/**
@@ -59,10 +59,12 @@ class Exam
 		if (!$this->id || !is_numeric($this->id)) {
 			throw new ExamException('OCURRIO UN ERROR, NO SE PUEDEN OBTENER LOS DATOS DEL EXAMEN.');
 		}
-		// QUERY QUE TRAE TODOS LOS DATOS DEL EXAMEN
-		$q = "SELECT agenesias, atm, clinicas_observaciones, curva_spee, deglucion, denticion, diastemas_inferiores, diastemas_superiores, estructuras_faciales, fisura_paladar, intraoral_observaciones, labios_reposo, linea_media_inferior, linea_media_superior, longitud_arco_mandibulal, longitud_arco_maxilar, mordida_cruzada, paladar, perfil, rco_dentaria, resalte, respiracion, sobremordida, supernumerarios, surco_mentolabial, tamano_dientes FROM examen WHERE id_examen = {$this->id}";
+
+		$columns = implode(',',self::get_fieldnames());
+		// QUERY QUE TRAE TODOS LOS DATOS
+		$q = "SELECT {$columns} FROM examen WHERE id_examen = {$this->id}";
 		// EJECUTO
-		$_ = $this->db->oneRowQuery($q);
+		$_ = self::DB()->oneRowQuery($q);
 		// FILL SOBRE LA INSTANCIA
 		foreach ($_ as $k => $v) {
 			// ALGUNOS DATOS VIENEN EN JSON
@@ -105,7 +107,7 @@ class Exam
 
 		}
 		// IMPLODE SOBRE LOS CAMPOS;
-		$implode = implode(', ', $q);
+		$implode = implode(', ', $set);
 		// GUARDO LA QUERY
 		$q = utf8_decode("UPDATE examen SET {$implode} WHERE id_examen = {$this->id}");
 		// EJECUTO
@@ -130,7 +132,7 @@ class Exam
 		// SI EL ID NO ESTA CARGADO
 		if (empty($this->id_tratamiento)) {
 			$q = "SELECT id_tratamiento AS id FROM tratamientos WHERE id_examen = {$this->id}";
-			$this->id_tratamiento = $this->db->oneFieldQuery($q);
+			$this->id_tratamiento = self::DB()->oneFieldQuery($q);
 		}
 
 		return new Treatment($this->id_tratamiento);
@@ -171,5 +173,50 @@ class Exam
 	{
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return (Bool) !empty($fieldname) && is_string($fieldname) && preg_match('/^(a(genesias|tm)|c(linicas_observaciones|urva_spee)|d(e(glu|nti)cion|iastemas_(inf|sup)eriores)|estructuras_faciales|fisura_paladar|intraoral_observaciones|l(abios_reposo|inea_media_(inf|sup)erior|ongitud_arco_ma(ndibulal|xilar))|mordida_cruzada|p(aladar|erfil)|r(co_dentaria|es(alte|piracion))|s(obremordida|u(pernumerarios|rco_mentolabial)))$/i', $fieldname);
+	}
+
+	private static function DB()
+	{
+		return MySQL::getInstance();
+	}
+
+	/**
+	 * Retorna todos los nombres de las columnas
+	 * de la tabla historia.
+	 * 
+	 * @return Array Colleccion de strings.
+	 */
+	public static function get_fieldnames()
+	{
+		$COLUMNS = array(
+			'estructuras_faciales',
+			'perfil',
+			'labios_reposo',
+			'respiracion',
+			'deglucion',
+			'surco_mentolabial',
+			'atm',
+			'intraoral_observaciones',
+			'linea_media_superior',
+			'linea_media_inferior',
+			'denticion',
+			'diastemas_superiores',
+			'diastemas_inferiores',
+			'tamano_dientes',
+			'resalte',
+			'sobremordida',
+			'mordida_cruzada',
+			'rco_dentaria',
+			'longitud_arco_maxilar',
+			'longitud_arco_mandibulal',
+			'curva_spee',
+			'paladar',
+			'fisura_paladar',
+			'agenesias',
+			'supernumerarios',
+			'clinicas_observaciones'
+		);
+
+		return $COLUMNS;
 	}
 }

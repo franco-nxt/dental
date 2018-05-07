@@ -14,18 +14,17 @@ class Page extends Controller{
 		} 
 		catch (PatientException $e) {
 			add_error_flash($e->getMessage());
-			redirect_exit();
 		}
 		catch (TreatmentException $e) {
 			add_error_flash($e->getMessage());
-			redirect_exit();
 		}
 		catch (DiagnosticException $e) {
 			add_error_flash($e->getMessage());
-			redirect_exit();
 		}
 		catch (Exception $e) {
 			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+		}
+		finally{
 			redirect_exit();
 		}
 	}
@@ -77,6 +76,10 @@ class Page extends Controller{
 		$this->check_user($Patient);
 		// OBTENGO EL TRATAMIENTO
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		// VALIDO SI EL TRATAMIENTO ES EL ULTIMO
+		if ($Patient->get_treatment()->id !== $Treatment->id) {
+			throw new DiagnosticException("NO SE PUEDE EDITAR UN TRATAMIENTO ANTERIOR.");
+		}
 
 		switch ($vista) {
 			case 'historia':

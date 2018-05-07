@@ -166,7 +166,7 @@ class Diagnostic
 		}
 		$columns = implode(',', self::get_fieldnames());
 		// QUERY QUE TRAE TODOS LOS DATOS DEL DIAGNOSTICO
-		$q = "SELECT panoramica, ricketts, fotografias, trx_perfil, jarabak, vto_crecimiento, trx_frontal, steiner, vto_tratamiento, seriada, powell, otros, patron, esq_clase, esq_pos_vertical, clase_molar_der, clase_molar_izq, pos_molar_sup, pos_incisivo_inf, pos_incisivo_sup, incl_incisivo_inf, incl_incisivo_sup, overjet, overbite, angulo_interincisivo, protusion_labial, observaciones FROM diagnosticos WHERE id_diagnostico = {$this->id}";
+		$q = "SELECT {$columns} FROM diagnosticos WHERE id_diagnostico = {$this->id}";
 		// EJECUTO
 		$_ = self::DB()->oneRowQuery($q);
 		// FILL SOBRE LA INSTANCIA

@@ -1,7 +1,3 @@
-<?php 
-$Treatment = $Patient->get_treatment();
-$treatments = (Array) $Patient->old_treatments();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>

@@ -223,9 +223,9 @@ class History
 		// LA QUERY CREA UN REGISTRO VACIO EN LA DB
 		$q = "INSERT INTO historia () VALUES ()";
 		// EJCUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// ASIGNO EL ID A LA INSTANCIA
-		$this->id = $this->db->lastID();
+		$this->id = self::DB()->lastID();
 	}
 
 	/**
@@ -245,7 +245,7 @@ class History
 		// QUERY QUE TRAE TODOS LOS DATOS
 		$q = "SELECT {$columns} FROM historia WHERE id_historia = {$this->id}";
 		// EJECUTO
-		$_ = $this->db->oneRowQuery($q);
+		$_ = self::DB()->oneRowQuery($q);
 		// FILL SOBRE LA INSTANCIA
 		foreach ($_ as $k => $v) {
 			// ALGUNOS DATOS VIENEN EN JSON
@@ -291,7 +291,7 @@ class History
 		// GUARDO LA QUERY
 		$q = utf8_decode("UPDATE historia SET {$implode} WHERE id_historia = {$this->id}");
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// SINCRONIZO LA INSTANCIA
 		$this->select();
 	}
@@ -312,7 +312,7 @@ class History
 		// SI EL ID NO ESTA CARGADO
 		if (empty($this->id_tratamiento)) {
 			$q = "SELECT id_tratamiento AS id FROM tratamientos WHERE id_historia = {$this->id}";
-			$this->id_tratamiento = $this->db->oneFieldQuery($q);
+			$this->id_tratamiento = self::DB()->oneFieldQuery($q);
 		}
 
 		return new Treatment($this->id_tratamiento);
@@ -354,6 +354,11 @@ class History
 		return (Bool) !empty($fieldname) && is_string($fieldname) && preg_match($ptrn, $fieldname);
 	}
 
+	private static function DB()
+	{
+		return MySQL::getInstance();
+	}
+
 	/**
 	 * Retorna todos los nombres de las columnas
 	 * de la tabla historia.
@@ -390,7 +395,7 @@ class History
 			'interposicion_labio_inferior',
 			'succion_digital',
 			'bruxismo',
-			'odontologicos_observaciones',
+			'odontologicos_observaciones'
 		);
 
 		return $COLUMNS;

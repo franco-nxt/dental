@@ -1,8 +1,3 @@
-<?php 
-!isset($Patient , $Treatment) && redirect_exit();
-$History = $Treatment->get_history();
-$History->select();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
@@ -10,7 +5,7 @@ $History->select();
 </div>
 <div class="bar-btn">
 	<div class="container">
-		<a href="<?= $Treatment->url('historia', 'editar') ?>" class="btn btn-primary">EDITAR</a>
+		<a href="<?= $History->url('editar') ?>" class="btn btn-primary">EDITAR</a>
 		<a href="<?= $Patient->url('diagnostico') ?>" class="btn btn-default">CANCELAR</a>
 	</div>
 </div>

@@ -14,17 +14,18 @@ class Page extends Controller{
 		} 
 		catch (PatientException $e) {
 			add_error_flash($e->getMessage());
+			redirect_exit();
 		}
 		catch (TreatmentException $e) {
 			add_error_flash($e->getMessage());
+			redirect_exit();
 		}
 		catch (DiagnosticException $e) {
 			add_error_flash($e->getMessage());
+			redirect_exit();
 		}
 		catch (Exception $e) {
 			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
-		}
-		finally{
 			redirect_exit();
 		}
 	}

@@ -5,12 +5,23 @@ class Page extends Controller {
 		_global('navbar-title', 'PERFIL');
 		_global('navbar-back', URL_ROOT);
 
-		parent::__construct(
-			array('perfil', 'main'),
-			array('perfil/editar', 'editar'),
-			array('perfil/usuarios', 'usuarios'),
-			array('perfil/compartir', 'compartir'),
-			array('perfil/id', 'generate_id'));
+		try{
+			parent::__construct(
+				array('perfil', 'main'),
+				array('perfil/editar', 'editar'),
+				array('perfil/usuarios', 'usuarios'),
+				array('perfil/compartir', 'compartir'),
+				array('perfil/id', 'generate_id')
+			);
+		} 
+		catch (DentalException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+			redirect_exit();
+		}
 	}
 
 

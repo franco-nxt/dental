@@ -3,7 +3,6 @@
 class Page extends Controller{
 
 	public function __construct() {
-		_global('navbar-title', 'REGISTROS');
 		try{
 			parent::__construct(
 				array('registros/[:encode]', 'main'),
@@ -28,7 +27,6 @@ class Page extends Controller{
 			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
 			redirect_exit();
 		}
-
 	}
 
 	public function main($encode)
@@ -81,7 +79,7 @@ class Page extends Controller{
 		include 'html/registros/nuevo.php';
 	}
 
-	public function check_user(&$Patient)
+	public function check_user($Patient)
 	{
 		// SI EL USUARIO NO LE PERTENECE
 		if(!$Patient->check_user(get_user()->id)){

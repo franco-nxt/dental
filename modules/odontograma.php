@@ -25,7 +25,6 @@ class Page extends Controller{
 			redirect_exit();
 		}
 		catch (Exception $e) {
-			dump($e);
 			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
 			redirect_exit();
 		}

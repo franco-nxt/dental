@@ -5,13 +5,28 @@ class Page extends Controller{
 	{
 		_global('navbar-title', 'PACIENTE');
 
-		parent::__construct(
-			array('@paciente/([^(nuevo|buscar)]+)$', 'main'),
-			array('paciente/nuevo', 'nuevo'),
-			array('paciente/buscar', 'buscar'),
-			array('paciente/compartido/[:encode]', 'compartido'),
-			array('paciente/eliminar/[:encode]', 'eliminar'),
-			array('paciente/editar/[:encode]', 'editar'));
+		try{
+			parent::__construct(
+				array('@paciente/([^(nuevo|buscar)]+)$', 'main'),
+				array('paciente/nuevo', 'nuevo'),
+				array('paciente/buscar', 'buscar'),
+				array('paciente/compartido/[:encode]', 'compartido'),
+				array('paciente/eliminar/[:encode]', 'eliminar'),
+				array('paciente/editar/[:encode]', 'editar')
+			);
+		}
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+			redirect_exit();
+		}
 	}
 
 	public function main($encode) 

@@ -4,14 +4,32 @@ class Page extends Controller{
 
 	public function __construct() {
 		_global('navbar-title', 'COMPARTIR');
-		_global('navbar-back', URL_ROOT);
 
-		parent::__construct(
-			array('compartir', 'main'),
-			array('compartir/paciente/[:encode]', 'paciente'),
-			array('compartir/out/[:encode]', 'out'),
-			array('compartir/usuarios/[:encode]', 'usuarios'),
-			array('compartir/nuevo', 'nuevo'));
+		try{
+			parent::__construct(
+				array('compartir', 'main'),
+				array('compartir/paciente/[:encode]', 'paciente'),
+				array('compartir/out/[:encode]', 'out'),
+				array('compartir/usuarios/[:encode]', 'usuarios'),
+				array('compartir/nuevo', 'nuevo')
+			);
+		} 
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (CephalometryException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit();
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+			redirect_exit();
+		}
 	}
 	
 	public function main() {

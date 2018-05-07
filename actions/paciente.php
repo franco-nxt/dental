@@ -25,10 +25,9 @@ class Page extends Controller{
 			add_msg_flash($e->getMessage());
 		}
 		catch (Exception $e) {
-			dump($e);
 		}
 		finally{
-			// redirect_exit();
+			redirect_exit();
 		}
 	}
 

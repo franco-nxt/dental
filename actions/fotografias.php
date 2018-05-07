@@ -3,9 +3,27 @@
 class Page extends Controller{
 
 	public function __construct() {
-		parent::__construct(
-			array('fotografias/nueva/[:encode]', 'nueva'), // CREO UNA SESSION DE FOTOS NUEVAS
-			array('fotografias/editar/[:encode]', 'editar')); // EDITO UNA SESSION DE FOTOS
+		try {
+			parent::__construct(
+				array('fotografias/nueva/[:encode]', 'nueva'),
+				array('fotografias/editar/[:encode]', 'editar')
+			);
+		}
+		catch (PatientException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (TreatmentException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (PhotoException $e) {
+			add_error_flash($e->getMessage());
+		}
+		catch (Exception $e) {
+			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
+		}
+		finally{
+			redirect_exit();
+		}
 	}
 
 	public function editar($encode)

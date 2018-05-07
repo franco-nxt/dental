@@ -1,14 +1,18 @@
 <?php
 class Page extends Controller {
 
-	function __construct() {
-		_global('navbar-title', 'COMPARTIR');
-		_global('navbar-back', URL_ROOT);
-
-		parent::__construct(
-			array('perfil/editar', 'editar'),
-			array('perfil/eliminar/[:encode]', 'eliminar'),
-			array('perfil/compartir', 'compartir'));
+	public function __construct() {
+		try {
+			parent::__construct(
+				array('perfil/editar', 'editar'),
+				array('perfil/eliminar/[:encode]', 'eliminar'),
+				array('perfil/compartir', 'compartir')
+			);
+		} 
+		catch (DentalException $e) {
+			add_error_flash($e->getMessage());
+			redirect_exit('/perfil');
+		}
 	}
 
 	public function editar() 

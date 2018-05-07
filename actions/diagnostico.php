@@ -221,17 +221,10 @@ class Page extends Controller{
 	{
 		$Patient = decode_patient($encode);
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
-
 		$Diagnostic = $Treatment->get_fullDiagnostic();
 		$fieldnames = Diagnostic::get_fieldnames();
 
 		$data = array();
-
-		foreach (array('observaciones', 'otros') as $k) {
-			if(isset($_POST[$k]) && is_string($_POST[$k])){
-				$data[$k] = $_POST[$k];
-			}
-		}
 
 		foreach ($fieldnames as $k) {
 
@@ -240,6 +233,12 @@ class Page extends Controller{
 			$field = $_POST[$k];
 
 			switch ($k) {
+				case 'otros':
+				case 'observaciones':
+				if(isset($_POST[$k]) && is_string($_POST[$k])){
+					$data[$k] = $_POST[$k];
+				}
+				break;
 				case 'pos_molar_sup':
 				case 'pos_incisivo_inf':
 				case 'pos_incisivo_sup':
@@ -273,16 +272,19 @@ class Page extends Controller{
 						$data[$k] = $value;
 					}
 				}
+				case 'panoramica':
+				case 'ricketts' :
+				case 'fotografias' :
+				case 'trx_perfil' :
+				case 'jarabak' :
+				case 'vto_crecimiento' :
+				case 'trx_frontal' :
+				case 'steiner' :
+				case 'vto_tratamiento' :
+				case 'seriada' :
+				case 'powell' :
+					$data[$k] = empty($_POST[$k]) ? false : strcasecmp($k, $_POST[$k]) == 0;
 				break;
-			}
-		}
-
-		foreach (array('panoramica','ricketts','fotografias','trx_perfil','jarabak','vto_crecimiento','trx_frontal','steiner','vto_tratamiento','seriada','powell') as $k) {
-			if (empty($_POST[$k])) {
-				$data[$k] = false;
-			}
-			else{
-				$data[$k] = strcasecmp($k, $_POST[$k]) == 0;
 			}
 		}
 
@@ -294,25 +296,15 @@ class Page extends Controller{
 		redirect_exit($Diagnostic->url());
 	}
 
-	public function resume($id)
+	public function resume($encode)
 	{
-		$decrypt_params = decrypt_params($id);
-
-		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO])) {
-			add_error_flash("NO SE ENCUENTRA AL PACIENTE INDICADO.");
-			redirect_exit();
-		}
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
-		$Resume = $Treatment->get_resume()->select();
-
-		dump($_POST);
-		
+		$Patient = decode_patient($encode);
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		$Resume = $Treatment->get_resume();
+		$fieldnames = Resume::get_fieldnames();
 		$data = array();
 
-		foreach ((Array) $Resume as $k => $v) {
+		foreach ($fieldnames as $k) {
 
 			if(empty($_POST[$k])) continue;
 			

@@ -84,23 +84,17 @@ class Page extends Controller{
 		redirect_exit($History->url());
 	}
 
-	public function exam($id) 
+	public function exam($encode) 
 	{
-		$decrypt_params = decrypt_params($id);
-
-		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO])) {
-			add_error_flash("NO SE ENCUENTRA AL PACIENTE INDICADO.");
-			redirect_exit();
-		}
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
-		$Exam = $Treatment->get_exam()->select();
-
+		$Patient = decode_patient($encode);
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		$Exam = $Treatment->get_exam();
+		// CAMPOS DE LA TALBA HISTORIA
+		$fieldnames = Exam::get_fieldnames();
+		// VAR DATA
 		$data = array();
 
-		foreach ($Exam as $k => $v) {
+		foreach ($fieldnames as $k) {
 			
 			if(empty($_POST[$k])) continue;
 			
@@ -108,50 +102,50 @@ class Page extends Controller{
 
 			switch ($k) {
 				case "estructuras_faciales":
-				preg_match('#^a?simetricas$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^a?simetricas$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "perfil":
-				preg_match('#^(rect|con(cav|vex))o$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(rect|con(cav|vex))o$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "labios_reposo":
-				preg_match('#^(juntos|separados|cierre_forzado)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(juntos|separados|cierre_forzado)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "respiracion":
-				preg_match('#^(normal|bucal|mixta)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(normal|bucal|mixta)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "deglucion":
-				preg_match('#^(normal|atipica|finales)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(normal|atipica|finales)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "surco_mentolabial":
-				preg_match('#^(normal|pronunciado|inexistente)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(normal|pronunciado|inexistente)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "denticion":
-				preg_match('#^(primaria|mixta|permanente)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(primaria|mixta|permanente)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "resalte":
-				preg_match('#^(normal|excesiva|negativo)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(normal|excesiva|negativo)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "mordida_cruzada":
-				preg_match('#^(no_presenta|izquierda|derecha|bilateral)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(no_presenta|izquierda|derecha|bilateral)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "longitud_arco_maxilar":
-				preg_match('#^(adecuada|excesiva|deficiente)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(adecuada|excesiva|deficiente)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "curva_spee":
-				preg_match('#^(normal|pronunciada)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(normal|pronunciada)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "paladar":
-				preg_match('#^(normal|ojival|bajo)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(normal|ojival|bajo)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "linea_media_superior":
 				case "linea_media_inferior":
-				preg_match('#^desvio_(izquierd|derech)a$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^desvio_(izquierd|derech)a$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "rco_dentaria":
 				case "fisura_paladar":
 				case "diastemas_superiores":
 				case "diastemas_inferiores":
-				preg_match('#^(si|no)$#i', $field) && $data[$k] = array($field => true);
+				preg_match('/^(si|no)$/i', $field) && $data[$k] = array($field => true);
 				break;
 				case "atm":
 				if($field === 'normal') {
@@ -218,24 +212,18 @@ class Page extends Controller{
 		if (!empty($data)) {
 			$Exam->update($data);
 		}
-
+		
 		add_msg_flash('DIAGNOSTICO EXAMEN EDITADO CON EXITO.');
 		redirect_exit($Exam->url());
 	}
 
-	public function complete($id)
+	public function complete($encode)
 	{
-		$decrypt_params = decrypt_params($id);
+		$Patient = decode_patient($encode);
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 
-		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO])) {
-			add_error_flash("NO SE ENCUENTRA AL PACIENTE INDICADO.");
-			redirect_exit();
-		}
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
-		$Diagnostic = $Treatment->get_fullDiagnostic()->select();
+		$Diagnostic = $Treatment->get_fullDiagnostic();
+		$fieldnames = Diagnostic::get_fieldnames();
 
 		$data = array();
 
@@ -245,7 +233,7 @@ class Page extends Controller{
 			}
 		}
 
-		foreach ((Array) $Diagnostic as $k => $v) {
+		foreach ($fieldnames as $k) {
 
 			if(empty($_POST[$k])) continue;
 			

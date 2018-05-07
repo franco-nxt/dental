@@ -7,9 +7,9 @@ class Resume
 {
 	
 	/**
-	 * @var String
+	 * @var Numeric
 	 */
-	public $id_resumen;
+	public $id_tratamiento;
 	
 	/**
 	 * @var String
@@ -110,8 +110,9 @@ class Resume
 		if (empty($this->id) || !is_numeric($this->id)) {
 			throw new ResumeException('ERROR AL CARGAR EL RESUMEN.');
 		}
-		// QUERY QUE LEVANTA TODOS LOS CAMPOS DEL REGISTRO
-		$q = "SELECT interceptivo_correctivo, esqueletal_dentario, extracciones, anclaje_sup, anclaje_inf, pronostico, observaciones, objetivo_etapas FROM resumen WHERE id_resumen = {$this->id}";
+		$columns = implode(',', self::get_fieldnames());
+		// QUERY QUE TRAE TODOS LOS DATOS
+		$q = "SELECT {$columns} FROM resumen WHERE id_resumen = {$this->id}";
 		// EJECUTO
 		$_ = $this->db->oneRowQuery($q);
 		// FILL SOBRE LA INSTANCIA
@@ -156,9 +157,9 @@ class Resume
 
 		}
 		// IMPLODE SOBRE LOS CAMPOS;
-		$implode = implode(', ', $q);
+		$implode = implode(', ', $set);
 		// GUARDO LA QUERY
-		$q = "UPDATE resumen SET {$implode} WHERE id_resumen = {$this->id}";
+		$q = utf8_decode("UPDATE resumen SET {$implode} WHERE id_resumen = {$this->id}");
 		// EJECUTO
 		$this->db->query($q);
 		// SINCRONIZO LA INSTANCIA
@@ -222,5 +223,32 @@ class Resume
 	{
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return (Bool) !empty($fieldname) && is_string($fieldname) && preg_match('/^(anclaje_(inf|sup)|dentario|e(squeletal_dentario|xtracciones)|interceptivo_correctivo|ob(jetivo_etapa|servacione)s|pronostico)$/i', $fieldname);
+	}
+
+	private static function DB()
+	{
+		return MySQL::getInstance();
+	}
+
+	/**
+	 * Retorna todos los nombres de las columnas
+	 * de la tabla historia.
+	 * 
+	 * @return Array Colleccion de strings.
+	 */
+	public static function get_fieldnames()
+	{
+		$COLUMNS = array(
+			'esqueletal_dentario',
+			'extracciones',
+			'anclaje_sup',
+			'anclaje_inf',
+			'pronostico',
+			'observaciones',
+			'objetivo_etapas',
+			'interceptivo_correctivo'
+		);
+
+		return $COLUMNS;
 	}
 }

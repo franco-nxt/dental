@@ -29,7 +29,7 @@
 			<div class="col-xs-3 label label-read">
 				<strong>ETAPA : </strong>
 			</div>
-			<div class="col-xs-9 field field-read field-radio field-blue">
+			<div class="col-xs-9 field field-read field-radio-check field-blue">
 				<span class="<?= $Cephalometry->etapa == ETAPA_INICIALES ? 'checked' : null ?>">INICIALES</span>
 				<span class="<?= $Cephalometry->etapa == ETAPA_INTERMEDIAS ? 'checked' : null ?>">INTERMEDIAS</span>
 				<span class="<?= $Cephalometry->etapa == ETAPA_FINALES ? 'checked' : null ?>">FINALES</span>
@@ -39,7 +39,7 @@
 			<div class="col-xs-3 label label-read">
 				<strong>TIPO : </strong>
 			</div>
-			<div class="col-xs-9 field field-read field-radio field-blue">
+			<div class="col-xs-9 field field-read field-radio-check field-blue">
 				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_RICKETTS ? 'checked' : null ?>">RICKETTS</span>
 				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_JARABAK ? 'checked' : null ?>">JARABAK</span>
 				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_MCNAMARA ? 'checked' : null ?>">MCNAMARA</span>

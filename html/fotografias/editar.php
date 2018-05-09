@@ -29,7 +29,7 @@
 				<div class="col-xs-3 label label-read">
 					<strong>ETAPA : </strong>
 				</div>
-				<div class="col-xs-9 field field-read field-radio field-blue">
+				<div class="col-xs-9 field field-read field-radio-check field-blue">
 					<input type="radio" id="r_etapa_iniciales" <?= checked($Photo->etapa == ETAPA_INICIALES) ?> value="<?= ETAPA_INICIALES ?>" name="etapa">
 					<label for="r_etapa_iniciales">INICIALES</label>
 					<input type="radio" id="r_etapa_intermedias" <?= checked($Photo->etapa == ETAPA_INTERMEDIAS) ?> value="<?= ETAPA_INTERMEDIAS ?>" name="etapa">

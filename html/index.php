@@ -24,6 +24,10 @@
                 <ul class="nav-drop" id="menu-dropdown" style="display:none">
                     <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/logout">Logout</a></li>
                     <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/perfil">Perfil</a></li>
+                    <?php if (get_user()->admin): ?>
+                    <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/manager/contrataciones/nuevo">Contrataciones</a></li>
+                    <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/manager">Admin</a></li>
+                    <?php endif ?>
                 </ul>
             </li>
         </ul>

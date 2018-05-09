@@ -28,6 +28,7 @@ class Page extends Controller{
 
 	public function main($encode) {
 		$Patient = decode_patient($encode);
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		include 'html/tratamiento/main.php';
 	}
 

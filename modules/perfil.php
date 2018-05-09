@@ -28,7 +28,6 @@ class Page extends Controller {
 	public function main() 
 	{
 		$User = get_user()->select();
-		// dump($User);
 		$available_users = $User->get_available_users();
 
 		include 'html/perfil/ver.php';

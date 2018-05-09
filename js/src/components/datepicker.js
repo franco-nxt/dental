@@ -15,3 +15,16 @@ $('.input-time').each(function(){
 	});
 });
 
+$('.input-vto').each(function(){
+	new Cleave(this, {
+		date: true,
+		datePattern: ['m', 'y']
+	});
+});
+
+$('.card-num').each(function(){
+	new Cleave(this, {
+		creditCard: true
+	});
+});
+

@@ -184,7 +184,7 @@ class Treatment
 		// POR DEFAULT EL ESTADO ES ACTIVO
 		$fields = array('estado' => BD_TRATAMIENTO_ACTIVO);
 		// FORMATEO LA FECHA DE INICIO ENVIADA, O SETEO NOW POR DEFAULT
-		$data['fecha_hora_inicio'] = empty($data['fecha_hora_inicio']) ? date('Y-m-d H:i:s') : format_date($data['fecha_hora_inicio']);
+		$data['fecha_hora_inicio'] = empty($data['fecha_hora_inicio']) ? date('Y-m-d H:i:s') : self::format_date($data['fecha_hora_inicio']);
 		// SI LA TECNICA NO VIENE, ENTONCES USO UNA DEFAULT
 		$data['tecnica'] = isset($data['tecnica']) && is_numeric($data['tecnica']) ? $data['tecnica'] : BD_TECNICA_DEFAULT;
 		// FILTRO LOS CAMPOS VALIDOS
@@ -300,19 +300,17 @@ class Treatment
 		if (!is_numeric($this->duracion) || empty($this->duracion)) {
 			return false;
 		}
-		// FECHA DE INICIO
-		$ini = strtotime($this->fecha_hora_inicio);
-		// DESDE MARCA DE TIEMPO UNIX DE LA FECHA DE INICIO MAS LA DURACION EN MESES
-		$mktime = mktime(0, 0, 0, date('m', $ini) + $this->duracion, date('d', $ini), date('Y', $ini));
-		// FORMATEO LA FECHA FINAL
-		$end = date('Y-m-d H:i:s', $mktime);
+		$init_date = strtotime(self::format_date($this->fecha_hora_inicio));
+		$end_date = strtotime("+{$this->duracion} months", $init_date);
+		$delta_time = $end_date - $init_date;
+		$current_time = time();
 
-		if ($mktime > time()) {
-			$total = 100 / diff_date($this->fecha_hora_inicio, $end);
+		if ($end_date > time()) {
+			$total_secs = $end_date - $init_date;
 
-			$this->progress = round(diff_date($this->fecha_hora_inicio, date('Y-m-d H:i:s')) * $total);
+			$elapsed_secs = time() - $init_date;
 
-			return $this->progress;
+			return round(($elapsed_secs/$total_secs)*100);
 		}
 		else {
 			return 100;
@@ -345,7 +343,7 @@ class Treatment
 				case 'fecha':
 				case 'fecha_inicio':
 				case 'fecha_hora_inicio':
-				$v = format_date($v);
+				$v = self::format_date($v);
 				$k = 'fecha_hora_inicio';
 				break;
 				case 'estado':
@@ -707,10 +705,8 @@ class Treatment
 
 		self::DB()->query($q);
 
-		if (self::DB()->numRows()) {
-			while ($_ = self::DB()->fetchAssoc()) {
-				$this->get_payment($_['id']);
-			}
+		while ($_ = self::DB()->fetchAssoc()) {
+			$this->get_payment($_['id']);
 		}
 
 		return $this->payments;
@@ -728,7 +724,7 @@ class Treatment
 	public function get_payment($id) 
 	{
 		if (is_array($id) || !is_numeric($id)) {
-			throw new TreatmentException('NO SE PUEDEN CARGAR EL/LOS REGISTROS DE PAGO DEL TRATAMIENTO. LOS DATOS ENVIADOS SON INCORRECTOS');
+			throw new TreatmentException('NO SE PUEDEN CARGAR EL/LOS REGISTROS DE PAGO DEL TRATAMIENTO. LOS DATOS ENVIADOS SON INCORRECTOS',1);
 		}
 
 		$Payment = new Payment($id);
@@ -908,5 +904,16 @@ class Treatment
 
 	private static function DB(){
 		return MySQL::getInstance();
+	}
+
+	private static function format_date($date)
+	{
+		preg_match('#^(?<D>\d{1,2})[\/|-](?<M>[0-2]?[1-9]|3[0-2])[\/|-](?<Y>\d{1,4})$#', $date, $result); 
+
+		if ($result) {
+			return date('Y-m-d H:i:s', strtotime($result['Y'] . '-' . $result['M'] . '-' . $result['D']));
+		}
+
+		return false;
 	}
 }

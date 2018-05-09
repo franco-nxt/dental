@@ -5,20 +5,18 @@
  */
 class PaymentException extends Exception
 {
-    public function __construct($message, $code = 0) {
+	public function __construct($message, $code = 0) {
 
-    	if ($code == 1) {
-	    	$file = @fopen("PaymentException-logs.txt","a");
+		$file = @fopen(BASE_PATH . DIRECTORY_SEPARATOR ."PaymentException-logs.txt","a");
 
-			if($file){
-				$date = date("d/m/Y H:i:s");
+		if($file){
+			$date = date("d/m/Y H:i:s");
+			$trace = $this->getTraceAsString();
+			fwrite($file, "$date: $trace \r\n");
 
-				fwrite($file, "$date: $message \r\n");
+			fclose($file);
+		}
 
-				fclose($file);
-			}
-    	}
-
-        parent::__construct($message);
-    }
+		parent::__construct($message);
+	}
 }

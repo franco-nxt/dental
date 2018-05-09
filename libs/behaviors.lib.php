@@ -200,7 +200,6 @@ function disabled($o)
 {
 	return $o ? null : 'disabled';
 }
-
 /**
  * Redirige a la misma url.
  * 
@@ -208,7 +207,9 @@ function disabled($o)
 function refresh_page()
 {
 	$actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-	redirect_exit($actual_link);
+	
+	header('Location: ' . $actual_link);
+	exit;
 }
 
 function redirect_exit($param = null) 
@@ -228,7 +229,6 @@ function redirect_exit($param = null)
  * 
  **/
 function &load_class($class, $directory = NULL, $param = NULL) {
-	$class = strtolower($class);
 	static $_classes = array();
 
 	if (isset($_classes[$class])) {
@@ -284,6 +284,12 @@ function &get_user($email = null, $pass = null)
 		add_error_flash($e->getMessage(), true);
 		redirect_exit("/login");
 	}
+}
+
+function get_Admin(){
+	$user = get_user();
+
+	return  Admin::login($user->email, $user->pass);
 }
 
 /**

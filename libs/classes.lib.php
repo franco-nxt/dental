@@ -7,6 +7,7 @@ require_once "classes/Controller.php";
 require_once "classes/Controller.php";
 
 require_once "classes/Dental/Dental.php";
+require_once "classes/Dental/Admin.php";
 require_once "classes/Dental/Patient.php";
 require_once "classes/Dental/Treatment.php";
 require_once "classes/Dental/Photo.php";
@@ -21,6 +22,7 @@ require_once "classes/Dental/Diagnostic.php";
 require_once "classes/Dental/Odontogram.php";
 
 require_once "classes/Exceptions/DentalException.php";
+require_once "classes/Exceptions/AdminException.php";
 require_once "classes/Exceptions/PatientException.php";
 require_once "classes/Exceptions/TreatmentException.php";
 require_once "classes/Exceptions/PhotoException.php";

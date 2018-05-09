@@ -84,7 +84,7 @@ class Payment
 		}
 		else{
 			// $id NO ES VALIDO
-			throw new PaymentException('OCURRIO UN ERROR CON EL REGISTRO DE PAGO, VUELVA A INTENTARLO OTRA VEZ.');
+			throw new PaymentException('OCURRIO UN ERROR CON EL REGISTRO DE PAGO, VUELVA A INTENTARLO OTRA VEZ.',1);
 		}
 		// ACTUALIZO LOS DATOS DE LA INSTANCIA
 		$this->select();
@@ -145,20 +145,24 @@ class Payment
 	 * @param  Mixed $data Un string con los campo/s o Array de Strin con los campos.
 	 * @return Payment     Retorna la misma instancia.
 	 */
-	public function select($data) 
+	public function select($data = '*') 
 	{
 		// ES NECESARIO EL ID DEL PAGO
 		if (empty($this->id) || !is_numeric($this->id)) {
 			throw new PaymentException('NO SE PUEDE CARGAR lOS DATOS DEL PAGO');
+		}
+		// ES NECESARIO EL ID DEL PAGO
+		if (empty($data)) {
+			throw new PaymentException('NO SE PUEDE CARGAR lOS DATOS DEL PAGO. LOS DATOS ENVIADOS SON ERRONEOS.');
 		}
 		// SI EL PARAMETRO ES UN STRING LO PASO A UN ARRAY
 		!is_array($data) && $data = array($data);
 		// VAR PARA GUARDAR LAS COLUMNAS DEL SELECT
 		$keys = array();
 		// FILTRO LOS CAMPOS Y AJUSTO LOS NOMBRES DE LOS CAMPOS SOLICITADOS A LOS REALES DE LA BBDD
-		foreach ($data as $k) {
+		foreach ($data as $field) {
 			// FILTRO LOS CAMPOS VALIDOS
-			if (self::valid_field($field)) {
+			if ($field == '*' || self::valid_field($field)) {
 				$keys[] = $field;
 			}
 		}

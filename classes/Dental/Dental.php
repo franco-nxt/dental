@@ -11,13 +11,10 @@ class Dental
 	 */
 	public $patients = array();
 
-	private static $instance;
+	protected static $instance;
 
 	public function __get($name) {
-		if ($name == 'db') {
-			return MySQL::getInstance();
-		}
-		elseif (isset($this->{$name})) {
+		if (isset($this->{$name})) {
 			return $this->{$name};
 		}
 
@@ -36,16 +33,16 @@ class Dental
 	 * @param String $user Email del usuario.
 	 * @param Strign $pass Password del usuario.
 	 */
-	private function __construct($user, $pass)
+	protected function __construct($user, $pass)
 	{
 		// VALIDO LOS PARAMETROS
 		if (empty($user) || empty($pass) || !is_string($user) || !is_string($pass)) {
 			throw new DentalException("ES NECESARIO COMPLETAR LOS CAMPOS USUARIO Y CONTRASEÑA");
 		}
 		// EMAIL DEL USUAIRO
-		$user = $this->db->escape($user);
+		$user = self::DB()->escape($user);
 		// TRAIGO LA PASS EN LA BD
-		$pass_bd = $this->db->oneFieldQuery("SELECT clave_seguridad FROM usuarios WHERE correo_electronico = '{$user}'");
+		$pass_bd = self::DB()->oneFieldQuery("SELECT clave_seguridad FROM usuarios WHERE correo_electronico = '{$user}'");
 		// MD5 DE LA PASSWORD ENVIADA
 		$pass_md5 = md5($pass);
 		// COMPARO LOS STRINGS
@@ -53,12 +50,13 @@ class Dental
 			throw new DentalException("USUARIO O CONTRASEÑA INCORRECTOS");
 		}
 		// SI TODO ESTA BIEN TRAIGO ALGUNOS DATOS DE LA BD
-		$row = $this->db->oneRowQuery("SELECT id_usuario, correo_electronico, nombre, apellido FROM usuarios WHERE correo_electronico = '{$user}'");
+		$row = self::DB()->oneRowQuery("SELECT id_usuario, correo_electronico, nombre, apellido, admin FROM usuarios WHERE correo_electronico = '{$user}'");
 		// INFO FILL
 		$this->id = $row['id_usuario'];
 		$this->fullname = "{$row['apellido']}, {$row['nombre']}";
 		$this->apellido = $row['apellido'];
 		$this->nombre = $row['nombre'];
+		$this->admin = $row['admin'];
 		$this->email = $user;
 		$this->pass = $pass;
 	}
@@ -99,7 +97,7 @@ class Dental
 			// QUERY FINALE
 			$q = "UPDATE usuarios SET {$implode} WHERE id_usuario = '{$this->id}'";
 			// EJECUTO
-			$this->db->query($q);
+			self::DB()->query($q);
 		}
 		// SINC EN LA INSTANCIA
 		$this->select();
@@ -144,10 +142,10 @@ class Dental
 			// QUERY FINALE
 			$q = "SELECT {$implode} FROM usuarios WHERE id_usuario = {$this->id}";
 			// EJECUTO LA QERY
-			$row = $this->db->oneRowQuery($q);
+			$row = self::DB()->oneRowQuery($q);
 			// FILL EN LA INSTANCIA
 			foreach ($row as $k => $v) {
-				$this->{$k} = utf8_encode($v);
+				$this->{$k} = $k == 'admin' ? boolval($v) : utf8_encode($v);
 			}
 
 			return $this;
@@ -189,9 +187,9 @@ class Dental
 		// EL CAMPO 'BORRADO' ES BORRADO LOGICO, LA COLUMNA 'ELIMINADO' ES UN PASO PREVIO A SER BORRADO
 		$q = "SELECT id_paciente AS id FROM pacientes WHERE id_usuario = {$this->id} AND (borrado <> 1 OR borrado IS NULL)";
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 		// POR CADA FILA 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			// GUARDO EL PACIENTE
 			$this->patient($_['id']);
 		}
@@ -236,9 +234,9 @@ class Dental
 			// QUERY CON LAS CONDICIONES QUE ARME
 			$q = "SELECT id_paciente AS id FROM pacientes WHERE id_usuario = {$this->id} AND {$implode}";
 			// EJECUTO LA QUERY
-			$this->db->query($q);
+			self::DB()->query($q);
 			// CARGO LOS PACIENTES
-			while ($_ = $this->db->fetchAssoc()) {
+			while ($_ = self::DB()->fetchAssoc()) {
 				$patients[] = $this->patient($_['id']);
 			}
 		}
@@ -297,9 +295,9 @@ class Dental
 		// QUERY 
 		$q = "SELECT P.id_paciente AS id, concat(P.apellido, ', ', P.nombre) AS PACIENTE, concat(U.apellido, ', ', U.nombre) AS USUARIO, id_compartir AS COMPARTIR FROM compartidos AS C INNER JOIN vinculos AS V ON V.id_vinculo = C.id_vinculo INNER JOIN pacientes AS P ON P.id_paciente = C.id_paciente INNER JOIN usuarios AS U ON U.id_usuario = V.id_usuario_in WHERE V.id_usuario_out = {$this->id}";
 		// EJECUTA
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			// URI PARA COMPARTIR
 			$_['COMPARTIR'] = crypt_params(array(PACIENTE => $_['id'], COMPARTIR => $_['COMPARTIR']));
 			$comparto[] = $_;
@@ -333,9 +331,9 @@ class Dental
 		// QUERY
 		$q = "SELECT P.id_paciente AS id, concat(P.apellido, ', ', P.nombre) AS PACIENTE, concat(U.apellido, ', ', U.nombre) AS USUARIO, id_compartir AS COMPARTIR FROM compartidos AS C INNER JOIN vinculos AS V ON V.id_vinculo = C.id_vinculo INNER JOIN pacientes AS P ON P.id_paciente = C.id_paciente INNER JOIN usuarios AS U ON U.id_usuario = V.id_usuario_out WHERE V.id_usuario_in = {$this->id}";
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			// URL ABSOLUTA AL PERFIL DEL PACIENTE
 			$_['URL'] = URL_ROOT . '/paciente/' . crypt_params(array(PACIENTE => $_['id']));
 			$mecomarten[] = $_;
@@ -384,9 +382,9 @@ class Dental
 			$q = "SELECT id_vinculo, id_axis AS vinculo, V.id_usuario_in AS id, foto, ref, concat(U.apellido, ', ', U.nombre) AS fullname, correo_electronico FROM vinculos AS V INNER JOIN usuarios AS U ON V.id_usuario_in = U.id_usuario WHERE V.id_usuario_out = {$this->id}";
 		}
 
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			// MINIATURA DEL USUARIO
 			$photo = empty($_['foto']) ? 'res/pic-placeholder.png' : "perfil/thumb/{$_['foto']}";
 
@@ -399,7 +397,7 @@ class Dental
 			$users[$_['id']] = $_;
 		}
 
-		$this->db->free();
+		self::DB()->free();
 
 		return $users;       
 	}
@@ -435,7 +433,7 @@ class Dental
 		// CANTIDAD DE VINCULOS QUE GENERO ESTE USUARIO
 		$q = "SELECT COUNT(id_vinculo) FROM vinculos WHERE id_usuario_out = '{$this->id}'";
 		// EJECUTO
-		$count = $this->db->oneFieldQuery($q);
+		$count = self::DB()->oneFieldQuery($q);
 		// RETORNO UN ENCODE DEL MISMO ID DEL USUARIO Y LA CANTIDAD DE VINCULOS
 		return base64url_encode("{$this->id}-{$count}");
 	}
@@ -474,13 +472,13 @@ class Dental
 		// VALIDO QUE ESTE VINCULO NO EXISTA
 		$q = "SELECT COUNT(id_vinculo) FROM vinculos WHERE (id_usuario_out = '{$user_id}' AND id_usuario_in = '{$this->id}') OR id_axis = '{$share_id}'";
 		// EJECUTO
-		$isset_link = $this->db->oneFieldQuery($q);
+		$isset_link = self::DB()->oneFieldQuery($q);
 
 		if (!$isset_link) {
 			// CREO EL VINCULO
 			$q = "INSERT INTO vinculos(id_axis, id_usuario_out, id_usuario_in, ref) VALUES ('{$share_id}', '{$user_id}', '{$this->id}', '{$ref}')";
 			// LO QUE RETORNO ES EL RESULTADO DE LA QUERY
-			return $this->db->query($q);
+			return self::DB()->query($q);
 		}
 		else{
 			// EL VINCULO YA ESTA EN USO
@@ -506,13 +504,13 @@ class Dental
 		// TRAIGO EL VINCULO DESDE LA BD
 		$q = "SELECT id_usuario_out, id_usuario_in FROM vinculos WHERE id_axis = '{$share_id}'";
 		// VINCULO
-		$link = $this->db->oneRowQuery($q);
+		$link = self::DB()->oneRowQuery($q);
 		// SI ESTA TODO BIEN 
 		if (!empty($link) && in_array($this->id, $link) && in_array($user_id, $link)) {
 			// LO ELIMINO
 			$q = "DELETE FROM vinculos WHERE id_axis = '{$share_id}'";
 
-			return $this->db->query($q);
+			return self::DB()->query($q);
 		}
 		else{
 			// EL VINCULO YA ESTA EN USO
@@ -539,7 +537,7 @@ class Dental
 		// QUERY PARA SABER SI EL PACIENTE YA ESTA COMPARTIDO EN ESTE VINCULO.
 		$q = "SELECT count(id_compartir) FROM compartidos WHERE id_paciente = '{$Patient->id}' AND id_vinculo = '{$link_id}'";
 
-		$is_shared = (int) $this->db->oneFieldQuery($q);
+		$is_shared = (int) self::DB()->oneFieldQuery($q);
 
 		if (!$is_shared) {
 			// INFO QUE DEL USUARIO QUE SE VA A COMPARTIR
@@ -549,7 +547,7 @@ class Dental
 			// $q = "INSERT INTO compartidos (id_vinculo, id_paciente, fotografias, radiografias, cefalometrias) VALUES ((SELECT id_vinculo FROM vinculos WHERE id_usuario_in = {$usuario} AND id_usuario_out = {$this->id}), {$Patient->id}, {$fotografias}, {$radiografias}, {$cefalometrias})";
 			$q = "INSERT INTO compartidos (id_vinculo, id_paciente, fotografias, radiografias, cefalometrias) VALUES ({$link_id}, {$Patient->id}, {$fotografias}, {$radiografias}, {$cefalometrias})";
 			// EJECUTO
-			return $this->db->query($q);
+			return self::DB()->query($q);
 		}
 		// SI EL PACIENTE YA ESTA COMPARTIDO.
 		return false;
@@ -576,7 +574,7 @@ class Dental
 		// QUERY UPDATE
 		$q = "UPDATE compartidos SET radiografias = '{$radiografias}', fotografias = '{$fotografias}', cefalometrias = '{$cefalometrias}' WHERE  id_compartir = {$share_id}";
 		// EJECUTO
-		return $this->db->query($q);
+		return self::DB()->query($q);
 	}
 
 	/**
@@ -594,7 +592,7 @@ class Dental
 
 		$q = "DELETE FROM compartidos WHERE id_compartir = {$share_id}";
 
-		return $this->db->query($q);
+		return self::DB()->query($q);
 	}
 
 	/**
@@ -638,9 +636,9 @@ class Dental
 		// QUERY QUE BUSCA TRATAMIENTOS Y SU PACIENTE SEGUN $state, QUE EL PACIENTE NO ESTE NI ELIMINADO NI BORRADO
 		$q = "SELECT P.id_paciente AS patient, T.id_tratamiento as treatment FROM pacientes AS P INNER JOIN tratamientos AS T ON T.id_paciente = P.id_paciente AND T.estado = {$state} WHERE id_usuario = {$this->id} AND (P.borrado <> 1 OR P.borrado IS NULL) AND (P.eliminado <> 1 OR P.eliminado IS NULL)";
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			// OBTENGO EL PACIENTE
 			$Patient = $this->get_patient($_['patient']);
 			// OBTENGO EL TRATAMIENTO
@@ -672,9 +670,9 @@ class Dental
 		// QUERY QUE BUSCA TRATAMIENTOS Y SU PACIENTE, QUE EL TRATMIENTO ESTE ELIMINADO Y EL PACIENTE NO ESTE NI ELIMINADO NI BORRADO
 		$q = "SELECT P.id_paciente AS patient, T.id_tratamiento as treatment FROM pacientes AS P INNER JOIN tratamientos AS T ON T.id_paciente = P.id_paciente WHERE id_usuario = {$this->id} AND P.eliminado = 1 AND (P.borrado <> 1 OR P.borrado IS NULL)";
 		// EJECUTO
-		$this->db->query($q);
+		self::DB()->query($q);
 
-		while ($_ = $this->db->fetchAssoc()) {
+		while ($_ = self::DB()->fetchAssoc()) {
 			// OBTENGO EL PACIENTE
 			$Patient = $this->get_patient($_['patient']);
 			// OBTENGO EL TRATAMIENTO
@@ -694,10 +692,15 @@ class Dental
 	 * @param String $fieldname
 	 * @return Bool
 	 */
-	public static function valid_field($fielname)
+	public static function valid_field($fieldname)
 	{
 		$ptrn = '/^(a(dmin|pellido)|c(elular|iudad|lave_seguridad|o(digo_postal|mentarios_(c(efalometrias|ompartir)|diagnostico|economia|generales|odontograma|(foto|radio)grafias|tratamiento)|rreo_electronico))|direccion|foto|nombre|p(ais|rovincia)|telefono)$/';
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return !empty($fieldname) && is_string($fieldname) && preg_match($ptrn, $fieldname);
+	}
+
+	protected static function DB()
+	{
+		return MySQL::getInstance();
 	}
 }

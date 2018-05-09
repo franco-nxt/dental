@@ -6,8 +6,8 @@
 </div>
 <div class="container p5">
 	<div>
-		<figure><img src="<?= $User->get_picture() ?>" class="paciente-img img-rounded"></figure>
-		<div class="clear">
+		<figure class="col-md-3 mb5"><img src="<?= $User->get_picture() ?>" class="paciente-img img-rounded"></figure>
+		<div class="clear col-md-9">
 			<div class="col-xs-4 label label-read">
 				<strong>APELLIDO : </strong>
 			</div>

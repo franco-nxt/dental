@@ -1,9 +1,5 @@
 import swal from 'sweetalert';
 
-function upload_file(){
-
-}
-
 $('[data-drop-label]').on('change', function(e){
 
 	var reader = new FileReader();

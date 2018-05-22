@@ -99,11 +99,11 @@ class Odontogram {
 			throw new OdontogramException('OCURRIO UN ERROR AL INTENTAR ACTUALIZAR EL ODONTROGRAMA.');
 		}
 		// LA INFO TIENE QUE ESTAR EN UN ARRAY
-		if (!is_array($data)) {
-			throw new OdontogramException('LOS DATOS DEL ODONTROGRAMA SON ERRONEOSs.');
+		if (!is_string($data)) {
+			throw new OdontogramException('LOS DATOS DEL ODONTROGRAMA SON ERRONEOS.');
 		}
 		// ARMO LA QUERY
-		$q = "UPDATE odontogramas SET datos_json = '{$this->datos_json}' WHERE id_odontograma = '{$this->id}'";
+		$q = "UPDATE odontogramas SET datos_json = '{$data}' WHERE id_odontograma = '{$this->id}'";
 		// ACTUALIZO EN BD
 		$this->db->query($q);
 		// ACTUALIZO LA INSTANCIA

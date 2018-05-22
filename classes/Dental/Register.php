@@ -90,11 +90,11 @@ class Register {
 			}
 		}
 		// IMPLODE CON LAS COLUMNAS
-		$keys = implode(",", array_keys($fields));
+		$columns = implode(",", array_keys($fields));
 		// IMPLODE CON LAS COLUMNAS
-		$values = implode(",", array_values($fields));
+		$values = implode("','", array_values($fields));
 		// ARMO LA QUERY
-		$q = "INSERT INTO registros ({$implode}) VALUES ('{$values}')";
+		$q = "INSERT INTO registros ({$columns}) VALUES ('{$values}')";
 		// EJECUTO
 		$this->db->query($q);
 		// ASIGNO EL ID A LA INSTANCIA
@@ -120,7 +120,7 @@ class Register {
 
 		foreach ($_ as $k => $v) {
 			// FILL
-			$this->{$k} = utf8_encode($v);
+			$this->{$k} = $v;
 		}
 
 		return $this;

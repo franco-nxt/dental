@@ -250,7 +250,7 @@ class Photo
 
 			if (isset($_['fecha_hora'])) {
 				// FORMATEO LA FECHA PARA EL FRONT
-				$this->fecha_hora  = date('d/m/y', strtotime($_['fecha_hora']));
+				$this->fecha_hora  = date('d/m/Y', strtotime($_['fecha_hora']));
 			}
 
 			if (isset($_['etapa'])) {
@@ -390,7 +390,7 @@ class Photo
 	 * @return sting url para ver/editar la fotografia
 	 * @param String $action ver|editar
 	 * */
-	public function url($action)
+	public function url($action ="ver")
 	{
 		return trim(URL_ROOT, '/') . '/fotografias/' . trim($action, '/') . '/' . $this->url;
 	}

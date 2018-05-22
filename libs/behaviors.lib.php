@@ -69,13 +69,7 @@ function get_from_encode($encode, $item)
 	}
 
 	if (empty($decrypt_params[$encode][$item])) {
-		switch ($item) {
-			case PACIENTE: add_error_flash('NO SE ENCUENTRA EL PACIENTE SOLICITADO'); break;
-			case TRATAMIENTO: add_error_flash('NO SE ENCUENTRA EL TRATAMIENTO SOLICITADO'); break;
-			case FOTOGRAFIA: add_error_flash('NO SE ENCUENTRA EL FOTOGRAF&Iacute;A SOLICITADO'); break;
-			case RADIOGRAFIA: add_error_flash('NO SE ENCUENTRA EL RADIOGRAF&Iacute;A SOLICITADO'); break;
-			case CEFALOMETRIA: add_error_flash('NO SE ENCUENTRA EL CEFALOMETRIA SOLICITADO'); break;
-		}
+		add_error_flash("NO SE ENCUENTRA EL PARAMETRO {$item}.");
 		redirect_exit();
 	}
 	else{
@@ -183,7 +177,12 @@ function isset_disabled(&$o)
 
 function isset_checked(&$o)
 {
-	return isset($o) ? 'checked="true"' : null;
+	return !empty($o) ? 'checked="true"' : null;
+}
+
+function _checked(&$o)
+{
+	return !empty($o) ? 'checked="true"' : null;
 }
 
 function checked($o) 
@@ -470,4 +469,42 @@ function clog( $data )
 	echo '<script>';
 	echo 'console.log('. json_encode( $data ) .')';
 	echo '</script>';
+}
+
+
+function csv_decode($csv, $columns = [], $delimiter = ',', $enclosure = '"', $escape = '\\') {
+    $tmp = fopen('php://temp', 'rb+');
+    
+    fwrite($tmp, $csv);
+    rewind($tmp);
+    
+    $result = [];
+    $assoc = (bool) $columns;
+    
+    while (true) {
+        $record = fgetcsv($tmp, 0, $delimiter, $enclosure, $escape);
+        
+        if ($record === null || $record === false) break;
+        if ($record === [null]) continue; //blank line
+        
+        if ($assoc) {
+            foreach ($columns as $i => $name) {
+                $map[$name] = isset($record[$i]) ? $record[$i] : null;
+            }
+            $result[] = $map;
+        } 
+        else {
+            $result[] = $record;
+        }
+    }
+
+    return $result;
+}
+
+function get_if(&$obj, $str = NULL){
+	return empty($obj) ? NULL : (!$str && is_string($obj) ? $obj : $str);
+}
+
+function checked_if(&$obj){
+	return get_if($obj, 'checked');
 }

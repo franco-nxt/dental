@@ -40,6 +40,7 @@ class Page extends Controller{
 	}
 	
 	public function nuevo() {
+		_global('navbar-back', URL_ROOT . '/compartir');
 
 		$User = get_user();
 
@@ -81,6 +82,6 @@ class Page extends Controller{
 		// COMPARTO AL PACIENTE 
 		$User->share_patient($Patient, $link, $access);
 		// // VUELVO A LA VISTA PRINCIPAÑ
-        $this->main();
+		$this->main();
 	}
 }

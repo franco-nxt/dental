@@ -1,7 +1,7 @@
 <form action="" method="POST" enctype="multipart/form-data" style="padding-bottom: 10px;" ng-app="dragModule">
     <div class="bar-btn">
         <div class="container">
-            <a class="btn btn-default" href="<?= URL_ROOT ?>/perfil">CANCELAR</a>
+            <a class="btn btn-default" href="<?= URL_ROOT ?>/manager">CANCELAR</a>
             <button class="btn btn-primary" type="submit" name="action" value="guardar">GUARDAR</button>
         </div>
     </div>
@@ -109,13 +109,13 @@
                 <div class="col-xs-4 col-md-3 label label-read">
                     <strong>TARJETA :</strong>
                 </div>
-                <div class="col-xs-8 col-md-9 field field-blue field-radio-check">
-                    <input type="radio" id="user_cartype-visa" value="VISA" name="tarjeta_tipo">
-                    <label for="user_cartype-visa">VISA</label>
-                    <input type="radio" id="user_cartype-mastercard" value="MASTERCARD" name="tarjeta_tipo">
-                    <label for="user_cartype-mastercard">MASTERCARD</label>
-                    <input type="radio" id="user_cartype-amex" value="AMEX" name="tarjeta_tipo">
-                    <label for="user_cartype-amex">AMEX</label>
+                <div class="col-xs-8 col-md-9 field field-blue">
+                    <input class="radio-input" type="radio" id="user_cartype-visa" value="VISA" name="tarjeta_tipo">
+                    <label class="radio-label" for="user_cartype-visa">VISA</label>
+                    <input class="radio-input" type="radio" id="user_cartype-mastercard" value="MASTERCARD" name="tarjeta_tipo">
+                    <label class="radio-label" for="user_cartype-mastercard">MASTERCARD</label>
+                    <input class="radio-input" type="radio" id="user_cartype-amex" value="AMEX" name="tarjeta_tipo">
+                    <label class="radio-label" for="user_cartype-amex">AMEX</label>
                 </div>
             </div>
             <label for="user_tarjeta_num" class="form-group m0 clear col-md-4">

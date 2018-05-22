@@ -1,7 +1,3 @@
-<?php
-!isset($Patient) && redirect_exit();
-!isset($Treatment) && $Treatment = $Patient->get_treatment();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
@@ -14,7 +10,7 @@
 	</div>
 	<?php endif ?>
 	<div class="bar-bordered">
-		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+		<span><?= $Treatment->resume() ?></span>
 	</div>
 	<div class="table-rounded">
 		<table class="table">
@@ -26,30 +22,28 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $photos = $Treatment->get_cephalometries() ?>
-				<?php if (count($photos)): foreach ($photos as $Photo) : ?>
-				<tr>
-					<td><a href="<?= $Photo->url('ver') ?>" class="block nexa-l p-xs"><?= $Photo->fecha_hora ?></a></td>
-					<td><a href="<?= $Photo->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $Photo->cantidad ?></a></td>
-					<td><a href="<?= $Photo->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $Photo->etapa ?></a></td>
-				</tr>
-				<?php endforeach;else: ?>
+				<?php if (empty($cephalometries)): ?>
 				<tr class="tr-void">
 					<td colspan="3"><span class="p-xs">NO SE ENCUENTRAN RADIOGRAF&Iacute;AS CARGADAS</span></td>
 				</tr>
-			<?php endif; ?>
+				<?php else: foreach ($cephalometries as $cephalometry) : ?>
+				<tr>
+					<td><a href="<?= $cephalometry->url('ver') ?>" class="block nexa-l p-xs"><?= $cephalometry->fecha_hora ?></a></td>
+					<td><a href="<?= $cephalometry->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $cephalometry->cantidad ?></a></td>
+					<td><a href="<?= $cephalometry->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $cephalometry->etapa ?></a></td>
+				</tr>
+				<?php  endforeach;endif; ?>
 			</tbody>
 		</table>
 	</div>
-	<?php $treatments = $Patient->old_treatments() ?>
-	<?php if ($treatments): ?>
+	<?php if ($old_treatments): ?>
 	<div class="p5 txt-center">
 		<button class="btn show-old-treatments">VER TRATAMIENTOS ANTERIORES</button>
 	</div>
 	<div id="old-treatments" style="display:none">
-		<?php foreach ($treatments as $treatment): if ($treatment->id == $Treatment->id) continue ?>
+		<?php foreach ($old_treatments as $treatment): if ($treatment->id == $Treatment->id) continue ?>
 			<div class="bar-bordered">
-				<span><?= $Treatment->fecha_hora_inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?></span>
+				<span><?= $treatment->resume() ?></span>
 			</div>
 			<div class="table-rounded">
 				<table class="table">
@@ -61,8 +55,8 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php $radiographies = $treatment->get_cephalometries() ?>
-						<?php if (count($radiographies)): foreach ($radiographies as $Radiographie) : ?>
+						<?php $cephalometries = $treatment->get_cephalometries() ?>
+						<?php if (count($cephalometries)): foreach ($cephalometries as $Radiographie) : ?>
 							<tr>
 								<td><a href="<?= $Radiographie->url('ver') ?>" class="block nexa-l p-xs"><?= $Radiographie->fecha_hora ?></a></td>
 								<td><a href="<?= $Radiographie->url('ver') ?>" class="block nexa-l p-xs txt-center"><?= $Radiographie->cantidad ?></a></td>

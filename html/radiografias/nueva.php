@@ -21,7 +21,7 @@
 					<strong>FECHA</strong>
 				</div>
 				<div class="col-xs-9 field field-blue">
-					<input type="text" id="patient_apellido" value="<?= '' ?>" name="fecha" class="input-date">
+					<input type="text" id="patient_apellido" value="<?= date('d/m/Y') ?>" name="fecha" class="input-date text-input full">
 				</div>
 			</label>
 			<div class="form-group clear col-sm-6">
@@ -29,12 +29,12 @@
 					<strong>ETAPA : </strong>
 				</div>
 				<div class="col-xs-9 field field-read field-radio-check field-blue">
-					<input type="radio" id="r_etapa_iniciales" value="<?= ETAPA_INICIALES ?>" name="etapa">
-					<label for="r_etapa_iniciales">INICIALES</label>
-					<input type="radio" id="r_etapa_intermedias" value="<?= ETAPA_INTERMEDIAS ?>" name="etapa">
-					<label for="r_etapa_intermedias">INTERMEDIAS</label>
-					<input type="radio" id="r_etapa_finales" value="<?= ETAPA_FINALES ?>" name="etapa">
-					<label for="r_etapa_finales">FINALES</label>
+					<input class="radio-input" type="radio" id="r_etapa_iniciales" value="<?= ETAPA_INICIALES ?>" name="etapa">
+					<label class="radio-label" for="r_etapa_iniciales">INICIALES</label>
+					<input class="radio-input" type="radio" id="r_etapa_intermedias" value="<?= ETAPA_INTERMEDIAS ?>" name="etapa">
+					<label class="radio-label" for="r_etapa_intermedias">INTERMEDIAS</label>
+					<input class="radio-input" type="radio" id="r_etapa_finales" value="<?= ETAPA_FINALES ?>" name="etapa">
+					<label class="radio-label" for="r_etapa_finales">FINALES</label>
 				</div>
 			</div>
 		</div>

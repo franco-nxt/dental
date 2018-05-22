@@ -19,7 +19,7 @@
 	</div>
 	<?php endif ?>
 	<div class="bar-bordered">
-		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?> - <?= $Treatment->descripcion ?></span>
 	</div>
 	<div class="table-rounded">
 		<table class="table">
@@ -50,15 +50,15 @@
 			</tbody>
 		</table>
 	</div>
-	<?php $tratments = $Patient->get_treatments(); ?>
-	<?php if ($tratments): ?>
+	<?php $tratments = $Patient->old_treatments(); ?>
+	<?php if (!empty($tratments)): ?>
 		<div class="p5 txt-center">
 			<button class="btn show-old-treatments">VER TRATAMIENTOS ANTERIORES</button>
 		</div>
 		<div id="old-treatments" style="display:none">
 		<?php foreach ($tratments as $treatment): if ($treatment->id == $Treatment->id) continue ?>
 		<div class="bar-bordered">
-			<span><?= $Treatment->fecha_hora_inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?></span>
+			<span><?= $treatment->fecha_hora_inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?> - <?= $treatment->descripcion ?></span>
 		</div>
 		<div class="table-rounded">
 			<table class="table">

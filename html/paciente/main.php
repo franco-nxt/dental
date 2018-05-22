@@ -14,11 +14,11 @@
 				<div class="col-xs-8 field field-read">
 					<span><?= $Patient->nombre ?></span>
 				</div>
-				<div class="col-xs-5 col-sm-4 label label-read">
-					<strong>NACIMIENTO : </strong>
+				<div class="col-xs-4 label label-read">
+					<strong>T&Eacute;CNICA : </strong> 
 				</div>
-				<div class="col-xs-7 col-sm-8 field field-read">
-					<span><?= $Patient->fecha_nacimiento ?></span>
+				<div class="col-xs-8 field field-read">
+					<span><?= $Treatment->tecnica ?></span>
 				</div>
 			</div>
 			<figure class="patient-main-img">
@@ -45,6 +45,12 @@
 			<div class="col-xs-8 field field-read">
 				<span><?= $Patient->dni ?></span>
 			</div>
+			<div class="col-xs-5 col-sm-4 label label-read">
+				<strong>NACIMIENTO : </strong>
+			</div>
+			<div class="col-xs-7 col-sm-8 field field-read">
+				<span><?= $Patient->fecha_nacimiento ?></span>
+			</div>
 			<div class="col-xs-4 label label-read">
 				<strong>TEL&Eacute;FONO : </strong>
 			</div>
@@ -66,9 +72,9 @@
 			<div class="col-xs-4 label label-read">
 				<strong>SEXO : </strong>
 			</div>
-			<div class="col-xs-8 field field-read field-radio-check">
-				<span class="<?= $Patient->sexo == MALE ? 'checked' : null ?>">M</span>
-				<span class="<?= $Patient->sexo == FEMALE ? 'checked' : null ?>">F</span>
+			<div class="col-xs-8 field field-read">
+				<span class="radio-label <?= $Patient->sexo == MALE ? 'checked' : null ?>">M</span>
+				<span class="radio-label <?= $Patient->sexo == FEMALE ? 'checked' : null ?>">F</span>
 			</div>
 			<div class="col-xs-4 label label-read">
 				<strong>EDAD : </strong>
@@ -143,12 +149,6 @@
 		</div>
 		<div class="col-xs-2 col-sm-8 field field-read">
 			<span><?= $Treatment->duracion ?> MES<?= $Treatment->duracion > 1 ? 'ES' : null ?></span>
-		</div>
-		<div class="col-xs-4 label label-read">
-			<strong>T&Eacute;CNICA : </strong> 
-		</div>
-		<div class="col-xs-8 field field-read">
-			<span><?= $Treatment->tecnica ?></span>
 		</div>
 		<div class="col-xs-3 col-sm-4 label label-read">
 			<strong>ESTADO : </strong>

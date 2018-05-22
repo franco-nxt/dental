@@ -1,15 +1,6 @@
-<?php 
-!isset($Patient, $Treatment) && redirect_exit();
-$old_treatments = (Array) $Patient->old_treatments();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
-	</div>
-</div>
-<div class="bar-btn">
-	<div class="container">
-		<a class="btn btn-default" href="<?= $Patient->url() ?>">CANCELAR</a>
 	</div>
 </div>
 <div class="container p5">

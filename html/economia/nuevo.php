@@ -1,6 +1,3 @@
-<?php
-!isset($Patient, $Treatment) && redirect_exit();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
@@ -20,7 +17,7 @@
 				<strong>FECHA : </strong>
 			</div>
 			<div class="col-sm-8 field field-blue">
-				<input type="text" id="p_fecha" value="<?= date('d/m/y') ?>" name="fecha" class="input-date">
+				<input type="text" id="p_fecha" value="<?= date('d/m/Y') ?>" name="fecha" class="input-date text-input full">
 			</div>
 		</label>
 		<label for="p_monto" class="m0 form-group">
@@ -28,7 +25,7 @@
 				<strong>MONTO : </strong>
 			</div>
 			<div class="col-sm-8 field field-blue">
-				<input type="text" id="p_monto" value="" name="monto">
+				<input type="text" id="p_monto" value="" name="monto" class="text-input full">
 			</div>
 		</label>
 		<div class="col-sm-4 label label-read">
@@ -46,7 +43,7 @@
 				<strong>MOTIVO DE PAGO : </strong>
 			</div>
 			<div class="col-sm-8 field field-blue">
-				<input type="text" id="p_motivo" value="" name="motivo">
+				<input type="text" id="p_motivo" value="" name="motivo" class="text-input full">
 			</div>
 		</label>
 		<label for="p_anotaciones" class="m0 form-group clear">

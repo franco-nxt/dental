@@ -9,14 +9,14 @@
         <div class="notification mb5">
             <SPAN>AL GUARDAR LOS CAMBIOS, ES NECESARIO VOLVER A INICIAR SESI&Oacute;N</SPAN>
         </div>
-        <figure class="paciente-img-wrap">
-            <div class="paciente-img" id="paciente-img">
+        <figure class="patient-img-wrap">
+            <div class="patient-img" id="patient-img">
                 <img src="<?= $User->get_picture() ?>" alt="<?= $User->fullname ?>" class="img-rounded">
             </div>
             <div>
                 <figcaption>
                     <label for="user_img" class="btn btn-primary">
-                        <input type="file" id="user_img" class="upload-img-btn" data-target="paciente-img" style="display: none" name="img" />
+                        <input type="file" id="user_img" class="upload-img-btn" data-target="patient-img" style="display: none" name="img" />
                         CARGAR FOTO
                     </label>
                     <h5 style="color: #FFF">150 x 150</h5>

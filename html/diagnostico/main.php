@@ -3,11 +3,6 @@
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
 	</div>
 </div>
-<div class="bar-btn">
-	<div class="container">
-		<a class="btn btn-default" href="<?= $Patient->url() ?>">CANCELAR</a>
-	</div>
-</div>
 <div class="container p5">
 	<div class="bar-bordered">
 		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?> - <?= $Treatment->descripcion ?></span>

@@ -1,7 +1,3 @@
-<?php
-!isset($Patient, $Treatment) && redirect_exit();
-!isset($User) && $User = get_user();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
@@ -35,7 +31,7 @@
 				<strong>FECHA INICIO : </strong>
 			</div>
 			<div class="col-xs-8 field field-blue">
-				<input type="text" id="treatment_inicio" value="<?= $Treatment->fecha_hora_inicio ?>" name="fecha_hora_inicio" class="input-date">
+				<input type="text" id="treatment_inicio" value="<?= $Treatment->fecha_hora_inicio ?>" name="fecha_hora_inicio" class="input-date text-input full">
 			</div>
 		</label>
 		<label for="treatment_presupuesto" class="form-group clear m0">
@@ -43,7 +39,7 @@
 				<strong>PRESUPUESTO : </strong>
 			</div>
 			<div class="col-xs-7 col-sm-8 field field-blue">
-				<input type="text" id="treatment_presupuesto" value="<?= $Treatment->presupuesto ?>" name="presupuesto">
+				<input type="text" id="treatment_presupuesto" value="<?= $Treatment->presupuesto ?>" name="presupuesto" class="text-input full">
 			</div>
 		</label>
 		<label for="treatment_descripcion" class="form-group clear m0">

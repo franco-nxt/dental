@@ -4,14 +4,14 @@
 			<button class="btn btn-primary btn-ico-search" name="action" value="search">BUSCAR PACIENTE</button>
 		</div>
 	</div>
-	<div class="paciente pb10">
+	<div class="patient pb10">
 		<div class="container">
 			<label for="patient_apellido" class="form-group clear m0">
 				<div class="col-xs-4 label">
 					<strong>APELLIDO</strong>
 				</div>
 				<div class="col-xs-8 field">
-					<input type="text" id="patient_apellido" value="<?= filter_input(INPUT_GET, 'apellido') ?>" name="apellido">
+					<input type="text" id="patient_apellido" value="<?= filter_input(INPUT_GET, 'apellido') ?>" name="apellido" class="text-input full">
 				</div>
 			</label>
 			<label for="patient_nombre" class="form-group clear m0">
@@ -19,16 +19,16 @@
 					<strong>NOMBRE</strong>
 				</div>
 				<div class="col-xs-8 field">
-					<input type="text" id="patient_nombre" value="<?= filter_input(INPUT_GET, 'nombre') ?>" name="nombre">
+					<input type="text" id="patient_nombre" value="<?= filter_input(INPUT_GET, 'nombre') ?>" name="nombre" class="text-input full">
 				</div>
 			</label>
 			<div class="form-group clear m0">
 				<div class="col-xs-4 label">
 					<strong>SEXO</strong>
 				</div>
-				<div class="col-xs-8 field field-radio-check">
-					<input type="radio" name="sexo" id="patient_genre_male" value="<?= SEXO_1 ?>" <?= checked(filter_input(INPUT_GET, 'sexo') === SEXO_1) ?>><label for="patient_genre_male">M</label>
-					<input type="radio" name="sexo" id="patient_genre_female" value="<?= SEXO_2 ?>" <?= checked(filter_input(INPUT_GET, 'sexo') === SEXO_2) ?>><label for="patient_genre_female">F</label>
+				<div class="col-xs-8 field">
+					<input class="radio-input" type="radio" name="sexo" id="patient_genre_male" value="<?= SEXO_1 ?>" <?= checked(filter_input(INPUT_GET, 'sexo') === SEXO_1) ?>><label class="radio-label" for="patient_genre_male">M</label>
+					<input class="radio-input" type="radio" name="sexo" id="patient_genre_female" value="<?= SEXO_2 ?>" <?= checked(filter_input(INPUT_GET, 'sexo') === SEXO_2) ?>><label class="radio-label" for="patient_genre_female">F</label>
 				</div>
 			</div>
 			<label for="patient_ciudad" class="form-group clear m0">
@@ -36,7 +36,7 @@
 					<strong>CIUDAD</strong>
 				</div>
 				<div class="col-xs-8 field field-read">
-					<input type="text" id="patient_ciudad" value="<?= filter_input(INPUT_GET, 'ciudad') ?>" name="ciudad"/>
+					<input type="text" id="patient_ciudad" value="<?= filter_input(INPUT_GET, 'ciudad') ?>" name="ciudad" class="text-input full"/>
 				</div>
 			</label>
 			<label for="patient_provincia" class="form-group clear m0">
@@ -44,7 +44,7 @@
 					<strong>PROVINCIA</strong>
 				</div>
 				<div class="col-xs-8 field field-read">
-					<input type="text" id="patient_provincia" value="<?= filter_input(INPUT_GET, 'provincia') ?>" name="provincia"/>
+					<input type="text" id="patient_provincia" value="<?= filter_input(INPUT_GET, 'provincia') ?>" name="provincia" class="text-input full"/>
 				</div>
 			</label>
 			<label for="patient_ingreso" class="form-group clear m0">
@@ -52,7 +52,7 @@
 					<strong>INGRESO</strong>
 				</div>
 				<div class="col-xs-8 field">
-					<input type="text" id="patient_ingreso" value="<?= filter_input(INPUT_GET, 'ingreo') ?>" name="ingreo" class="input-date">
+					<input type="text" id="patient_ingreso" value="<?= filter_input(INPUT_GET, 'ingreo') ?>" name="ingreo" class="input-date text-input full">
 				</div>
 			</label>
 		</div>

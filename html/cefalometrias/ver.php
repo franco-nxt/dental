@@ -1,7 +1,3 @@
-<?php
-!isset($Patient, $Treatment, $Cephalometry) && redirect_exit();
-!isset($model) && $model = $Cephalometry->name;
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
@@ -30,9 +26,9 @@
 				<strong>ETAPA : </strong>
 			</div>
 			<div class="col-xs-9 field field-read field-radio-check field-blue">
-				<span class="<?= $Cephalometry->etapa == ETAPA_INICIALES ? 'checked' : null ?>">INICIALES</span>
-				<span class="<?= $Cephalometry->etapa == ETAPA_INTERMEDIAS ? 'checked' : null ?>">INTERMEDIAS</span>
-				<span class="<?= $Cephalometry->etapa == ETAPA_FINALES ? 'checked' : null ?>">FINALES</span>
+				<span class="radio-label <?= $Cephalometry->etapa == ETAPA_INICIALES ? 'checked' : null ?>">INICIALES</span>
+				<span class="radio-label <?= $Cephalometry->etapa == ETAPA_INTERMEDIAS ? 'checked' : null ?>">INTERMEDIAS</span>
+				<span class="radio-label <?= $Cephalometry->etapa == ETAPA_FINALES ? 'checked' : null ?>">FINALES</span>
 			</div>
 		</div>
 		<div class="form-group clear col-sm-12 m0">
@@ -40,17 +36,17 @@
 				<strong>TIPO : </strong>
 			</div>
 			<div class="col-xs-9 field field-read field-radio-check field-blue">
-				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_RICKETTS ? 'checked' : null ?>">RICKETTS</span>
-				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_JARABAK ? 'checked' : null ?>">JARABAK</span>
-				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_MCNAMARA ? 'checked' : null ?>">MCNAMARA</span>
-				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_STEINER ? 'checked' : null ?>">STEINER</span>
-				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_OTRO ? 'checked' : null ?>">OTRO</span>
-				<span class="<?= $Cephalometry->tipo == CEFALOMETRIA_SUPERPOSICION ? 'checked' : null ?>">SUPERPOSICION</span>
+				<span class="radio-label <?= $Cephalometry->tipo == CEFALOMETRIA_RICKETTS ? 'checked' : null ?>">RICKETTS</span>
+				<span class="radio-label <?= $Cephalometry->tipo == CEFALOMETRIA_JARABAK ? 'checked' : null ?>">JARABAK</span>
+				<span class="radio-label <?= $Cephalometry->tipo == CEFALOMETRIA_MCNAMARA ? 'checked' : null ?>">MCNAMARA</span>
+				<span class="radio-label <?= $Cephalometry->tipo == CEFALOMETRIA_STEINER ? 'checked' : null ?>">STEINER</span>
+				<span class="radio-label <?= $Cephalometry->tipo == CEFALOMETRIA_OTRO ? 'checked' : null ?>">OTRO</span>
+				<span class="radio-label <?= $Cephalometry->tipo == CEFALOMETRIA_SUPERPOSICION ? 'checked' : null ?>">SUPERPOSICION</span>
 			</div>
 		</div>
 	</div>
-	<div class="sess s-c-<?= $model ?>">
-		<?php foreach (Cephalometry::get_session_model($model) as $classname): $thumb = $Cephalometry->get_thumb($classname);?>
+	<div class="sess s-c-<?= $Cephalometry->name ?>">
+		<?php foreach (Cephalometry::get_session_model($Cephalometry->name) as $classname): $thumb = $Cephalometry->get_thumb($classname);?>
 			<div class="sess-c <?= $classname ?>">
 				<div style="background-image: url('<?= $thumb ? $thumb : constant('C_' . strtoupper($classname)) ?>')">
 					<?php if ($thumb): ?>

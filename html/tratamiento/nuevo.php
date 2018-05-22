@@ -34,7 +34,7 @@
 				<strong>FECHA INICIO : </strong>
 			</div>
 			<div class="col-xs-8 field field-blue">
-				<input type="text" id="treatment_inicio" value="<?= date('d/m/y') ?>" name="fecha_hora_inicio" class="input-date">
+				<input type="text" id="treatment_inicio" value="<?= date('d/m/Y') ?>" name="fecha_hora_inicio" class="input-date">
 			</div>
 		</label>
 		<label for="treatment_presupuesto" class="form-group clear m0">

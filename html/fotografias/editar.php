@@ -22,7 +22,7 @@
 					<strong>FECHA : </strong>
 				</div>
 				<div class="col-xs-9 field field-blue">
-					<input type="text" id="photo_date" value="<?= $Photo->fecha_hora ?>" name="fecha_hora" class="input-date">
+					<input type="text" id="photo_date" value="<?= $Photo->fecha_hora ?>" name="fecha_hora" class="input-date text-input full">
 				</div>
 			</label>
 			<div class="form-group clear col-sm-6 m0">
@@ -30,12 +30,12 @@
 					<strong>ETAPA : </strong>
 				</div>
 				<div class="col-xs-9 field field-read field-radio-check field-blue">
-					<input type="radio" id="r_etapa_iniciales" <?= checked($Photo->etapa == ETAPA_INICIALES) ?> value="<?= ETAPA_INICIALES ?>" name="etapa">
-					<label for="r_etapa_iniciales">INICIALES</label>
-					<input type="radio" id="r_etapa_intermedias" <?= checked($Photo->etapa == ETAPA_INTERMEDIAS) ?> value="<?= ETAPA_INTERMEDIAS ?>" name="etapa">
-					<label for="r_etapa_intermedias">INTERMEDIAS</label>
-					<input type="radio" id="r_etapa_finales" <?= checked($Photo->etapa == ETAPA_FINALES) ?> value="<?= ETAPA_FINALES ?>" name="etapa">
-					<label for="r_etapa_finales">FINALES</label>
+					<input class="radio-input" type="radio" id="r_etapa_iniciales" <?= checked($Photo->etapa == ETAPA_INICIALES) ?> value="<?= ETAPA_INICIALES ?>" name="etapa">
+					<label class="radio-label" for="r_etapa_iniciales">INICIALES</label>
+					<input class="radio-input" type="radio" id="r_etapa_intermedias" <?= checked($Photo->etapa == ETAPA_INTERMEDIAS) ?> value="<?= ETAPA_INTERMEDIAS ?>" name="etapa">
+					<label class="radio-label" for="r_etapa_intermedias">INTERMEDIAS</label>
+					<input class="radio-input" type="radio" id="r_etapa_finales" <?= checked($Photo->etapa == ETAPA_FINALES) ?> value="<?= ETAPA_FINALES ?>" name="etapa">
+					<label class="radio-label" for="r_etapa_finales">FINALES</label>
 				</div>
 			</div>
 		</div>

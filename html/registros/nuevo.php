@@ -21,7 +21,7 @@
 				<strong>FECHA : </strong>
 			</div>
 			<div class="col-xs-9 field field-blue">
-				<input type="text" id="reg_fecha" value="<?= '' ?>" name="fecha" class="input-date">
+				<input type="text" id="reg_fecha" value="<?= date('d/m/Y') ?>" name="fecha" class="input-date text-input full">
 			</div>
 		</label>
 		<label for="reg_hora" class="form-group col-sm-6 m0">
@@ -29,7 +29,7 @@
 				<strong>HORA : </strong>
 			</div>
 			<div class="col-xs-9 field field-blue">
-				<input type="text" id="reg_hora" value="<?= '' ?>" name="hora" class="input-time">
+				<input type="text" id="reg_hora" value="<?= date('H:i') ?>" name="hora" class="input-time text-input full">
 			</div>
 		</label>
 		<div class="col-sm-6">
@@ -57,7 +57,7 @@
 				<strong>MOTIVO : </strong>
 			</div>
 			<div class="col-xs-9 col-sm-10 field field-blue">
-				<input type="text" id="reg_motiv" value="<?= '' ?>" name="motivo">
+				<input type="text" id="reg_motiv" value="<?= '' ?>" name="motivo" class="text-input full">
 			</div>
 		</label>
 		<label for="reg_descripcion" class="form-group col-sm-12 m0">

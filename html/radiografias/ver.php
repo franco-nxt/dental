@@ -30,9 +30,9 @@
 				<strong>ETAPA : </strong>
 			</div>
 			<div class="col-xs-9 field field-read field-radio-check field-blue">
-				<span class="<?= $Radiographie->etapa == ETAPA_INICIALES ? 'checked' : null ?>">INICIALES</span>
-				<span class="<?= $Radiographie->etapa == ETAPA_INTERMEDIAS ? 'checked' : null ?>">INTERMEDIAS</span>
-				<span class="<?= $Radiographie->etapa == ETAPA_FINALES ? 'checked' : null ?>">FINALES</span>
+				<span class="radio-label <?= $Radiographie->etapa == ETAPA_INICIALES ? 'checked' : null ?>">INICIALES</span>
+				<span class="radio-label <?= $Radiographie->etapa == ETAPA_INTERMEDIAS ? 'checked' : null ?>">INTERMEDIAS</span>
+				<span class="radio-label <?= $Radiographie->etapa == ETAPA_FINALES ? 'checked' : null ?>">FINALES</span>
 			</div>
 		</div>
 	</div>

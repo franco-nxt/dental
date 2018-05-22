@@ -3,7 +3,7 @@
 		<div class="container">
 			<button class="btn btn-success btn-ico-check" name="action" value="save">GUARDAR</button>
 			<a class="btn btn-default btn-ico-x" href="<?= $Treatment->url() ?>">CANCELAR</a>
-			<a class="btn btn-danger btn-ico-delete" href="<?= $Patient->url('eliminar') ?>">ELIMINAR</a>
+			<button class="btn btn-danger btn-ico-delete" name="action" value="delete">ELIMINAR</button>
 		</div>
 	</div>
 	<div class="patient">
@@ -15,7 +15,7 @@
 							<strong>APELLIDO : </strong>
 						</div>
 						<div class="col-xs-8 field">
-							<input type="text" id="patient_apellido" value="<?= $Patient->apellido ?>" name="apellido">
+							<input type="text" id="patient_apellido" value="<?= $Patient->apellido ?>" name="apellido" class="text-input full">
 						</div>
 					</label>
 					<label for="patient_nombre" class="form-group m0 clear">
@@ -23,17 +23,16 @@
 							<strong>NOMBRE : </strong>
 						</div>
 						<div class="col-xs-8 field">
-							<input type="text" id="patient_nombre" value="<?= $Patient->nombre ?>" name="nombre">
+							<input type="text" id="patient_nombre" value="<?= $Patient->nombre ?>" name="nombre" class="text-input full">
 						</div>
 					</label>
-					<label for="patient_fecha_nacimiento" class="form-group m0 clear">
-						<div class="col-xs-4 label">
-							<strong>NACIMIENTO : </strong>
-						</div>
-						<div class="col-xs-8 field">
-							<input type="text" id="patient_fecha_nacimiento" value="<?= $Patient->fecha_nacimiento ?>" name="fecha_nacimiento" class="input-date">
-						</div>
-					</label>
+					<label class="col-xs-4 label label-read" for="treatment_tecnica"><strong>T&Eacute;CNICA : </strong></label>
+					<div class="col-xs-8 field field-read">
+						<select id="treatment_tecnica" name="tecnica">
+							<option value="2" <?= selected($Treatment->tecnica == TECNICA_2) ?>>ORTODONCIA</option>
+							<option value="1" <?= selected($Treatment->tecnica == TECNICA_1) ?>>ORTOPEDIA FUNCIONAL</option>
+						</select>
+					</div>
 				</div>
 				<figure class="patient-main-img">
 					<div class="patient-img" id="patient-img">
@@ -58,7 +57,15 @@
 						<strong>DNI : </strong>
 					</div>
 					<div class="col-xs-8 field">
-						<input type="text" id="patient_dni" value="<?= $Patient->dni ?>" name="dni">
+						<input type="text" id="patient_dni" value="<?= $Patient->dni ?>" name="dni"  class="text-input full">
+					</div>
+				</label>
+				<label for="patient_fecha_nacimiento" class="form-group m0 clear">
+					<div class="col-xs-4 label">
+						<strong>NACIMIENTO : </strong>
+					</div>
+					<div class="col-xs-8 field">
+						<input type="text" id="patient_fecha_nacimiento" value="<?= $Patient->fecha_nacimiento ?>" name="fecha_nacimiento" class="input-date text-input full">
 					</div>
 				</label>
 				<label for="patient_telefono" class="form-group m0 clear">
@@ -66,7 +73,7 @@
 						<strong>TEL&Eacute;FONO : </strong>
 					</div>
 					<div class="col-xs-8 field">
-						<input type="text" id="patient_telefono" value="<?= $Patient->telefono ?>" name="telefono">
+						<input type="text" id="patient_telefono" value="<?= $Patient->telefono ?>" name="telefono"  class="text-input full">
 					</div>
 				</label>
 				<label for="patient_celular" class="form-group m0 clear">
@@ -74,7 +81,7 @@
 						<strong>M&Oacute;VIL : </strong>
 					</div>
 					<div class="col-xs-8 field">
-						<input type="text" id="patient_celular" value="<?= $Patient->celular ?>" name="celular">
+						<input type="text" id="patient_celular" value="<?= $Patient->celular ?>" name="celular"  class="text-input full">
 					</div>
 				</label>
 				<label for="patient_correo_electronico" class="form-group m0 clear">
@@ -82,7 +89,7 @@
 						<strong>EMAIL : </strong>
 					</div>
 					<div class="col-xs-8 field">
-						<input type="text" id="patient_correo_electronico" value="<?= $Patient->correo_electronico ?>" name="correo_electronico">
+						<input type="text" id="patient_correo_electronico" value="<?= $Patient->correo_electronico ?>" name="correo_electronico"  class="text-input full">
 					</div>
 				</label>
 				<div class="form-group m0 clear">
@@ -90,8 +97,8 @@
 						<strong>SEXO : </strong>
 					</div>
 					<div class="col-xs-8 field field-radio-check">
-						<input type="radio" name="sexo" id="patient_genre_male" <?= checked($Patient->sexo == MALE) ?> value="<?= BD_MALE ?>"><label for="patient_genre_male">M</label>
-						<input type="radio" name="sexo" id="patient_genre_female" <?= checked($Patient->sexo == FEMALE) ?> value="<?= BD_FEMALE ?>"><label for="patient_genre_female">F</label>
+						<input class="radio-input" type="radio" name="sexo" id="patient_genre_male" <?= checked($Patient->sexo == MALE) ?> value="<?= BD_MALE ?>"><label class="radio-label" for="patient_genre_male">M</label>
+						<input class="radio-input" type="radio" name="sexo" id="patient_genre_female" <?= checked($Patient->sexo == FEMALE) ?> value="<?= BD_FEMALE ?>"><label class="radio-label" for="patient_genre_female">F</label>
 					</div>
 				</div>
 				<label for="patient_direccion" class="form-group m0 clear">
@@ -99,7 +106,7 @@
 						<strong>DIRECCIÓN : </strong>
 					</div>
 					<div class="col-xs-8 field field-read">
-						<input type="text" id="patient_direccion" value="<?= $Patient->direccion ?>" name="direccion"/>
+						<input type="text" id="patient_direccion" value="<?= $Patient->direccion ?>" name="direccion" class="text-input full"/>
 					</div>
 				</label>
 				<label for="patient_ciudad" class="form-group m0 clear">
@@ -107,7 +114,7 @@
 						<strong>CIUDAD : </strong>
 					</div>
 					<div class="col-xs-8 field field-read">
-						<input type="text" id="patient_ciudad" value="<?= $Patient->ciudad ?>" name="ciudad"/>
+						<input type="text" id="patient_ciudad" value="<?= $Patient->ciudad ?>" name="ciudad" class="text-input full"/>
 					</div>
 				</label>
 				<label for="patient_provincia" class="form-group m0 clear">
@@ -115,7 +122,7 @@
 						<strong>PROVINCIA : </strong>
 					</div>
 					<div class="col-xs-8 field field-read">
-						<input type="text" id="patient_provincia" value="<?= $Patient->provincia ?>" name="provincia"/>
+						<input type="text" id="patient_provincia" value="<?= $Patient->provincia ?>" name="provincia" class="text-input full"/>
 					</div>
 				</label>
 				<label for="patient_cp" class="form-group m0 clear">
@@ -123,7 +130,7 @@
 						<strong>CP : </strong>
 					</div>
 					<div class="col-xs-8 field field-read">
-						<input type="text" id="patient_cp" value="<?= $Patient->codigo_postal ?>" name="codigo_postal"/>
+						<input type="text" id="patient_cp" value="<?= $Patient->codigo_postal ?>" name="codigo_postal" class="text-input full"/>
 					</div>
 				</label>
 				<label for="patient_madre_apellido" class="form-group m0 clear">
@@ -131,7 +138,7 @@
 						<strong>APELLIDO MADRE : </strong>
 					</div>
 					<div class="col-xs-6 col-sm-8 field field-read">
-						<input type="text" id="patient_madre_apellido" value="<?= $Patient->madre_apellido ?>" name="madre_apellido"/>
+						<input type="text" id="patient_madre_apellido" value="<?= $Patient->madre_apellido ?>" name="madre_apellido" class="text-input full"/>
 					</div>
 				</label>
 				<label for="patient_madre_nombre" class="form-group m0 clear">
@@ -139,7 +146,7 @@
 						<strong>NOMBRE MADRE : </strong>
 					</div>
 					<div class="col-xs-6 col-sm-8 field field-read">
-						<input type="text" id="patient_madre_nombre" value="<?= $Patient->madre_nombre ?>" name="madre_nombre"/>
+						<input type="text" id="patient_madre_nombre" value="<?= $Patient->madre_nombre ?>" name="madre_nombre" class="text-input full"/>
 					</div>
 				</label>
 				<label for="patient_padre_apellido" class="form-group m0 clear">
@@ -147,7 +154,7 @@
 						<strong>APELLIDO PADRE : </strong>
 					</div>
 					<div class="col-xs-6 col-sm-8 field field-read">
-						<input type="text" id="patient_padre_apellido" value="<?= $Patient->padre_apellido ?>" name="padre_apellido"/>
+						<input type="text" id="patient_padre_apellido" value="<?= $Patient->padre_apellido ?>" name="padre_apellido" class="text-input full"/>
 					</div>
 				</label>
 				<label for="patient_padre_nombre" class="form-group m0 clear">
@@ -155,7 +162,7 @@
 						<strong>NOMBRE PADRE : </strong>
 					</div>
 					<div class="col-xs-6 col-sm-8 field field-read">
-						<input type="text" id="patient_padre_nombre" value="<?= $Patient->padre_nombre ?>" name="padre_nombre"/>
+						<input type="text" id="patient_padre_nombre" value="<?= $Patient->padre_nombre ?>" name="padre_nombre" class="text-input full"/>
 					</div>
 				</label>
 				<label for="patient_derivado_por" class="form-group m0 clear">
@@ -163,7 +170,7 @@
 						<strong>DERIVADO POR : </strong>
 					</div>
 					<div class="col-xs-6 col-sm-8 field field-read">
-						<input type="text" id="patient_derivado_por" value="<?= $Patient->derivado_por ?>" name="derivado_por"/>
+						<input type="text" id="patient_derivado_por" value="<?= $Patient->derivado_por ?>" name="derivado_por" class="text-input full"/>
 					</div>
 				</label>
 			</div>
@@ -184,13 +191,6 @@
 					<?php endfor ?>
 				</select>
 			</div>
-			<label class="col-xs-4 label label-read" for="treatment_tecnica"><strong>T&Eacute;CNICA : </strong></label>
-			<div class="col-xs-8 field field-read">
-				<select id="treatment_tecnica" name="tecnica">
-					<option value="2" <?= selected($Treatment->tecnica == TECNICA_2) ?>>ORTODONCIA</option>
-					<option value="1" <?= selected($Treatment->tecnica == TECNICA_1) ?>>ORTOPEDIA FUNCIONAL</option>
-				</select>
-			</div>
 			<div class="col-xs-3 col-sm-4 label label-read">
 				<strong>ESTADO : </strong>
 			</div>
@@ -207,7 +207,7 @@
 					<strong>FECHA INICIO : </strong>
 				</div>
 				<div class="col-xs-8 field">
-					<input type="text" id="treatment_inicio" value="<?= $Treatment->fecha_hora_inicio ?>" name="fecha_hora_inicio" class="input-date">
+					<input type="text" id="treatment_inicio" value="<?= $Treatment->fecha_hora_inicio ?>" name="fecha_hora_inicio" class="input-date text-input full">
 				</div>
 			</label>
 			<label for="treatment_presupuesto" class="form-group m0 clear">
@@ -215,7 +215,7 @@
 					<strong>PRESUPUESTO : </strong>
 				</div>
 				<div class="col-xs-7 col-sm-8 field field-read">
-					<input type="text" id="treatment_presupuesto" value="<?= $Treatment->presupuesto ?>" name="presupuesto">
+					<input type="text" id="treatment_presupuesto" value="<?= $Treatment->presupuesto ?>" name="presupuesto" class="text-input full">
 				</div>
 			</label>
 			<label for="treatment_descripcion" class="form-group m0 clear">

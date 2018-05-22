@@ -57,7 +57,7 @@
 				<strong>MOTIVO : </strong>
 			</div>
 			<div class="col-xs-9 col-sm-10 field field-blue">
-				<input type="text" id="reg_motiv" value="<?= $Register->motivo ?>" name="motivo">
+				<input type="text" id="reg_motiv" value="<?= $Register->motivo ?>" name="motivo" class="text-input full">
 			</div>
 		</label>
 		<label for="reg_descripcion" class="form-group col-sm-12 m0">

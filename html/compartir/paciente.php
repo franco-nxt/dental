@@ -9,7 +9,7 @@
 <form action="<?= URL_ROOT ?>/compartir/usuarios/<?= $Patient->url ?>" method="GET" enctype="multipart/form-data">
 	<div class="bar-btn">
 		<div class="container">
-        	<a class="btn btn-default" href="<?= URL_ROOT ?>/compartir">CANCELAR</a>
+        	<a class="btn btn-default" href="<?= URL_ROOT ?>/compartir/nuevo">CANCELAR</a>
 			<button class="btn btn-success">GUARDAR</button>
 		</div>
 	</div>

@@ -1,11 +1,3 @@
-<?php
-// NECESITAMOS EL PACIENTE
-empty($Patient) && redirect_exit();
-// TRAIGO LOS TRATAMIENTOS
-$treatments = $Patient->get_treatments();
-// SACO EL ULTIMO TRATAMIENTO
-$Treatment = $Patient->get_treatment();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
@@ -18,7 +10,7 @@ $Treatment = $Patient->get_treatment();
 	</div>
 	<?php endif ?>
 	<div class="bar-bordered">
-		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+		<span><?= $Treatment->resume() ?></span>
 	</div>
 	<?php $photos = $Treatment->get_photos() ?>
 	<div class="table-rounded">
@@ -45,14 +37,14 @@ $Treatment = $Patient->get_treatment();
 			</tbody>
 		</table>
 	</div>
-	<?php if (count($treatments) > 1) : // SI HAY TRATAMIENTOS ANTERIORES ?>
+	<?php if (count($old_treatments) > 1) : // SI HAY TRATAMIENTOS ANTERIORES ?>
 	<div class="p5 txt-center">
 		<button class="btn show-old-treatments">VER TRATAMIENTOS ANTERIORES</button>
 	</div>
 	<div id="old-treatments" style="display:none">
-		<?php foreach ($treatments as $treatment) : if ($treatment->id == $Treatment->id) continue; // SI ES EL TRATAMIENTO ACUTAL LO SALTEO ?>
+		<?php foreach ($old_treatments as $treatment) : ?>
 			<div class="bar-bordered">
-				<span><?= $Treatment->fecha_hora_inicio ?> - <?= $treatment->estado ?> - <?= $treatment->tecnica ?></span>
+				<span><?= $Treatment->resume() ?></span>
 			</div>
 			<?php $photos = $treatment->get_photos() ?>
 			<div class="table-rounded">

@@ -3,6 +3,7 @@
 		<div class="container">
 			<button class="btn btn-success" name="action" value="restore">RESTAURAR</button>
 			<a class="btn btn-default" href="<?= $Patient->url() ?>">CANCELAR</a>
+			<a class="btn btn-danger" href="<?= $Patient->url('eliminar') ?>">ELIMINAR</a>
 		</div>
 	</div>
 </form>

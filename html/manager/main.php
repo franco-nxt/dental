@@ -1,7 +1,8 @@
 <div class="bar-btn">
-	<div class="container">
-		<button class="btn btn-default">IMPORTAR CSV</button>
-	</div>
+	<form class="container" method="POST" enctype="multipart/form-data">
+		<label class="btn btn-default"><input name="csv" id="fileSelect" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="hide" onchange="check_csv(this)" /> IMPORTAR CSV</label>
+		<a class="btn btn-default" href="#">EXPORTAR SUBSCRIPCIONES</a>
+	</form>
 </div>
 <div class="container">
 	<div class="table-users">
@@ -34,7 +35,7 @@
 	                    <td class="txt-right">
 	                        <?php $action = boolval($usuario->habilitado) ? 'INHABILITADO' : 'HABILITADO' ?>
 	                        <?php $msg = boolval($usuario->habilitado) ? 'INHABILITAR' : 'HABILITAR' ?>
-	                        <form method="POST" action="<?= URL_ROOT ?>manager/habilitar/<?= $usuario->url ?>" class="axis-row" style="padding:0">
+	                        <form method="POST" action="<?= URL_ROOT ?>/manager/habilitar/<?= $usuario->url ?>" class="axis-row" style="padding:0">
 	                            <button class="btn btn-primary" type="submit" name="action" value="<?= $action ?>"><?= $msg ?></button>
 	                        </form>
 	                    </td>

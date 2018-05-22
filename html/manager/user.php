@@ -78,8 +78,8 @@
 		<h4 class="bar-bordered">
 			Debitos
 		</h4>
-		<div class="table-rounded">
-			<table class="table">
+		<div class="table-users">
+			<table class="table table-">
 				<thead>
 					<tr>
 						<th>ID</th>
@@ -92,6 +92,17 @@
 					</tr>
 				</thead>
 				<tbody>
+				<?php foreach ($debits as $debit): ?>
+					<tr>
+						<td><?= $debit['id'] ?></td>
+						<td><?= $debit['tarjeta'] ?></td>
+						<td><?= $debit['importe'] ?></td>
+						<td><?= $debit['aplicado'] ?></td>
+						<td><?= $debit['fecha'] ?></td>
+						<td><?= $debit['observaciones'] ?></td>
+						<td><?= $debit['codigo'] ?></td>
+					</tr>
+				<?php endforeach ?>
 				</tbody>
 			</table>
 		</div>

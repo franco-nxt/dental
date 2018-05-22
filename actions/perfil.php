@@ -39,12 +39,13 @@ class Page extends Controller {
 
 		if($User->create_link($id, $link_id, $ref)){
 			add_msg_flash('VINCULO CREADO CON EXITO AHORA PUEDEN COMPARTIR PACIENTES ENTRE LOS USUARIOS.');
+			redirect_exit('/perfil');
 		}
 		else{
 			add_error_flash('NO SE PUDO GENERAR EL VINCULO ENTRE LOS USUARIOS.');
+			redirect_exit('/perfil/compartir');
 		}
 
-		redirect_exit('/perfil/compartir');
 	}
 
 	private function upload_profile_image(&$form_data)

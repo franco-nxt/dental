@@ -1,6 +1,3 @@
-<?php
-!isset($Patient, $Treatment, $Odontogram) && redirect_exit();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>

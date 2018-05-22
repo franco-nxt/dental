@@ -1,6 +1,3 @@
-<?php
-!isset($Patient, $Treatment, $Odontogram) && redirect_exit();
-?>
 <script>window.odntgrm = <?= json_encode($Odontogram->datos_json) ?></script>
 <div class="bar-subtitle">
 	<div class="container">

@@ -4,17 +4,19 @@ class PatientException extends Exception
 {
 	public function __construct($message, $code = 0) {
 
-		if ($code == 1) {
-			$file = @fopen("PatientException-logs.txt","a");
+		$json = json_encode($this);
 
-			if($file){
-				$date = date("d/m/Y H:i:s");
-
-				fwrite($file, "$date: $message \r\n");
-
-				fclose($file);
-			}
+		try {
+			$Session = load_class('Session');
+			$user = $Session->__dental__;
+		} 
+		catch (DentalException $e) {
+			$user = '';
 		}
+
+		$q = "INSERT INTO exceptions (msg, json, user) VALUES ('', '{$json}', '{$user}')";
+
+		MySQL::getInstance()->query($q);
 
 		parent::__construct($message);
 	}

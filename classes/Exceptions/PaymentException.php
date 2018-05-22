@@ -1,21 +1,22 @@
 <?php 
 
-/**
- * summary
- */
 class PaymentException extends Exception
 {
 	public function __construct($message, $code = 0) {
 
-		$file = @fopen(BASE_PATH . DIRECTORY_SEPARATOR ."PaymentException-logs.txt","a");
+		$json = json_encode($this);
 
-		if($file){
-			$date = date("d/m/Y H:i:s");
-			$trace = $this->getTraceAsString();
-			fwrite($file, "$date: $trace \r\n");
-
-			fclose($file);
+		try {
+			$Session = load_class('Session');
+			$user = $Session->__dental__;
+		} 
+		catch (DentalException $e) {
+			$user = '';
 		}
+
+		$q = "INSERT INTO exceptions (msg, json, user) VALUES ('', '{$json}', '{$user}')";
+
+		MySQL::getInstance()->query($q);
 
 		parent::__construct($message);
 	}

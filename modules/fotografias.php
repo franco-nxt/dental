@@ -76,8 +76,6 @@ class Page extends Controller{
 	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
-		// COMPRUEBO QUE EL USUARIO 
-		$this->check_user($Patient);
 		// OBTENGO EL TRATAMIENTO
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE FOTOS

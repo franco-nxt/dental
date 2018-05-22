@@ -40,6 +40,12 @@ class Page extends Controller{
 		$FormValidator = $this->validate_form($Patient->url('editar'));
 		// DATOS DEL FORMULARIO
 		$form_data = $FormValidator->input;
+		
+		if ($form_data['action'] == 'delete') {
+			$Patient->delete(true);
+			add_msg_flash('PACIENTE ELIMINADO.');
+		}
+
 		// SUBO LA IMAGEN, PASO EL FORMULARIO POR REFERENCIA
 		$this->upload_profile_image($form_data);
 		// ACTUALIZO AL PACIENTE CON LOS DATOS DEL FORMULARIO

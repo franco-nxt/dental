@@ -9,6 +9,7 @@ class Page extends Controller{
 			parent::__construct(
 				array('manager', 'main'),
 				array('manager/contrataciones/nuevo', 'contrataciones'),
+				array('manager/habilitar/[:encode]', 'habilitar'),
 				array('manager/[:encode]', 'user')
 			);
 		}
@@ -28,6 +29,20 @@ class Page extends Controller{
 
 	public function main() 
 	{
+		$Admin = get_Admin();
+		$Upload = load_class('Upload', CLASS_PATH);
+
+		$Upload->file($_FILES['csv']);
+		$Upload->set_destination('csv');
+		$Upload->set_allowed_mime_types(array('application/zip', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'text/plain'));
+
+		$filename = uniqid() . '.' . pathinfo($_FILES['csv']['name'], PATHINFO_EXTENSION);
+		$file = $Upload->run($filename);
+
+		$Admin->import_centralpos_csv($file['full_path']);
+
+		add_msg_flash("REGISTROS IMPORTADOS.");
+		redirect_exit(URL_ROOT . "/manager");
 	}
 
 	public function user($encode) 
@@ -37,6 +52,17 @@ class Page extends Controller{
 		$user = $Admin->get_axis_user(get_from_encode($encode, USUARIO));
 		
 		include 'html/manager/user.php';
+	}
+	public function habilitar($encode)
+	{
+		$Admin = get_Admin();
+
+		$user = $Admin->get_axis_user(get_from_encode($encode, USUARIO));
+		
+		Dental::toggle(get_from_encode($encode, USUARIO));
+
+		add_msg_flash("SE CAMBIO EL ESTADO DEL USUARIO.");
+		redirect_exit(URL_ROOT . "/manager");
 	}
 	public function contrataciones() 
 	{
@@ -51,7 +77,7 @@ class Page extends Controller{
 		
 		foreach (array('apellido', 'nombre', 'pais') as $key) {
 			// CAMPOS REQUERIDOS QUE SOLO PUEDEN LLEVAR LETRAS Y ESPACIOS
-			$FormValidator->add_rule($key, "REQ&alpha_s");
+			$FormValidator->add_rule($key, "&alpha_s");
 		}
 		// ESTAS REGLAS VAN A PARTE PORQUE LLEVAN EL NOMBRE DEL CAMPO PARA EL MSG DE ERROR
 		$FormValidator->add_rule("tarjeta_num", "REQ&alnum_s", NULL, "numero de tarjeta");

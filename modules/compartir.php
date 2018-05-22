@@ -80,7 +80,7 @@ class Page extends Controller{
 		$link = get_from_encode($encode, VINCULO);
 		// COMPARTO AL PACIENTE 
 		$User->share_patient($Patient, $link, $access);
-		// VUELVO A LA VISTA PRINCIPAÑ
+		// // VUELVO A LA VISTA PRINCIPAÑ
         $this->main();
 	}
 }

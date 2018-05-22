@@ -22,7 +22,7 @@ class Page extends Controller{
 			add_error_flash('NO SE PUEDE PROCESAR LA ORDEN.');
 		}
 		finally{
-			redirect_exit();
+			// redirect_exit();
 		}
 	}
 
@@ -37,10 +37,9 @@ class Page extends Controller{
 
 		$Form = $this->load_form();
 
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
-		$Cephalometry = $Treatment->get_cephalometry($decrypt_params[CEFALOMETRIA]);
+		$Patient = decode_patient($id);
+		$Treatment = $Patient->get_treatment(get_from_encode($id, TRATAMIENTO));
+		$Cephalometry = $Treatment->get_cephalometry(get_from_encode($id, CEFALOMETRIA));
 		
 		if ($Form->input('action') == 'delete') {
 			$Cephalometry->delete();
@@ -51,7 +50,12 @@ class Page extends Controller{
 
 		$trash = filter_input(INPUT_POST, 'trash', FILTER_DEFAULT , FILTER_REQUIRE_ARRAY);
 
-		$Cephalometry->trash($trash);
+		if ($trash) {
+			$Cephalometry->trash($trash);
+		}
+		else{
+			$trash = array();
+		}
 
 		$files = $this->upload_files($trash);
 
@@ -61,7 +65,7 @@ class Page extends Controller{
 		if (!empty($files)) {
 			$data['session'] = $files;
 		}
-
+		
 		$Cephalometry->update($data);
 
 		add_msg_flash('SESION DE CEFALOMETR&Iacute;AS ACTUALIZADA CON EXITO.');
@@ -84,9 +88,9 @@ class Page extends Controller{
 
 		$files = $this->upload_files();
 		
-
 		// MENSAJE PARA EL FRONT
 		if (empty($files)) {
+			add_error_flash('NO SE ENCONTRARON ARCHIVOS PARA CREAR UNA SESION DE CEFALOMETRIAS.');
 			redirect_exit($Patient->url('ver'));
 		}
 
@@ -96,10 +100,8 @@ class Page extends Controller{
 
 		$Cephalometry = $Treatment->create_cephalometry($data);
 
-		if ($Cephalometry->id) {
-			add_msg_flash('SESION DE CEFALOMETR&Iacute;AS CREADA CON EXITO.');
-			redirect_exit($Cephalometry->url('ver'));
-		}
+		add_msg_flash('SESION DE CEFALOMETR&Iacute;AS CREADA CON EXITO.');
+		redirect_exit($Cephalometry->url('ver'));
 	}
 
 	private function load_form()
@@ -121,7 +123,7 @@ class Page extends Controller{
 		$result = array();
 		foreach ($_FILES as $k => &$file) {
 			// VALIDO EL CAMPO ENVIADO
-			if (!isset($file['name'], $file['type']) || !preg_match('/^image\/(?:gif|jpeg|bmp|pjpeg|png)$/i', $file['type']) || (is_array($trash) && in_array($k, $trash))) {
+			if (empty($file['name']) || empty($file['type']) || !preg_match('/^image\/(?:gif|jpeg|bmp|pjpeg|png)$/i', $file['type']) || in_array($k, $trash)) {
 				continue;
 			}
 
@@ -129,7 +131,7 @@ class Page extends Controller{
 				$w = CEFALOMETRIA_PAG_WIDTH;
 				$h = CEFALOMETRIA_PAG_HEIGHT;
 			}
-			elseif (preg_match('/^p[1-3]_$/i', $k)) {
+			elseif (preg_match('/^p[1-4]$/i', $k)) {
 				$w = CEFALOMETRIA_P_WIDTH;
 				$h = CEFALOMETRIA_P_HEIGHT;
 			}

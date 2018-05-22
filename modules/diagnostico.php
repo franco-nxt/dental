@@ -38,6 +38,7 @@ class Page extends Controller{
 		$Treatment = $Patient->get_treatment()->select('descripcion');
 		// TRAIGO LOS TRATAMIENTOS ANTERIORES
 		$treatments = (Array) $Patient->old_treatments();
+		_global('navbar-back', $Patient->url());
 		// LA VISTA
 		include 'html/diagnostico/main.php';
 	}
@@ -51,18 +52,23 @@ class Page extends Controller{
 		// OBTENGO EL TRATAMIENTO
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 
+		_global('navbar-back', $Patient->url('diagnostico'));
 		switch ($vista) {
 			case 'historia':
 				$History = $Treatment->get_history()->select();
+				_global('navbar-title', 'DIAGNÓSTICO - HISTORIA MEDICA Y DENTAL');
 				break;
 			case 'resumen':
 				$Resume = $Treatment->get_resume()->select();
+				_global('navbar-title', 'DIAGNÓSTICO - RESUMEN');
 				break;
 			case 'examen':
 				$Exam = $Treatment->get_exam()->select();
+				_global('navbar-title', 'DIAGNÓSTICO - EXAMEN CLINICO Y BUCAL');
 				break;
 			case 'completo':
 				$Diagnostic = $Treatment->get_fullDiagnostic()->select();
+				_global('navbar-title', 'DIAGNÓSTICO - GENERAL');
 				break;
 		}
 		// CARGO LA VISTA PEDIDA
@@ -85,15 +91,23 @@ class Page extends Controller{
 		switch ($vista) {
 			case 'historia':
 				$History = $Treatment->get_history()->select();
+				_global('navbar-title', 'DIAGNÓSTICO - HISTORIA MEDICA Y DENTAL');
+				_global('navbar-back', $History->url());
 				break;
 			case 'resumen':
 				$Resume = $Treatment->get_resume()->select();
+				_global('navbar-title', 'DIAGNÓSTICO - EXAMEN CLINICO Y BUCAL');
+				_global('navbar-back', $Resume->url());
 				break;
 			case 'examen':
 				$Exam = $Treatment->get_exam()->select();
+				_global('navbar-title', 'DIAGNÓSTICO - GENERAL');
+				_global('navbar-back', $Exam->url());
 				break;
 			case 'completo':
 				$Diagnostic = $Treatment->get_fullDiagnostic()->select();
+				_global('navbar-title', 'DIAGNÓSTICO - RESUMEN');
+				_global('navbar-back', $Diagnostic->url());
 				break;
 		}
 		// CARGO LA VISTA PEDIDA

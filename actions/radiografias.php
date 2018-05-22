@@ -10,19 +10,10 @@ class Page extends Controller{
 
 	public function editar($id)
 	{
-		$decrypt_params = decrypt_params($id);
-		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO], $decrypt_params[RADIOGRAFIA])){
-			add_error_flash("NO SE PUDO CARGAR LA SESION DE RADIOGRAF&Iacute;AS.");
-			redirect_exit();			
-		}
-
 		$Form = $this->load_form();
-
-
-		$Patient = get_patient($decrypt_params[PACIENTE]);
-		$Treatment = $Patient->get_treatment($decrypt_params[TRATAMIENTO]);
-		$Radiographie = $Treatment->get_radiographie($decrypt_params[RADIOGRAFIA]);
+		$Patient = decode_patient($id);
+		$Treatment = $Patient->get_treatment(get_from_encode($id, TRATAMIENTO));
+		$Radiographie = $Treatment->get_radiographie(get_from_encode($id, RADIOGRAFIA));
 		
 		if ($Form->input('action') == 'delete') {
 			$Radiographie->delete();
@@ -43,7 +34,7 @@ class Page extends Controller{
 		if (!empty($files)) {
 			$data['session'] = $files;
 		}
-
+		
 		$Radiographie->update($data);
 
 		add_msg_flash('SESION DE RADIOGRAF&Iacute;AS ACTUALIZADA CON EXITO.');

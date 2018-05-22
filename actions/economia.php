@@ -34,8 +34,8 @@ class Page extends Controller{
 		$FormValidator = load_class('FormValidator');
 
 		$FormValidator->add_rule("monto", "REQ&greaterthan=0");
-		$FormValidator->add_rule("motivo", "alnum_s&maxlen=200");
-		$FormValidator->add_rule("anotaciones", "alnum_s&maxlen=200");
+		$FormValidator->add_rule("motivo", "maxlen=200");
+		$FormValidator->add_rule("anotaciones", "maxlen=200");
 
         // VALIDO EL FORM
 		if(!$FormValidator->validate()){
@@ -44,10 +44,9 @@ class Page extends Controller{
 		}
 		else{
 			$Treatment = $Patient->get_treatment();
-			dump($Treatment);
 			$Payment = $Treatment->create_payment($FormValidator->input);
-			// add_msg_flash("PAGO REGISTRADO.");
-			// redirect_exit($Payment->url());
+			add_msg_flash("PAGO REGISTRADO.");
+			redirect_exit($Payment->url());
 		}
 	}
 

@@ -44,7 +44,7 @@ class Page extends Controller {
 			add_error_flash('NO SE PUDO GENERAR EL VINCULO ENTRE LOS USUARIOS.');
 		}
 
-		redirect_exit('/perfil');
+		redirect_exit('/perfil/compartir');
 	}
 
 	private function upload_profile_image(&$form_data)

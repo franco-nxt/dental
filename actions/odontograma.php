@@ -40,13 +40,9 @@ class Page extends Controller{
 
 
 		$datos_json = filter_input(INPUT_POST, 'json', FILTER_DEFAULT);
-		
-		if ($datos_json) {
-			$Odontogram->datos_json = $datos_json;
-			
-			$Odontogram->update();
-		}
 
+		$Odontogram->update($datos_json);
+		
 		redirect_exit($Odontogram->url('ver'));
 	}
 }

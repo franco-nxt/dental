@@ -38,6 +38,7 @@ class Page extends Controller{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// LA VISTA
+		_global('navbar-back', $Patient->url());
 		include 'html/radiografias/main.php';
 	}
 
@@ -49,6 +50,8 @@ class Page extends Controller{
 		$this->check_user($Patient);
 		// SACO EL NUMERO DE MODELO EN EL ENCODE
 		$model = get_from_encode($encode, MODELO);
+
+		_global('navbar-back', $Patient->url('radiografias'));
 		// LA VISTA
 		include 'html/radiografias/nueva.php';
 	}
@@ -59,6 +62,8 @@ class Page extends Controller{
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
+
+		_global('navbar-back', $Patient->url('radiografias'));
 		// INCLUDE VISTA
 		include 'html/radiografias/modelos.php';
 	}
@@ -73,6 +78,8 @@ class Page extends Controller{
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE RADIOGRAFIAS
 		$Radiographie = $Treatment->get_radiographie(get_from_encode($encode, RADIOGRAFIA));
+
+		_global('navbar-back', $Patient->url('radiografias'));
 		// LA VISTA
 		include 'html/radiografias/ver.php';
 	}
@@ -87,6 +94,8 @@ class Page extends Controller{
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE RADIOGRAFIAS
 		$Radiographie = $Treatment->get_radiographie(get_from_encode($encode, RADIOGRAFIA));
+		
+		_global('navbar-back', $Radiographie->url());
 		// LA VISTA
 		include 'html/radiografias/editar.php';
 	}

@@ -31,6 +31,7 @@ class Page extends Controller{
 
 	public function main($encode) 
 	{
+		_global('navbar-back', URL_ROOT);
 		// OBTENGO EL PACIENTE
         $Patient = decode_patient($encode)->select();
         // SACO LOS PARAMETROS ENCODEADO

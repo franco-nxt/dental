@@ -17,15 +17,19 @@ class Page extends Controller{
 			redirect_exit();
 		}
 		catch (AdminException $e) {
-			dump($e);
+			add_error_flash($e->getMessage());
+			redirect_exit();
 		}
 		catch (Exception $e) {
-			dump($e);
+			add_error_flash($e->getMessage());
+			redirect_exit();
 		}
 	}
 
 	public function main() 
 	{
+		_global('navbar-back', URL_ROOT);
+
 		$Admin = get_Admin();
 		$all_users = $Admin->get_axis_users();
 
@@ -34,12 +38,17 @@ class Page extends Controller{
 
 	public function user($encode) 
 	{
+		_global('navbar-back', URL_ROOT . '/manager');
+
 		$Admin = get_Admin();
 
 		$user = $Admin->get_axis_user(get_from_encode($encode, USUARIO));
 		
+		$debits = $Admin->get_user_debits($user->id);
+		
 		include 'html/manager/user.php';
 	}
+
 	public function contrataciones() 
 	{
 		$Admin = get_Admin();

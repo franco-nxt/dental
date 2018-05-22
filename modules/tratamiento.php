@@ -27,9 +27,9 @@ class Page extends Controller{
 	}
 
 	public function main($encode) {
-		$Patient = decode_patient($encode);
-		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
-		include 'html/tratamiento/main.php';
+		// $Patient = decode_patient($encode);
+		// $Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO))->select();
+		// include 'html/tratamiento/main.php';
 	}
 
 	public function editar($encode) 
@@ -37,12 +37,12 @@ class Page extends Controller{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
-		if(!$Patient->check_user(get_user()->id)){
+		if(!$Patient->check_user()){
 			add_error_flash('NO TIENE PERMISOS PARA EDITAR ESTE TRATAMIENTO.');
 			redirect_exit($Patient->url());
 		}
 		// OBTENGO EL TRATAMIENTO
-		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
+		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO))->select();
 
 		include 'html/tratamiento/editar.php';
 	}

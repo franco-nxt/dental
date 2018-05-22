@@ -37,7 +37,8 @@ class Page extends Controller{
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
 		// OBTENGO EL TRATAMIENTO
-		$Treatment = $Patient->get_treatment();
+		$Treatment = $Patient->get_treatment()->select();
+		_global('navbar-back', $Patient->url());
 		// HTML
 		include 'html/economia/main.php';
 	}
@@ -52,6 +53,7 @@ class Page extends Controller{
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO EL PAGO
 		$Payment = $Treatment->get_payment(get_from_encode($encode, PAGO));
+		_global('navbar-back', $Patient->url('economia'));
 		// HTML
 		include 'html/economia/ver.php';
 	}
@@ -63,7 +65,8 @@ class Page extends Controller{
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
 		// OBTENGO EL TRATAMIENTO
-		$Treatment = $Patient->get_treatment();
+		$Treatment = $Patient->get_treatment()->select();
+		_global('navbar-back', $Patient->url('economia'));
 		// HTML
 		include 'html/economia/nuevo.php';
 	}

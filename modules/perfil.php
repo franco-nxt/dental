@@ -36,12 +36,14 @@ class Page extends Controller {
 	public function editar() 
 	{
 		$User = get_user()->select();
+		_global('navbar-back', URL_ROOT ."/perfil");
 
 		include 'html/perfil/editar.php';
 	}
 
 	public function compartir() 
 	{
+		_global('navbar-back', URL_ROOT ."/perfil");
 		$User = get_user();
 
 		include 'html/perfil/compartir.php';
@@ -49,6 +51,7 @@ class Page extends Controller {
 
 	public function generate_id()
 	{
+		_global('navbar-back', URL_ROOT ."/perfil");
 		$User = get_user();
 
 		$uniqid = $User->generate_share_id();

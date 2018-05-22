@@ -36,6 +36,11 @@ class Page extends Controller{
 	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
+		$Treatment = $Patient->get_treatment();
+		$cephalometries = $Treatment->get_cephalometries();
+		$old_treatments = $Patient->old_treatments();
+
+		_global('navbar-back', $Patient->url());
 		// LA VISTA
 		include 'html/cefalometrias/main.php';
 	}
@@ -48,6 +53,8 @@ class Page extends Controller{
 		$this->check_user($Patient);
 		// SACO EL NUMERO DE MODELO EN EL ENCODE
 		$model = get_from_encode($encode, MODELO);
+
+		_global('navbar-back', $Patient->url('cefalometrias'));
 		// LA VISTA
 		include 'html/cefalometrias/nueva.php';
 	}
@@ -58,6 +65,8 @@ class Page extends Controller{
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
+		
+		_global('navbar-back', $Patient->url('cefalometrias'));
 		// INCLUDE VISTA		
 		include 'html/cefalometrias/modelos.php';
 	}
@@ -71,7 +80,9 @@ class Page extends Controller{
 		// OBTENGO EL TRATAMIENTO
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE FOTOS
-		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
+		$Cephalometry = $Treatment->get_cephalometry(get_from_encode($encode, CEFALOMETRIA))->select();
+		
+		_global('navbar-back', $Patient->url('cefalometrias'));
 		// LA VISTA
 		include 'html/cefalometrias/ver.php';
 	}
@@ -85,7 +96,9 @@ class Page extends Controller{
 		// OBTENGO EL TRATAMIENTO
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE FOTOS
-		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
+		$Cephalometry = $Treatment->get_cephalometry(get_from_encode($encode, CEFALOMETRIA));
+
+		_global('navbar-back', $Patient->url('cefalometrias'));
 		// LA VISTA
 		include 'html/cefalometrias/editar.php';
 	}

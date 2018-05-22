@@ -37,6 +37,11 @@ class Page extends Controller{
 	{
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
+		// TRAIGO LOS TRATAMIENTOS
+		$old_treatments = $Patient->old_treatments();
+		// SACO EL ULTIMO TRATAMIENTO
+		$Treatment = $Patient->get_treatment();
+		_global('navbar-back', $Patient->url());
 		// LA VISTA
 		include 'html/fotografias/main.php';
 	}
@@ -49,6 +54,8 @@ class Page extends Controller{
 		$this->check_user($Patient);
 		// SACO EL NUMERO DE MODELO EN EL ENCODE
 		$model = get_from_encode($encode, MODELO);
+
+		_global('navbar-back', $Patient->url('fotografias'));
 		// LA VISTA
 		include 'html/fotografias/nueva.php';
 	}
@@ -59,6 +66,8 @@ class Page extends Controller{
 		$Patient = decode_patient($encode);
 		// COMPRUEBO QUE EL USUARIO 
 		$this->check_user($Patient);
+
+		_global('navbar-back', $Patient->url('fotografias'));
 		// INCLUDE VISTA
 		include 'html/fotografias/modelos.php';
 	}
@@ -73,7 +82,7 @@ class Page extends Controller{
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE FOTOS
 		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
-		console_log($Photo);
+		_global('navbar-back', $Patient->url('fotografias'));
 		// LA VISTA
 		include 'html/fotografias/ver.php';
 	}
@@ -87,6 +96,7 @@ class Page extends Controller{
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// OBTENGO LA SESSION DE FOTOS
 		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
+		_global('navbar-back', $Photo->url());
 		// LA VISTA
 		include 'html/fotografias/editar.php';
 	}

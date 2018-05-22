@@ -72,6 +72,7 @@ class Page extends Controller{
 		$FormValidator = load_class('FormValidator');
 		
 		$FormValidator->add_rule("fecha", "REQ&rgx=#^\d{1,2}[\/|-][02]?[1-9]|3[0-2][\/|-]\d{1,4}$#");
+		$FormValidator->add_rule("motivo", "REQ");
 		// $FormValidator->add_rule("etapa", "REQ&rgx=#^\d{1,2}\:\d{1,2}#");
 
 		return $FormValidator;

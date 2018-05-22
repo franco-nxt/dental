@@ -28,16 +28,10 @@ class Page extends Controller{
 
 	public function editar($encode)
 	{
-		$decrypt_params = decrypt_params($encode);
 		// SI NO ESTAN ESTOS DATOS NO AVANZA
-		if (!isset($decrypt_params[PACIENTE], $decrypt_params[TRATAMIENTO], $decrypt_params[FOTOGRAFIA])){
-			add_error_flash("NO SE PUDO CARGAR LA SESION DE CEFALOMETR&Iacute;AS.");
-			redirect_exit();			
-		}
-
 		$Form = $this->load_form();
 
-		$Patient = decode_patient($decrypt_params);
+		$Patient = decode_patient($encode);
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		$Photo = $Treatment->get_photo(get_from_encode($encode, FOTOGRAFIA));
 		
@@ -60,7 +54,6 @@ class Page extends Controller{
 		if (!empty($files)) {
 			$data['session'] = $files;
 		}
-
 		$Photo->update($data);
 
 		add_msg_flash('SESION DE FOTOGRAF&Iacute;AS ACTUALIZADA CON EXITO.');

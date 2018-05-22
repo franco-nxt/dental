@@ -37,6 +37,9 @@ class Page extends Controller{
 		$this->check_user($Patient);
 		// SACO EL TRATAMIENTO
 		$Treatment = $Patient->get_treatment();
+		// TRATAMIENTOS ANTERIORES
+		$old_treatments = (Array) $Patient->old_treatments();
+		_global('navbar-back', $Patient->url());
 		// VISTA		
 		include 'html/odontograma/main.php';
 	}
@@ -51,6 +54,8 @@ class Page extends Controller{
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// // ODONTOGRAMA
 		$Odontogram = $Treatment->get_odontogram();
+
+		_global('navbar-back', $Patient->url());
 		// // VISTA
 		include "html/odontograma/ver.php";
 	}
@@ -65,6 +70,8 @@ class Page extends Controller{
 		$Treatment = $Patient->get_treatment(get_from_encode($encode, TRATAMIENTO));
 		// ODONTOGRAMA
 		$Odontogram = $Treatment->get_odontogram();
+		
+		_global('navbar-back', $Odontogram->url());
 		// VISTA
 		include "html/odontograma/editar.php";
 	}

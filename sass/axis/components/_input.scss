@@ -1,0 +1,50 @@
+.radio{
+	&-input:checked + &-label{
+		@include pseudo(){
+			background-color: #03a9f5;	
+		}
+	}
+	&-label{
+		padding-right: 10px;
+		padding-left: 15px;
+		display: inline-block;
+		position: relative;
+		@include pseudo(){
+			left: 0px;
+			top: 3px;
+			border: solid 3px #FFF;
+			background-color: #fff;
+			border-radius: 6px;
+			@include square(13px);
+		};
+		&.checked{
+			@include pseudo(){
+				background-color: #03a9f5;	
+			}
+		}
+	}
+	&-label, &-input{
+		&.disabled{
+			opacity: .5;
+		}
+	}
+}
+
+.text{
+	&-input{
+		width: auto;
+		display: inline-block;
+		&.full{
+			width: 100%;
+			display: block;
+		}
+	}
+	&-label{
+		font-weight: bold;
+	}
+	&-label,&-input{
+		&.disabled{
+			opacity: .5;
+		}
+	}
+}

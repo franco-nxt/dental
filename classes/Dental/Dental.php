@@ -297,7 +297,7 @@ class Dental
 		// ARRAY DE PACIENTES QUE COMPARTO
 		$comparto = array();
 		// QUERY 
-		$q = "SELECT P.id_paciente AS id, concat(P.apellido, ', ', P.nombre) AS PACIENTE, concat(U.apellido, ', ', U.nombre) AS USUARIO, id_compartir AS COMPARTIR FROM compartidos AS C INNER JOIN vinculos AS V ON V.id_vinculo = C.id_vinculo INNER JOIN pacientes AS P ON P.id_paciente = C.id_paciente INNER JOIN usuarios AS U ON U.id_usuario = V.id_usuario_in WHERE V.id_usuario_out = {$this->id}";
+		$q = "SELECT P.id_paciente AS id, concat(P.apellido, ', ', P.nombre) AS PACIENTE, concat(U.apellido, ', ', U.nombre) AS USUARIO, id_compartir AS COMPARTIR FROM compartidos AS C INNER JOIN vinculos AS V ON V.id_vinculo = C.id_vinculo INNER JOIN pacientes AS P ON P.id_paciente = C.id_paciente INNER JOIN usuarios AS U ON U.id_usuario = V.id_usuario_out WHERE V.id_usuario_in = {$this->id}";
 		// EJECUTA
 		self::DB()->query($q);
 
@@ -333,7 +333,7 @@ class Dental
 		// INFO
 		$mecomarten = array();
 		// QUERY
-		$q = "SELECT P.id_paciente AS id, concat(P.apellido, ', ', P.nombre) AS PACIENTE, concat(U.apellido, ', ', U.nombre) AS USUARIO, id_compartir AS COMPARTIR FROM compartidos AS C INNER JOIN vinculos AS V ON V.id_vinculo = C.id_vinculo INNER JOIN pacientes AS P ON P.id_paciente = C.id_paciente INNER JOIN usuarios AS U ON U.id_usuario = V.id_usuario_out WHERE V.id_usuario_in = {$this->id}";
+		$q = "SELECT P.id_paciente AS id, concat(P.apellido, ', ', P.nombre) AS PACIENTE, concat(U.apellido, ', ', U.nombre) AS USUARIO, id_compartir AS COMPARTIR FROM compartidos AS C INNER JOIN vinculos AS V ON V.id_vinculo = C.id_vinculo INNER JOIN pacientes AS P ON P.id_paciente = C.id_paciente INNER JOIN usuarios AS U ON U.id_usuario = V.id_usuario_in WHERE V.id_usuario_out = {$this->id}";
 		// EJECUTO
 		self::DB()->query($q);
 
@@ -383,7 +383,7 @@ class Dental
 		} 
 		elseif(empty($Patient)) {
 			// ESTO LO EXPLICO 
-			$q = "SELECT id_vinculo, id_axis AS vinculo, V.id_usuario_in AS id, foto, ref, concat(U.apellido, ', ', U.nombre) AS fullname, correo_electronico FROM vinculos AS V INNER JOIN usuarios AS U ON V.id_usuario_in = U.id_usuario WHERE V.id_usuario_out = {$this->id}";
+			$q = "SELECT id_vinculo, id_axis AS vinculo, V.id_usuario_in AS id, foto, ref, concat(U.apellido, ', ', U.nombre) AS fullname, correo_electronico FROM vinculos AS V INNER JOIN usuarios AS U ON V.id_usuario_out = U.id_usuario WHERE V.id_usuario_in = {$this->id}";
 		}
 
 		self::DB()->query($q);
@@ -545,9 +545,9 @@ class Dental
 
 		if (!$is_shared) {
 			// INFO QUE DEL USUARIO QUE SE VA A COMPARTIR
-			$fotografias = array_key_exists('fotografias', $items) ? 1 : 0;
-			$radiografias = array_key_exists('radiografias', $items) ? 1 : 0;
-			$cefalometrias = array_key_exists('cefalometrias', $items) ? 1 : 0;
+			$fotografias = (int) in_array('fotografias', $items);
+			$radiografias = (int) in_array('radiografias', $items);
+			$cefalometrias = (int) in_array('cefalometrias', $items);
 			// $q = "INSERT INTO compartidos (id_vinculo, id_paciente, fotografias, radiografias, cefalometrias) VALUES ((SELECT id_vinculo FROM vinculos WHERE id_usuario_in = {$usuario} AND id_usuario_out = {$this->id}), {$Patient->id}, {$fotografias}, {$radiografias}, {$cefalometrias})";
 			$q = "INSERT INTO compartidos (id_vinculo, id_paciente, fotografias, radiografias, cefalometrias) VALUES ({$link_id}, {$Patient->id}, {$fotografias}, {$radiografias}, {$cefalometrias})";
 			// EJECUTO
@@ -572,9 +572,9 @@ class Dental
 			throw new DentalException('NO SE PUEDE COMPARTIR EL PACIENTE. LOS DATOS ENVIADOS SON ERRONEOS.');
 		}
 		// INFO QUE DEL USUARIO QUE SE VA A COMPARTIR
-		$fotografias = array_key_exists('fotografias', $items) ? 1 : 0;
-		$radiografias = array_key_exists('radiografias', $items) ? 1 : 0;
-		$cefalometrias = array_key_exists('cefalometrias', $items) ? 1 : 0;
+		$fotografias = (int) in_array('fotografias', $items);
+		$radiografias = (int) in_array('radiografias', $items);
+		$cefalometrias = (int) in_array('cefalometrias', $items);
 		// QUERY UPDATE
 		$q = "UPDATE compartidos SET radiografias = '{$radiografias}', fotografias = '{$fotografias}', cefalometrias = '{$cefalometrias}' WHERE  id_compartir = {$share_id}";
 		// EJECUTO

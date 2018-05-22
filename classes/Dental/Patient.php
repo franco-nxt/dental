@@ -240,6 +240,11 @@ class Patient
 		$values[] = isset($data['fecha_ingreso']) && $data['fecha_ingreso'] ? date('Y-m-d H:i:s', strtotime($data['fecha_ingreso'])) : $date;
 		// YA LA AGREGUE A LOS VALORES, NO LA USO MAS
 		unset($data['fecha_ingreso']);
+
+		if (!empty($data['sexo']) && defined("BD_{$data['sexo']}")) {
+			$data['sexo'] = constant("BD_{$data['sexo']}");
+		}
+
 		// EMPIEZO A CARGAR LOS DATOS ENVIADOS
 		foreach ($data as $key => $value) {
 			// SOLO LAS CLAVES DEL ARRAY CORRECTAS VAN A SER GUARDADAS
@@ -303,7 +308,7 @@ class Patient
 						break;
 					case 'fecha_nacimiento':
 					case 'fecha_ingreso':
-						$this->{$k} = date('d/m/y', strtotime($v));
+						$this->{$k} = date('d/m/Y', strtotime($v));
 						break;
 					default:
 						$this->{$k} = utf8_encode($v);
@@ -592,13 +597,18 @@ class Patient
 		return $this->select('id_usuario')->id_usuario == get_user()->id;
 	}
 
-	public function delete()
+	public function delete($real = false)
 	{
 		if (empty($this->id) || !is_numeric($this->id)) {
 			throw new PatientException('PACIENTE NO ENCONTRADO');
 		}
-
-		$q = "UPDATE pacientes SET eliminado = 1 WHERE id_paciente = '{$this->id}'";
+		
+		if ($real) {
+			$q = "UPDATE pacientes SET eliminado = 1 WHERE id_paciente = '{$this->id}'";
+		}
+		else{
+			$q = "UPDATE pacientes SET borrado = 1 WHERE id_paciente = '{$this->id}'";
+		}
 
 		self::DB()->query($q);
 	}

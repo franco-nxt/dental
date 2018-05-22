@@ -120,4 +120,47 @@ class Admin extends Dental
         	// echo $e->getMessage();
         }
 	}
+
+	public function import_centralpos_csv($file)
+	{
+		$reader = fopen($file, "r");
+		$cols = null;
+		$table = array();
+		
+		while($row = fgetcsv($reader)):
+			if(!$cols):
+				foreach($row as $k => $v){
+					$row[$k] = trim(preg_replace("/\s+/", " ", $v));
+				}
+				$cols =  "(" . implode(", ", $row) . ")";
+				continue;
+			endif;
+			$table[] = "('" . implode("', '", $row) . "')";
+		endwhile;
+		
+		$rows = implode(",", $table);
+		
+		$db = MySQL::getInstance();
+		
+		$db->query("INSERT INTO centralpos {$cols} VALUES {$rows}");
+	}
+
+	public function get_user_debits($userid)
+	{
+		if (empty($userid) || !is_numeric($userid)) {
+			throw new AdminException('OCURRIO UN ERROR AL BUSCAR LOS REGISTROS DE CENTRALPOS.');
+		}
+		
+		$q = "SELECT * FROM centralpos WHERE id_axis = {$userid}";
+		$rows = array();
+		$db = MySQL::getInstance();
+
+		$db->query($q);
+
+		while ($row = $db->fetchAssoc()) {
+			$rows[$row['id']] = $row;
+		}
+
+		return $rows;
+	}
 }

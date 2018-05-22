@@ -225,7 +225,7 @@ class Radiographie
 			}
 
 			if (isset($_['fecha_hora'])) {
-				$this->fecha_hora  = date('d/m/y', strtotime($_['fecha_hora']));
+				$this->fecha_hora  = date('d/m/Y', strtotime($_['fecha_hora']));
 			}
 
 			if (isset($_['etapa'])) {
@@ -279,7 +279,7 @@ class Radiographie
 			// IMPLODE SOBRE LOS SET DE CADA CAMPO
 			$implode = implode(",", $fields);
 			// ARMO LA QUERY 
-			$q = "UPDATE radiografias SET {$implode} WHERE id_radiografia = '{$this->id}'";
+			$q = stripslashes("UPDATE radiografias SET {$implode} WHERE id_radiografia = '{$this->id}'");
 			// Y EJECUTO
 			self::DB()->query($q);
 		}
@@ -324,7 +324,7 @@ class Radiographie
 		// CON LOS DATOS NUEVOS ACTUALIZO EN BD
 		$datos_json = json_encode(array('name' => $this->name, 'session' => $this->session));
 		// ARMO LA QUERY
-		$q = addslashes("UPDATE radiografias SET datos_json = '{$datos_json}' WHERE id_radiografia = {$this->id}");
+		$q = stripslashes("UPDATE radiografias SET datos_json = '{$datos_json}' WHERE id_radiografia = {$this->id}");
 		// EJECUTO
 		return self::DB()->query($q);
 	}	
@@ -388,7 +388,7 @@ class Radiographie
 	 * @return sting url para ver/editar la radiografia
 	 * @param String $action ver|editar
 	 * */
-	public function url($action)
+	public function url($action ="ver")
 	{
 		return trim(URL_ROOT, '/') . '/radiografias/' . trim($action, '/') . '/' . $this->url;
 	}

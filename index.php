@@ -29,6 +29,10 @@ include "modules/{$__module__}.php";
 
 class_exists('Page') && new Page;
 
-_global('__content__', ob_get_clean());
-
-include "html/index.php";
+if (_global('__JSON__')) {
+	echo ob_get_clean();
+}
+else{
+	_global('__content__', ob_get_clean());
+	include "html/index.php";
+}

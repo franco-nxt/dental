@@ -22,12 +22,12 @@
             <li class="nav-item txt-right">
                 <a href="#" class="nav-options" data-dropdown="menu-dropdown">&nbsp;</a>
                 <ul class="nav-drop" id="menu-dropdown" style="display:none">
-                    <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/logout">Logout</a></li>
-                    <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/perfil">Perfil</a></li>
                     <?php if (get_user()->admin): ?>
-                    <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/manager/contrataciones/nuevo">Contrataciones</a></li>
                     <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/manager">Admin</a></li>
+                    <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/manager/contrataciones/nuevo">Contrataciones</a></li>
                     <?php endif ?>
+                    <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/perfil">Perfil</a></li>
+                    <li class="nav-drop-item"><a href="<?= URL_ROOT ?>/logout">Logout</a></li>
                 </ul>
             </li>
         </ul>
@@ -49,7 +49,7 @@
     <?php endif ?>
     <div class="bg-w">
         <ul class="navbar container">
-            <li class="navbar-item navbar-item-btn"><a href="<?= URL_ROOT ?>" class="navbar-btn btn-ico-back">&nbsp;</a></li>
+            <li class="navbar-item navbar-item-btn"><a href="<?= _global('navbar-back') ?>" class="navbar-btn btn-ico-back">&nbsp;</a></li>
             <li class="navbar-item"><strong><?= _global('navbar-title') ?></strong></li>
             <?php if (_global('edit-patient')): ?>
             <li class="navbar-item navbar-item-btn"><a href="<?= _global('edit-patient') ?>" class="btn btn-primary">EDITAR</a></li>
@@ -67,7 +67,7 @@
     <footer class="noprint">
         <ul class="container">
             <li>Axis Orthodontic Solution &reg;</li>
-            <li class="links"><a href="mailto:info@axis.com">info@axis.com</a> | <a href="tel:+5411513665548">+54 11 513 665 548</a></li>
+            <li class="links"><a href="mailto:info@axis.com">info@axis.com</a></li>
             <li class="footer-brand"><img src="<?= URL_ROOT ?>/img/res/logo_footer.png" alt=""></li>
         </ul>
     </footer>

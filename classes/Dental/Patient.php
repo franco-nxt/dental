@@ -196,7 +196,7 @@ class Patient
 			// SI SON DISTINTOS USUARIOS
 			if ($owner_user_id != $user_id) {
 				// QUERY PARA CHEQUEAR SI EL PACIENTE ESTA COMPARTIDO A ESTE USUARIO DEDE ALGUN OTRO
-				$q = "SELECT {$id} IN (SELECT C.id_paciente FROM vinculos AS V  LEFT JOIN compartidos AS C ON C.id_vinculo = V.id_vinculo WHERE V.id_usuario_out = {$owner_user_id} AND V.id_usuario_in = {$user_id})";
+				$q = "SELECT {$id} IN (SELECT C.id_paciente FROM vinculos AS V  LEFT JOIN compartidos AS C ON C.id_vinculo = V.id_vinculo WHERE V.id_usuario_in = {$owner_user_id} AND V.id_usuario_out = {$user_id})";
 				// EJECUTO 
 				$is_shared = (Bool) self::DB()->oneFieldQuery($q);
 				// EL PACIENTE NO ES SUYO NI ESTA COMPARTIDO POR OTRO PACIENTE
@@ -582,7 +582,7 @@ class Patient
 
 		$user_id = get_user()->id;
 
-		$q = "SELECT fotografias, radiografias, cefalometrias FROM vinculos AS V INNER JOIN compartidos AS C ON C.id_vinculo = V.id_vinculo WHERE id_usuario_out = '{$this->id_usuario}' AND id_usuario_in = '{$user_id}'";
+		$q = "SELECT fotografias, radiografias, cefalometrias FROM vinculos AS V INNER JOIN compartidos AS C ON C.id_vinculo = V.id_vinculo WHERE id_usuario_in = '{$this->id_usuario}' AND id_usuario_out = '{$user_id}'";
 
 		return self::DB()->oneRowQuery($q);
 	}

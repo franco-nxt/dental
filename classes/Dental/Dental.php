@@ -50,7 +50,11 @@ class Dental
 			throw new DentalException("USUARIO O CONTRASEÑA INCORRECTOS");
 		}
 		// SI TODO ESTA BIEN TRAIGO ALGUNOS DATOS DE LA BD
-		$row = self::DB()->oneRowQuery("SELECT id_usuario, correo_electronico, nombre, apellido, admin FROM usuarios WHERE correo_electronico = '{$user}'");
+		$row = self::DB()->oneRowQuery("SELECT A.habilitado as habilitado, U.id_usuario, U.correo_electronico, U.nombre, U.apellido, U.admin FROM usuarios AS U LEFT JOIN administracion AS A ON A.id_axis = U.id_usuario WHERE U.correo_electronico = '{$user}'");
+
+		if (empty($row['habilitado']) && empty($row['admin'])) {
+			throw new DentalException("EL USUARIO NO ESTA HABILITADO.");
+		}
 		// INFO FILL
 		$this->id = $row['id_usuario'];
 		$this->fullname = "{$row['apellido']}, {$row['nombre']}";
@@ -218,7 +222,7 @@ class Dental
 		$conditions = array();
 		// ESTOS SON SOLO LOS VALORES DE TIPO STRING
 		foreach (array('apellido','nombre','ciudad','provincia') as $k) {
-			!empty($fields[$k]) && $conditions[$K] = "{$k} LIKE '%{$fields[$k]}%'";
+			!empty($fields[$k]) && $conditions[$k] = "{$k} LIKE '%{$fields[$k]}%'";
 		}
 		// SEXO ES UN VALOR INT O TINYINT
 		if(!empty($fields['sexo']) && defined("BD_{$fields['sexo']}")) {
@@ -375,7 +379,7 @@ class Dental
 
 		if ($is_patient) {
 			// SI $Patient ES PACIENTE BUSCO LOS USUARIOS DISPONIBLES PARA COMPARTIR ESE PACIENTE
-			$q = "SELECT id_vinculo, id_axis AS vinculo, V.id_usuario_in AS id, foto, ref, concat(U.apellido, ', ', U.nombre) AS fullname, correo_electronico FROM vinculos AS V INNER JOIN usuarios AS U ON V.id_usuario_in = U.id_usuario WHERE V.id_usuario_out = {$this->id} AND V.id_vinculo NOT IN (SELECT compartidos.id_vinculo FROM compartidos WHERE id_paciente = {$Patient->id})";
+			$q = "SELECT id_vinculo, id_axis AS vinculo, V.id_usuario_in AS id, foto, ref, concat(U.apellido, ', ', U.nombre) AS fullname, correo_electronico FROM vinculos AS V INNER JOIN usuarios AS U ON V.id_usuario_in = {$this->id} WHERE V.id_usuario_out = U.id_usuario AND V.id_vinculo NOT IN (SELECT compartidos.id_vinculo FROM compartidos WHERE id_paciente = {$Patient->id})";
 		} 
 		elseif(empty($Patient)) {
 			// ESTO LO EXPLICO 
@@ -697,6 +701,19 @@ class Dental
 		$ptrn = '/^(a(dmin|pellido)|c(elular|iudad|lave_seguridad|o(digo_postal|mentarios_(c(efalometrias|ompartir)|diagnostico|economia|generales|odontograma|(foto|radio)grafias|tratamiento)|rreo_electronico))|direccion|foto|nombre|p(ais|rovincia)|telefono)$/';
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
 		return !empty($fieldname) && is_string($fieldname) && preg_match($ptrn, $fieldname);
+	}
+
+	public static function toggle($id)
+	{
+		// VALIDO EL PARAMETRO
+		if (empty($id) || !is_numeric($id)) {
+			throw new DentalException('NO SE PUEDE CAMBIAR EL ESTADO DEL PACIENTE, LOS DATOS ENVIADOS SON INVALIDOS.');
+		}
+		$q = "SELECT habilitado FROM administracion WHERE id_axis =  {$id}";
+		// EJECUTO
+		$enable = (int) empty(self::DB()->oneFieldQuery($q));
+
+		self::DB()->query("UPDATE administracion SET habilitado = {$enable} WHERE id_axis = {$id}");		
 	}
 
 	protected static function DB()

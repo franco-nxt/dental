@@ -160,7 +160,7 @@ class Cephalometry
 
 			if (isset($_['fecha_hora'])) {
 				// FORMATEO LA FECHA PARA EL FRONT
-				$this->fecha_hora  = date('d/m/y', strtotime($_['fecha_hora']));
+				$this->fecha_hora  = date('d/m/Y', strtotime($_['fecha_hora']));
 			}
 
 			if (isset($_['tipo'])) {
@@ -177,7 +177,7 @@ class Cephalometry
 				// EXTRAIGO EL TRATAMIENTO
 				$this->Treatment = new Treatment($_['id_tratamiento']);
 				// CON ESTOS DATOS YA PUEDO CREAR LA URL PARA LA SESSION
-				$this->url = crypt_params(array(CEFALOMETRIA => $this->id, TRATAMIENTO => $this->Treatment->id, PACIENTE => $this->Treatment->paciente->id));
+				$this->url = crypt_params(array(CEFALOMETRIA => $this->id, TRATAMIENTO => $this->Treatment->id, PACIENTE => $this->Treatment->id_paciente, MODELO => $this->name));
 			}
 
 			if (isset($_['eliminado'])) {
@@ -285,7 +285,7 @@ class Cephalometry
 	{
 		// SI LOS DATOS ENVIADOS ESTAN MAL
 		if (empty($fields) || !is_array($fields)) {
-			throw new Exception('ERROR AL BORRAR IMAGENES DE LA SESION DE CEFALOMETRIAS, LOS DATOS ENVIADOS SON INCORRECTOS');
+			throw new CephalometryException('ERROR AL BORRAR IMAGENES DE LA SESION DE CEFALOMETRIAS, LOS DATOS ENVIADOS SON INCORRECTOS');
 		}
 		// ACTUALIZO LOS DATOS DE LA SESSION
 		$this->select('session');
@@ -297,9 +297,9 @@ class Cephalometry
 			}
 		}
 		// ARMO LOS DATOS 
-		$datos_json = addslashes(json_encode(array('name' => $this->name, 'session' => $this->session)));
+		$datos_json = stripslashes(json_encode(array('name' => $this->name, 'session' => $this->session)));
 		// ARMO LA QUERY
-		$q = "UPDATE cefalometrias SET datos_json = \"{$datos_json}\" WHERE id_cefalometria = {$this->id}";
+		$q = "UPDATE cefalometrias SET datos_json = '{$datos_json}' WHERE id_cefalometria = {$this->id}";
 		// ACTUALIZO EN BD
 		self::DB()->query($q);
 	}
@@ -357,7 +357,7 @@ class Cephalometry
 	 * @param  String $action ver|editar
 	 * @return String 		  url para ver/editar la radiografia
 	 * */
-	public function url($action)
+	public function url($action = 'ver')
 	{
 		return trim(URL_ROOT, '/') . '/cefalometrias/' . trim($action, '/') . '/' . $this->url;
 	}
@@ -373,7 +373,7 @@ class Cephalometry
 	public static function valid_field($fieldname)
 	{
 		// TRUE SI NO ESTA VACIO, ES UN STRING Y MATCHEA CON ALGUNA DE LAS COLUMNAS EN BD
-		return !empty($fieldname) && is_string($fieldname) && preg_match('/^(fecha_hora|datos_json|etapa|tipo|eliminado)$/', $fieldname);
+		return !empty($fieldname) && is_string($fieldname) && preg_match('/^(fecha_hora|datos_json|etapa|tipo|eliminado|id_tratamiento)$/', $fieldname);
 	}
 
 	private static function DB()

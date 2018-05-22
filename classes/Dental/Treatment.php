@@ -163,7 +163,7 @@ class Treatment
 			$this->url = crypt_params(array(TRATAMIENTO => $this->id, PACIENTE => $this->id_paciente));
 		}
 		else{
-			throw new TreatmentException('OCURRIO UN ERROR CON EL TRATAMIENTO DEL PACIENTE, VUELVA A INTENTARLO OTRA VEZ.');
+			// throw new TreatmentException('OCURRIO UN ERROR CON EL TRATAMIENTO DEL PACIENTE, VUELVA A INTENTARLO OTRA VEZ.');
 		}
 	}
 
@@ -217,7 +217,7 @@ class Treatment
 		// IMPLODE CON LAS COLUMNAS
 		$implode_keys = implode(",", array_keys($fields));
 		// IMPLODE CON LOS VALORES
-		$implode_values = implode(",", array_values($fields));
+		$implode_values = implode("','", $fields);
 		// ARMO LA QUERY
 		$q = "INSERT INTO tratamientos ({$implode_keys}) VALUES ('{$implode_values}')";
 		// EJECUTO LA QUERY
@@ -264,7 +264,7 @@ class Treatment
 				foreach ($tratamiento as $k => $v) {
 					switch ($k) {
 						case 'fecha_hora_inicio':
-						$this->{$k} = date('d/m/y', strtotime($v)); 
+						$this->{$k} = date('d/m/Y', strtotime($v)); 
 						break;
 						case 'estado':
 						$this->estado = is_numeric($v) ? constant('TRATAMIENTO_ESTADO_' . $v) : $v; 
@@ -915,5 +915,16 @@ class Treatment
 		}
 
 		return false;
+	}
+
+	public function resume()
+	{
+		$resume = "{$this->fecha_hora_inicio} - {$this->estado} - {$this->tecnica}";
+		
+		if (!empty($this->descripcion)) {
+			$resume .= "{$this->descripcion}";
+		}
+
+		return $resume;
 	}
 }

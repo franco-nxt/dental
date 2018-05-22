@@ -116,22 +116,21 @@ class Payment
 		// GUARDO LOS CAMPOS
 		foreach ($data as $k => $v) {
 			if (self::valid_field($k)) {
-				$keys[]   = $k;
-				$values[] = $this->db->escape($v);
+				$fields[$k] = $this->db->escape($v);
 			}
 		}
 		// PARA CONTINUAR NECESITO DATOS DEL TRATAMIENTO
 		$Treatment = new Treatment($data['id_tratamiento']);
+		$Treatment->select('presupuesto');
 		// CALCULO EL ACUMULADO PARA EL PAGO
-		$keys[]    = 'acumulado';
 		$acumulado = $Treatment->acumulado() + ($data['monto'] + 0);
-		$values[]  = $acumulado;
+		$fields['acumulado']  = $acumulado;
 		// Y CALCULO TAMBIEN EL BALANCE PARA EL PAGO
-		$keys[]   = 'balance';
-		$values[] = ($Treatment->presupuesto + 0) - $acumulado;
+		$fields['balance'] = ($Treatment->presupuesto + 0) - $acumulado;
 		// ARMO LA QUERY
-		$implode_values = implode("','", $values);
-		$implode_keys = implode(",", $keys);
+		$implode_values = implode("','", $fields);
+		$implode_keys = implode(",", array_keys($fields));
+
 		$q = "INSERT INTO pagos ({$implode_keys}) VALUES ('{$implode_values}')";
 		// EJECUTO
 		$this->db->query($q);
@@ -178,7 +177,7 @@ class Payment
 			foreach ($_ as $k => $v) {
 
 				if ($k == 'fecha_hora') {
-					$this->{$k} = date('d/m/y', strtotime($v));
+					$this->{$k} = date('d/m/Y', strtotime($v));
 				}
 				else{
 					$this->{$k} = $v;

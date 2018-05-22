@@ -3,7 +3,7 @@ import Cleave from 'cleave.js';
 $('.input-date').each(function(){
 	new Cleave(this, {
 		date: true,
-		datePattern: ['d', 'm', 'y']
+		datePattern: ['d', 'm', 'Y']
 	});
 	console.log(this);
 });

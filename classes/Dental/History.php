@@ -182,15 +182,6 @@ class History
 	 * @var Int
 	 */
 	public $id_tratamiento;
-	
-	public function __get($name) {
-		if ($name == 'db') {
-			return MySQL::getInstance();
-		}
-		
-		return null;
-	}
-
 
 	/**
 	 * El constructor espera un id numerico que va a usar 

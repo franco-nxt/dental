@@ -134,6 +134,12 @@ class Treatment
 	public $Resume;
 
 	/**
+	 * @var [type]
+	 */
+	public static $DURATIONS = array(6,12,18,24,30,36);
+	
+
+	/**
 	 * Contructor para Taramiento.
 	 *
 	 * @throws TreatmentException Si el tratamiento no existe.
@@ -922,7 +928,7 @@ class Treatment
 		$resume = "{$this->fecha_hora_inicio} - {$this->estado} - {$this->tecnica}";
 		
 		if (!empty($this->descripcion)) {
-			$resume .= "{$this->descripcion}";
+			$resume .= " - {$this->descripcion}";
 		}
 
 		return $resume;

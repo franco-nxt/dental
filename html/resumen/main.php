@@ -10,7 +10,7 @@
 </div>
 <div class="container p5">
 		<div class="bar-bordered">
-			<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?></span>
+			<span><?= $Treatment->resume() ?></span>
 		</div>
 	<div class="bar-bordered clear mb5">
 		<strong>RESUMEN DIAGNOSTICO</strong>

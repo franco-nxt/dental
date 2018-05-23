@@ -7,12 +7,12 @@
 	<div class="bar-btn">
 		<div class="container">
 			<button class="btn btn-success" name="action" value="save">GUARDAR</button>
-			<a href="<?= $Patient->url('diagnostico') ?>" class="btn btn-default">CANCELAR</a>
+			<a href="<?= $Exam->url() ?>" class="btn btn-default">CANCELAR</a>
 		</div>
 	</div>
 	<div class="container">
 		<div class="bar-bordered mt5">
-			<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?> - <?= $Treatment->descripcion ?></span>
+			<span><?= $Treatment->resume() ?></span>
 		</div>
 		<div class="bar-bordered clear mb5">
 			<strong>EXAMEN CLINICO</strong>

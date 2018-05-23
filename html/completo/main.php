@@ -1,7 +1,3 @@
-<?php 
-!isset($Patient , $Treatment) && redirect_exit();
-$Diagnostic = $Treatment->get_fullDiagnostic()->select();
-?>
 <div class="bar-subtitle">
 	<div class="container">
 		<a href="<?= $Patient->url() ?>"><?= $Patient->fullname() ?></a>
@@ -12,7 +8,10 @@ $Diagnostic = $Treatment->get_fullDiagnostic()->select();
 		<a href="<?= $Diagnostic->url('editar') ?>" class="btn btn-primary">EDITAR</a>
 	</div>
 </div>
-<div class="container">
+<div class="container p5">
+	<div class="bar-bordered">
+		<span><?= $Treatment->resume() ?></span>
+	</div>
 	<div class="bar-bordered clear mt5 mb5">
 		<strong>ANALISIS INDICADOS</strong>
 	</div>

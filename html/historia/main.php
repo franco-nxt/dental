@@ -10,7 +10,7 @@
 </div>
 <div class="container p5">
 	<div class="bar-bordered">
-		<span><?= $Treatment->fecha_hora_inicio ?> - <?= $Treatment->estado ?> - <?= $Treatment->tecnica ?> - <?= $Treatment->descripcion ?></span>
+		<span><?= $Treatment->resume() ?></span>
 	</div>
 	<div>
 		<div class="col-sm-4 label label-read">
@@ -20,7 +20,7 @@
 			<span class="radio-label <?= checked_if($History->tratamiento_medico->si) ?>">SI</span>
 			<span class="radio-label <?= checked_if($History->tratamiento_medico->no) ?>">NO</span>
 			<?php if (!empty($History->tratamiento_medico->si)): ?>
-			<strong>CU&Aacute;L? </strong><span><?= get_if($History->tratamiento_medico->cual) ?></span>
+				<strong>CU&Aacute;L? </strong><span><?= get_if($History->tratamiento_medico->cual) ?></span>
 			<?php endif ?>
 		</div>
 		<div class="col-sm-4 label label-read">
@@ -30,7 +30,7 @@
 			<span class="radio-label <?= checked_if($History->enfermedad_sistemica->si) ?>">SI</span>
 			<span class="radio-label <?= checked_if($History->enfermedad_sistemica->no) ?>">NO</span>
 			<?php if (!empty($History->enfermedad_sistemica->si)): ?>
-			<strong>CU&Aacute;L? </strong><span><?= get_if($History->enfermedad_sistemica->si) ?></span>
+				<strong>CU&Aacute;L? </strong><span><?= get_if($History->enfermedad_sistemica->si) ?></span>
 			<?php endif ?>
 		</div>
 		<div class="col-sm-4 label label-read">
@@ -40,7 +40,7 @@
 			<span class="radio-label <?= checked_if($History->medicacion_actual->si) ?>">SI</span>
 			<span class="radio-label <?= checked_if($History->medicacion_actual->no) ?>">NO</span>
 			<?php if (!empty($History->medicacion_actual->si)): ?>
-			<strong>CU&Aacute;L? </strong><span><?= get_if($History->medicacion_actual->si) ?></span>
+				<strong>CU&Aacute;L? </strong><span><?= get_if($History->medicacion_actual->si) ?></span>
 			<?php endif ?>
 		</div>
 		<div class="col-sm-4 label label-read">
@@ -50,7 +50,7 @@
 			<span class="radio-label <?= checked_if($History->hepatitis->si) ?>">SI</span>
 			<span class="radio-label <?= checked_if($History->hepatitis->no) ?>">NO</span>
 			<?php if (!empty($History->hepatitis->si)): ?>
-			<strong>CU&Aacute;L? </strong><span><?= get_if($History->hepatitis->si) ?></span>
+				<strong>CU&Aacute;L? </strong><span><?= get_if($History->hepatitis->si) ?></span>
 			<?php endif ?>
 		</div>
 		<div class="col-sm-4 label label-read">
@@ -195,7 +195,7 @@
 			<span class="radio-label <?= checked_if($History->interposicion_labio_inferior->si->actual) ?>">ACUTAL</span>
 			<span class="radio-label <?= checked_if($History->interposicion_labio_inferior->si->pasado) ?>">PASADO</span>
 			<?php if (!empty($History->interposicion_labio_inferior->si) && !empty($History->interposicion_labio_inferior->si->pasado->hasta)): ?>
-			<strong>HASTA LOS <?= $History->interposicion_labio_inferior->si->pasado->hasta ?> A&Ntilde;OS</strong>
+				<strong>HASTA LOS <?= $History->interposicion_labio_inferior->si->pasado->hasta ?> A&Ntilde;OS</strong>
 			<?php endif ?>
 		</div>
 		<div class="col-sm-4 label label-read">
@@ -207,7 +207,7 @@
 			<span class="radio-label <?= checked_if($History->succion_digital->si->actual) ?>">ACUTAL</span>
 			<span class="radio-label <?= checked_if($History->succion_digital->si->pasado) ?>">PASADO</span>
 			<?php if (!empty($History->succion_digital->si) && !empty($History->succion_digital->si->pasado->hasta)): ?>
-			<strong>HASTA LOS <?= $History->succion_digital->si->pasado->hasta ?> A&Ntilde;OS</strong>
+				<strong>HASTA LOS <?= $History->succion_digital->si->pasado->hasta ?> A&Ntilde;OS</strong>
 			<?php endif ?>
 		</div>
 		<div class="col-sm-4 label label-read">
@@ -219,7 +219,7 @@
 			<span class="radio-label <?= checked_if($History->bruxismo->si->actual) ?>">ACUTAL</span>
 			<span class="radio-label <?= checked_if($History->bruxismo->si->pasado) ?>">PASADO</span>
 			<?php if (!empty($History->bruxismo->si) && !empty($History->bruxismo->si->pasado->hasta)): ?>
-			<strong>HASTA LOS <?= $History->bruxismo->si->pasado->hasta ?> A&Ntilde;OS</strong>
+				<strong>HASTA LOS <?= $History->bruxismo->si->pasado->hasta ?> A&Ntilde;OS</strong>
 			<?php endif ?>
 		</div>
 		<div class="col-sm-4 label label-read">

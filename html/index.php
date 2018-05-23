@@ -18,7 +18,7 @@
     <nav class="nav">
         <ul class="nav-list container">
             <li class="nav-item"><a href="<?= URL_ROOT ?>"><img src="<?= URL_ROOT ?>/img/res/nav-logo-140x50.png" alt="axis-brand" class="axis-brand"></a></li>
-            <li class="nav-item txt-right">Bienvenido, <a href="#"><?= get_user()->fullname ?></a></li>
+            <li class="nav-item txt-right">Bienvenido, <a href="<?= URL_ROOT ?>/perfil"><?= get_user()->fullname ?></a></li>
             <li class="nav-item txt-right">
                 <a href="#" class="nav-options" data-dropdown="menu-dropdown">&nbsp;</a>
                 <ul class="nav-drop" id="menu-dropdown" style="display:none">
@@ -67,7 +67,7 @@
     <footer class="noprint">
         <ul class="container">
             <li>Axis Orthodontic Solution &reg;</li>
-            <li class="links"><a href="mailto:info@axis.com">info@axis.com</a></li>
+            <li class="links"><a href="mailto:info@axis.com">info@axismobile.com</a></li>
             <li class="footer-brand"><img src="<?= URL_ROOT ?>/img/res/logo_footer.png" alt=""></li>
         </ul>
     </footer>

@@ -32,14 +32,17 @@ class Page extends Controller{
 		}
 	}
 	
-	public function main() {
+	public function main() 
+	{
+		_global('navbar-back', URL_ROOT);
 
 		$User = get_user();
 
 		include 'html/compartir/main.php';
 	}
 	
-	public function nuevo() {
+	public function nuevo() 
+	{
 		_global('navbar-back', URL_ROOT . '/compartir');
 
 		$User = get_user();
@@ -49,6 +52,7 @@ class Page extends Controller{
 	
 	public function paciente($encode) 
 	{
+		_global('navbar-back', URL_ROOT . "/compartir/nuevo}");
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO
 		$Patient = decode_patient($encode);
 		// DEL PACIENTE OBTENGO EL TRATAMIENTO
@@ -59,6 +63,7 @@ class Page extends Controller{
 
 	public function usuarios($encode)
 	{
+		_global('navbar-back', URL_ROOT . "/compartir/paciente/{$encode}");
 		// USUARIO
 		$User = get_user();
 		// OBTENGO EL PACIENTE DESDE EL ID ENCODEADO

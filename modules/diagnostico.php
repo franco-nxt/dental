@@ -96,17 +96,17 @@ class Page extends Controller{
 				break;
 			case 'resumen':
 				$Resume = $Treatment->get_resume()->select();
-				_global('navbar-title', 'DIAGNÓSTICO - EXAMEN CLINICO Y BUCAL');
+				_global('navbar-title', 'DIAGNÓSTICO - RESUMEN');
 				_global('navbar-back', $Resume->url());
 				break;
 			case 'examen':
 				$Exam = $Treatment->get_exam()->select();
-				_global('navbar-title', 'DIAGNÓSTICO - GENERAL');
+				_global('navbar-title', 'DIAGNÓSTICO - EXAMEN CLINICO Y BUCAL');
 				_global('navbar-back', $Exam->url());
 				break;
 			case 'completo':
 				$Diagnostic = $Treatment->get_fullDiagnostic()->select();
-				_global('navbar-title', 'DIAGNÓSTICO - RESUMEN');
+				_global('navbar-title', 'DIAGNÓSTICO - GENERAL');
 				_global('navbar-back', $Diagnostic->url());
 				break;
 		}

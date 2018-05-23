@@ -17,9 +17,9 @@
 		<label class="col-xs-10 col-sm-4 label label-read" for="treatment_duracion"><strong>DURACION DEL TRATAMIENTO : </strong></label> 
 		<div class="col-xs-2 col-sm-8 field field-blue">
 			<select id="treatment_duracion" name="duracion">
-				<?php for ($c = 1;$c <= 99;$c++): ?>
-					<option value="<?= $c ?>"><?= $c ?> MES<?= $c != 1 ? 'ES' : null ?></option>
-				<?php endfor ?>
+				<?php foreach (Treatment::$DURATIONS as $c): ?>
+					<option value="<?= $c ?>" <?= selected($Treatment->duracion == $c) ?>><?= $c ?> MES<?= $c != 1 ? 'ES' : null ?></option>
+				<?php endforeach ?>
 			</select>
 		</div>
 		<label class="col-xs-4 label label-read" for="treatment_tecnica"><strong>T&Eacute;CNICA : </strong></label>
@@ -34,7 +34,7 @@
 				<strong>FECHA INICIO : </strong>
 			</div>
 			<div class="col-xs-8 field field-blue">
-				<input type="text" id="treatment_inicio" value="<?= date('d/m/Y') ?>" name="fecha_hora_inicio" class="input-date">
+				<input type="text" id="treatment_inicio" value="<?= date('d/m/Y') ?>" name="fecha_hora_inicio" class="input-date full">
 			</div>
 		</label>
 		<label for="treatment_presupuesto" class="form-group clear m0">
@@ -42,7 +42,7 @@
 				<strong>PRESUPUESTO : </strong>
 			</div>
 			<div class="col-xs-7 col-sm-8 field field-blue">
-				<input type="text" id="treatment_presupuesto" value="" name="presupuesto" class="input-cash">
+				<input type="text" id="treatment_presupuesto" value="" name="presupuesto" class="input-cash full">
 			</div>
 		</label>
 		<label for="treatment_descripcion" class="form-group clear m0">

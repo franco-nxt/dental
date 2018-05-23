@@ -28,8 +28,8 @@
 					<label class="col-xs-4 label label-read" for="treatment_tecnica"><strong>T&Eacute;CNICA : </strong></label>
 					<div class="col-xs-8 field field-read">
 						<select id="treatment_tecnica" name="tecnica">
-							<option value="2">ORTODONCIA</option>
-							<option value="1" <?= selected(true) ?>>ORTOPEDIA FUNCIONAL</option>
+							<option value="2" <?= selected(true) ?>>ORTODONCIA</option>
+							<option value="1">ORTOPEDIA FUNCIONAL</option>
 						</select>
 					</div>
 				</div>
@@ -179,9 +179,9 @@
 			<label class="col-xs-10 col-sm-4 label label-read" for="treatment_duracion"><strong>DURACION DEL TRATAMIENTO : </strong></label> 
 			<div class="col-xs-2 col-sm-8 field field-read">
 				<select id="treatment_duracion" name="duracion">
-					<?php for ($c = 1;$c <= 99;$c++): ?>
-						<option value="<?= $c ?>"><?= $c ?> MES<?= $c != 1 ? 'ES' : null ?></option>
-					<?php endfor ?>
+					<?php foreach (Treatment::$DURATIONS as $c): ?>
+						<option value="<?= $c ?>" <?= selected($Treatment->duracion == $c) ?>><?= $c ?> MES<?= $c != 1 ? 'ES' : null ?></option>
+					<?php endforeach ?>
 				</select>
 			</div>
 			<label for="treatment_inicio" class="m0 form-group clear">
@@ -189,7 +189,7 @@
 					<strong>FECHA INICIO : </strong>
 				</div>
 				<div class="col-xs-7 col-sm-8 field">
-					<input type="text" id="treatment_inicio" value="" name="fecha_hora_inicio" class="input-date text-input full">
+					<input type="text" id="treatment_inicio" value="<?= date('d/m/Y') ?>" name="fecha_hora_inicio" class="input-date text-input full">
 				</div>
 			</label>
 			<label for="treatment_presupuesto" class="form-group">

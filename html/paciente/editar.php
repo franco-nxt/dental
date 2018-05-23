@@ -178,7 +178,7 @@
 	</div>
 	<div class="patient-tratamiento">
 		<div class="container">
-			<?php if ($Treatment->estado !== TRATAMIENTO_ACTIVO): ?>
+			<?php if ($Treatment->estado == TRATAMIENTO_ACTIVO): ?>
 				<div class="notification mb5">
 					<span>Para iniciar un tratamiento nuevo o eliminar, primero es necesario <strong>FINALIZAR</strong> o <strong>INACTIVAR</strong> el corriente.</span>
 				</div>
@@ -186,9 +186,9 @@
 			<label class="col-xs-10 col-sm-4 label label-read" for="treatment_duracion"><strong>DURACION DEL TRATAMIENTO : </strong></label> 
 			<div class="col-xs-2 col-sm-8 field field-read">
 				<select id="treatment_duracion" name="duracion">
-					<?php for ($c = 1;$c <= 99;$c++): ?>
+					<?php foreach (Treatment::$DURATIONS as $c): ?>
 						<option value="<?= $c ?>" <?= selected($Treatment->duracion == $c) ?>><?= $c ?> MES<?= $c != 1 ? 'ES' : null ?></option>
-					<?php endfor ?>
+					<?php endforeach ?>
 				</select>
 			</div>
 			<div class="col-xs-3 col-sm-4 label label-read">

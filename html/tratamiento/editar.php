@@ -14,9 +14,9 @@
 		<label class="col-xs-10 col-sm-4 label label-read" for="treatment_duracion"><strong>DURACION DEL TRATAMIENTO : </strong></label> 
 		<div class="col-xs-2 col-sm-8 field field-blue">
 			<select id="treatment_duracion" name="duracion">
-				<?php for ($c = 1;$c <= 99;$c++): ?>
+				<?php foreach (Treatment::$DURATIONS as $c): ?>
 					<option value="<?= $c ?>" <?= selected($Treatment->duracion == $c) ?>><?= $c ?> MES<?= $c != 1 ? 'ES' : null ?></option>
-				<?php endfor ?>
+				<?php endforeach ?>
 			</select>
 		</div>
 		<label class="col-xs-4 label label-read" for="treatment_tecnica"><strong>T&Eacute;CNICA : </strong></label>

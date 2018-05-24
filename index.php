@@ -27,7 +27,9 @@ ob_start();
 
 include "modules/{$__module__}.php";
 
-class_exists('Page') && new Page;
+$__class__ = ucfirst($__module__);
+
+class_exists($__class__) && new $__class__;
 
 if (_global('__JSON__')) {
 	echo ob_get_clean();
